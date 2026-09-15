@@ -198,7 +198,7 @@ Escenario: Cálculo de puntuación
 Escenario: Creación de oración base
   Dado que el docente ha iniciado sesión con rol "Docente"
   Cuando accede al panel de gestión de contenido
-  Y crea una nueva oración con campos: texto en quechua, traducción al español, nivel asociado y categoría gramatical
+  Y crea una nueva oración con campos: texto en quechua, traducción al español, nivel asociado, categoría gramatical y contexto cultural
   Entonces la oración se guarda en Firestore con estado "pendiente de revisión"
   Y queda disponible para uso del motor de IA tras la aprobación
 
