@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-DLC: Inception Meeting - Proyecto YAPU</title>
+  
+  <!-- Reveal.js CDN CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/theme/black.min.css" id="theme">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --bg-dark: #070b14;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(56, 189, 248, 0.18);
+      --primary: #38bdf8;
+      --primary-dim: #0284c7;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    body, .reveal {
+      font-family: var(--font-main);
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+    }
+
+    /* Ambient background styling */
+    .bg-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.05) 0%, transparent 40%),
+        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .reveal .slides {
+      z-index: 2;
+      text-align: left;
+    }
+
+    /* Typography */
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+      font-family: var(--font-main);
+      text-transform: none;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .reveal h1 { font-size: 2.6rem; line-height: 1.15; }
+    .reveal h2 { font-size: 1.95rem; line-height: 1.25; margin-bottom: 1.2rem; }
+    .reveal h3 { font-size: 1.15rem; font-weight: 600; }
+    .reveal p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
+
+    .tag-category {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--primary);
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 0.3rem 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    /* Layout Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.8rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.2rem 1.4rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+    }
+
+    .card.highlight {
+      border-color: rgba(56, 189, 248, 0.45);
+      background: rgba(14, 165, 233, 0.09);
+    }
+
+    .card.accent {
+      border-color: rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.06);
+    }
+
+    .metric-value {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Architectural Visual Blocks */
+    .arch-diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .arch-layer {
+      display: flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+    }
+
+    .arch-label {
+      width: 140px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+
+    .arch-content {
+      flex: 1;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: #e2e8f0;
+      font-family: var(--font-mono);
+    }
+
+    .chip.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    /* Comparison Matrix */
+    .compare-matrix {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+      font-size: 0.88rem;
+    }
+
+    .compare-matrix th, .compare-matrix td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .compare-matrix th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .col-trad { color: #94a3b8; width: 38%; }
+    .col-aidlc { color: #38bdf8; background: rgba(56, 189, 248, 0.04); width: 38%; font-weight: 500; }
+
+    /* SVG UI Icons */
+    .svg-icon {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: middle;
+    }
+
+    /* Visual Steps */
+    .workflow-track {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 1rem;
+      position: relative;
+    }
+
+    .step-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      position: relative;
+    }
+
+    .step-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      border-radius: 4px;
+      margin-bottom: 0.8rem;
+      display: inline-block;
+      font-weight: 600;
+    }
+
+    /* Fixed watermark */
+    .tech-header {
+      position: fixed;
+      top: 1.5rem;
+      right: 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fecha: 2026-09-09 | Hora: 20:01 | Motivo: Regenerar archivo de presentación Reveal.js de 10 diapositivas para Inception Proyecto YAPU - Emmanuel Ponce -->
+
+  <div class="bg-grid"></div>
+  <div class="tech-header">
+    <span class="live-dot"></span>
+    <span>PROYECTO YAPU // AI-DLC INCEPTION // UPDS SOFTWARE ENG</span>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- SLIDE 1: PORTADA EJECUTIVA -->
+      <section>
+        <div class="tag-category">
+          <svg class="svg-icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          Arquitectura de Software & Gestión Agéntica
+        </div>
+        <h1>Proyecto YAPU<br><span style="color: var(--primary); font-size: 2.1rem;">AI-Driven Development Lifecycle (AI-DLC)</span></h1>
+        <p style="font-size: 1.1rem; color: #cbd5e1; max-width: 850px; margin-top: 1rem;">
+          Defensa y ejecución de los acuerdos de la reunión Inception: Plataforma web de aprendizaje de lenguas originarias impulsada por IA determinista y gobernanza de código en Git.
+        </p>
+
+        <div class="grid-4" style="margin-top: 2rem;">
+          <div class="card">
+            <div class="metric-value">Astro</div>
+            <div class="metric-label">Frontend & Markdown</div>
+          </div>
+          <div class="card">
+            <div class="metric-value">Level 10</div>
+            <div class="metric-label">Alcance A1 Certificable</div>
+          </div>
+          <div class="card">
+            <div class="metric-value">Local AI</div>
+            <div class="metric-label">Enfoque Determinista</div>
+          </div>
+          <div class="card">
+            <div class="metric-value">VPS + FB</div>
+            <div class="metric-label">Infraestructura & Datos</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: QUÉ ES AI-DLC Y POR QUÉ APLICA A YAPU -->
+      <section>
+        <div class="tag-category">
+          <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          Marco Metodológico AWS 2025/2026
+        </div>
+        <h2>¿Qué es AI-DLC y por qué lo usamos en YAPU?</h2>
+        <div class="grid-2">
+          <div class="card highlight">
+            <h3 style="color: var(--primary); margin-bottom: 0.6rem;">El Núcleo del Paradigma</h3>
+            <p style="margin-bottom: 0.8rem;">
+              En el SDLC tradicional la IA es solo un autocompletador ("copiloto"). En <strong>AI-DLC</strong> la IA asume el rol de orquestador central: desglosa requerimientos, propone lógica y genera código y tests bajo supervisión.
+            </p>
+            <p>
+              <strong>Principio:</strong> Los humanos proveemos las restricciones de negocio y arquitectura; la IA ejecuta las tareas repetitivas y mantiene la trazabilidad viva en el repositorio.
+            </p>
+          </div>
+          <div class="card">
+            <h3 style="color: #ffffff; margin-bottom: 0.6rem;">Alineación con los Requisitos UPDS</h3>
+            <ul style="margin: 0; padding-left: 1.1rem; font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+              <li><strong>Documentación APA modular:</strong> Generación por fases respaldada por especificaciones vivas en Git.</li>
+              <li><strong>Diagramas Mermaid obligatorios:</strong> La IA sintetiza diagramas de secuencia y clases desde los modelos.</li>
+              <li><strong>Cumplimiento de IA académica:</strong> Integración de lógica agéntica determinista evaluable sin costo de API masivo.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: MATRIZ SDLC TRADICIONAL VS AI-DLC EN YAPU -->
+      <section>
+        <div class="tag-category">
+          <svg class="svg-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          Transformación Operativa
+        </div>
+        <h2>Reemplazando la Burocracia con AI-DLC</h2>
+        <table class="compare-matrix">
+          <thead>
+            <tr>
+              <th>Dimensión</th>
+              <th>Desarrollo Tradicional</th>
+              <th>AI-DLC en Proyecto YAPU</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ciclo de Entrega</td>
+              <td class="col-trad">Sprints rígidos de 2 a 4 semanas</td>
+              <td class="col-aidlc"><strong>Bolts de 1 a 3 días</strong> con entregas funcionales</td>
+            </tr>
+            <tr>
+              <td>Desglose de Trabajo</td>
+              <td class="col-trad">Estimación en puntos y épicas manuales</td>
+              <td class="col-aidlc"><strong>Units of Work</strong> atómicas estructuradas por IA</td>
+            </tr>
+            <tr>
+              <td>Documentación</td>
+              <td class="col-trad">Archivos Word desactualizados del código</td>
+              <td class="col-aidlc"><strong>Markdown vivo + Mermaid</strong> exportable a APA</td>
+            </tr>
+            <tr>
+              <td>Manejo de Requisitos</td>
+              <td class="col-trad">Reuniones de refinamiento extensas</td>
+              <td class="col-aidlc"><strong>Mob Elaboration:</strong> feedback inmediato con IA</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- SLIDE 4: DECISIONES CLAVE REUNIÓN INCEPTION YAPU -->
+      <section>
+        <div class="tag-category">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Acuerdos del 8 Sept 2026
+        </div>
+        <h2>Decisiones Fundacionales del Inception</h2>
+        <div class="grid-3">
+          <div class="card">
+            <h3 style="color: var(--primary);">Alcance Funcional A1</h3>
+            <p style="font-size: 0.85rem; margin-top: 0.4rem;">
+              Enfoque en vocabulario y estructuras oracionales escalables hasta el <strong>Nivel 10</strong>. Se excluyen funciones costosas (reconocimiento de voz, multijugador online) para garantizar viabilidad y calidad.
+            </p>
+          </div>
+          <div class="card highlight">
+            <h3 style="color: var(--primary);">Stack de Frontend: Astro</h3>
+            <p style="font-size: 0.85rem; margin-top: 0.4rem;">
+              Seleccionado por su soporte nativo para archivos <strong>Markdown</strong>, integración de componentes interactivos y rendimiento web óptimo como SPA/PWA sin la sobrecarga de un framework pesado.
+            </p>
+          </div>
+          <div class="card">
+            <h3 style="color: var(--primary);">VPS Propio + Firebase</h3>
+            <p style="font-size: 0.85rem; margin-top: 0.4rem;">
+              Alojamiento en el VPS administrado por Jhoel Cruz para total control de red y backend; <strong>Firebase</strong> para autenticación y base de datos reactiva para el contenido generado por la comunidad.
+            </p>
+          </div>
+        </div>
+
+        <div class="card accent" style="margin-top: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 600; font-size: 0.9rem; color: #fff;">Temática Visual & Identidad Cultural:</span>
+            <span class="chip active">Cultura Andina</span>
+            <span class="chip active">1 Lengua Originaria Inicial</span>
+            <span class="chip active">Escalable a Multi-idioma</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: ARQUITECTURA TÉCNICA VISUAL -->
+      <section>
+        <div class="tag-category">
+          <svg class="svg-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+          Arquitectura de Solución
+        </div>
+        <h2>Esquema Tecnológico Validado</h2>
+        <div class="arch-diagram">
+          <div class="arch-layer">
+            <div class="arch-label">Capa Cliente</div>
+            <div class="arch-content">
+              <span class="chip active">Astro Framework</span>
+              <span class="chip">PWA (Mobile First)</span>
+              <span class="chip">Estética Andina</span>
+              <span class="chip">Renderizado Estático + Islas</span>
+            </div>
+          </div>
+          <div class="arch-layer">
+            <div class="arch-label">Capa Inteligencia</div>
+            <div class="arch-content">
+              <span class="chip active">IA Determinista Ligera</span>
+              <span class="chip">Generador de Evaluaciones</span>
+              <span class="chip">Validación Local en Dispositivo</span>
+            </div>
+          </div>
+          <div class="arch-layer">
+            <div class="arch-label">Datos & Auth</div>
+            <div class="arch-content">
+              <span class="chip active">Firebase Firestore</span>
+              <span class="chip">Firebase Authentication</span>
+              <span class="chip">Contenido Docente/Estudiante</span>
+            </div>
+          </div>
+          <div class="arch-layer">
+            <div class="arch-label">Infraestructura</div>
+            <div class="arch-content">
+              <span class="chip active">VPS Privado (Jhoel Cruz)</span>
+              <span class="chip">Nginx Reverse Proxy</span>
+              <span class="chip">GitHub Actions CI/CD</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: ESTRATEGIA DE IA: DETERMINISMO -->
+      <section>
+        <div class="tag-category">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          Módulo de Inteligencia Artificial
+        </div>
+        <h2>Integración de IA: Enfoque Determinista</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3 style="color: var(--danger); margin-bottom: 0.6rem;">¿Por qué NO un LLM Abierto (tipo ChatGPT)?</h3>
+            <ul style="margin: 0; padding-left: 1.1rem; font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+              <li><strong>Riesgo de alucinación:</strong> Generación de traducciones erróneas en lenguas originarias con escaso corpus web.</li>
+              <li><strong>Latencia y costo de red:</strong> Inviable para estudiantes con conectividad limitada.</li>
+              <li><strong>Dependencia externa:</strong> Vulnerable a fallos de cuotas y APIs de terceros.</li>
+            </ul>
+          </div>
+          <div class="card highlight">
+            <h3 style="color: var(--success); margin-bottom: 0.6rem;">Propuesta Adoptada: IA Determinista</h3>
+            <ul style="margin: 0; padding-left: 1.1rem; font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+              <li><strong>Generación estructurada:</strong> Algoritmos de permutación y generación de distractores verosímiles a partir de oraciones precargadas.</li>
+              <li><strong>Ejecución local:</strong> Librerías livianas embebidas en el dispositivo móvil sin consumo de datos.</li>
+              <li><strong>Supervisión comunitaria:</strong> Docentes y usuarios verifican las oraciones base antes de ser procesadas por el motor.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 7: DINÁMICA DE MOB ELABORATION EN YAPU -->
+      <section>
+        <div class="tag-category">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Fase 1: Inception
+        </div>
+        <h2>Dinámica del Equipo: "Mob Elaboration"</h2>
+        <p style="margin-bottom: 1.2rem;">En lugar de que una sola persona escriba la especificación, el equipo co-diseña con la IA.</p>
+        <div class="workflow-track">
+          <div class="step-box">
+            <span class="step-badge">PASO 01</span>
+            <h3>Intención</h3>
+            <p style="font-size: 0.85rem;">El equipo expresa el objetivo: <em>"Sistema de niveles 1 a 10 con retos comunitarios y formato visual andino"</em>.</p>
+          </div>
+          <div class="step-box" style="border-color: var(--primary);">
+            <span class="step-badge">PASO 02</span>
+            <h3>IA Propone</h3>
+            <p style="font-size: 0.85rem;">La IA genera el desglose de historias de usuario, contratos de datos en Firebase y diagramas Mermaid iniciales.</p>
+          </div>
+          <div class="step-box" style="border-color: var(--border);">
+            <span class="step-badge">PASO 03</span>
+            <h3>Validación</h3>
+            <p style="font-size: 0.85rem;">El grupo aplica restricciones: exclusión de voz, límites de latencia en VPS y estructura de carpetas APA.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 8: ARTEFACTOS VIVOS DEL REPOSITORIO -->
+      <section>
+        <div class="tag-category">
+          <svg class="svg-icon" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          Gobernanza Git & Specs
+        </div>
+        <h2>Artefactos Vivos: Spec-Driven Development</h2>
+        <div class="grid-3">
+          <div class="card">
+            <div style="font-family: var(--font-mono); color: var(--primary); font-size: 0.9rem; font-weight: 600;">requirements.md</div>
+            <p style="font-size: 0.82rem; margin-top: 0.5rem;">
+              Especifica formalmente las reglas de progreso del Nivel 1 al 10, los criterios de aceptación pedagógicos y el flujo de aprobación docente.
+            </p>
+          </div>
+          <div class="card highlight">
+            <div style="font-family: var(--font-mono); color: var(--primary); font-size: 0.9rem; font-weight: 600;">design.md</div>
+            <p style="font-size: 0.82rem; margin-top: 0.5rem;">
+              Estructura de colecciones en Firestore, componentes Astro modulares y diagramas Mermaid (arquitectura, casos de uso y estados).
+            </p>
+          </div>
+          <div class="card">
+            <div style="font-family: var(--font-mono); color: var(--primary); font-size: 0.9rem; font-weight: 600;">tasks.md</div>
+            <p style="font-size: 0.82rem; margin-top: 0.5rem;">
+              Unidades de trabajo (Units of Work) atómicas listas para ser ejecutadas de forma autónoma o asistida por el agente de desarrollo.
+            </p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 1rem; background: rgba(15, 23, 42, 0.4); border-color: rgba(255, 255, 255, 0.1);">
+          <p style="font-size: 0.85rem; color: #cbd5e1; margin: 0;">
+            <strong style="color: var(--accent);">Gobernanza Steering:</strong> Los estándares de codificación limpia, convenciones de autoría y reglas de Git se inyectan en el prompt del sistema de la IA para asegurar código uniforme y seguro.
+          </p>
+        </div>
+      </section>
+
+      <!-- SLIDE 9: ORGANIZACIÓN UPDS Y FLUJO GITHUB -->
+      <section>
+        <div class="tag-category">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          Gestión del Proyecto
+        </div>
+        <h2>Organización GitHub: UPDS Software Engineer</h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Estructura del Repositorio</h3>
+            <ul style="margin: 0; padding-left: 1.1rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+              <li><strong>Docs/Meetings:</strong> Actas de reunión en Markdown con transcripciones y decisiones fechadas.</li>
+              <li><strong>Tablero Kanban:</strong> Tareas organizadas por Bolts cortos en lugar de listas de Jira sobrecargadas.</li>
+              <li><strong>Exportador APA:</strong> Scripts para compilar el contenido de Markdown a Word/PDF cumpliendo con la cátedra.</li>
+            </ul>
+          </div>
+          <div class="card highlight">
+            <h3 style="color: #ffffff; margin-bottom: 0.5rem;">Responsabilidades del Equipo</h3>
+            <ul style="margin: 0; padding-left: 1.1rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+              <li><strong>Jhoel Cruz:</strong> Administración de VPS y gestión del despliegue base.</li>
+              <li><strong>Luis Mario Rocha:</strong> Validación de formato APA y supervisión de diagramas Mermaid.</li>
+              <li><strong>Emmanuel Ponce:</strong> Gobernanza de IA, arquitectura Astro y síntesis de especificaciones técnicas.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 10: CONCLUSIÓN Y LANZAMIENTO DEL BOLT 01 -->
+      <section>
+        <div class="tag-category">
+          <svg class="svg-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          Próximos Pasos Inmediatos
+        </div>
+        <h2>Cierre del Inception: Lanzamiento de Bolt 01</h2>
+        <div class="grid-2">
+          <div class="card active-border">
+            <div class="metric-label" style="color: var(--primary); margin-bottom: 0.4rem;">Entregable Inception Concluido</div>
+            <h3 style="color: #fff; margin-bottom: 0.6rem;">Specs Consolidadas en Git</h3>
+            <p style="font-size: 0.85rem;">
+              Acta de reunión aprobada, objetivos y manifiesto redactados, y arquitectura validada con diagramas Mermaid integrados.
+            </p>
+          </div>
+          <div class="card highlight">
+            <div class="metric-label" style="color: var(--accent); margin-bottom: 0.4rem;">Fase 2: Construction</div>
+            <h3 style="color: #fff; margin-bottom: 0.6rem;">Objetivos del Bolt 01</h3>
+            <ul style="margin: 0; padding-left: 1.1rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+              <li>Scaffolding del proyecto con Astro y Tailwind.</li>
+              <li>Diseño de paleta andina y componentes de navegación.</li>
+              <li>Integración del SDK de Firebase y prueba de conexión al VPS.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Reveal.js CDN JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+  <script>
+    Reveal.initialize({
+      controls: true,
+      progress: true,
+      center: true,
+      hash: true,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      backgroundTransition: 'fade',
+      slideNumber: 'c/t'
+    });
+  </script>
+</body>
+</html>
