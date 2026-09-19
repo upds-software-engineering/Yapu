@@ -41,54 +41,53 @@ Este compendio traduce formalmente los requerimientos especificados en el docume
 
 ```mermaid
 graph TB
-    subgraph CLIENT_TIER["Capa de Cliente: PWA Ultra-Ligera (RAM < 150MB)"]
+    subgraph CLIENT_TIER["Capa de Cliente: PWA Ligera - RAM menor a 150MB"]
         direction TB
-        UI["Interfaz Gráfica / Diseño Andino<br/>(Astro SSG + Islands + Vanilla/Tailwind CSS)"]
-        SW["Service Worker & Workbox<br/>(Cache Storage + Estrategias Stale-While-Revalidate)"]
-        IDB[("Almacenamiento Local<br/>(IndexedDB / LocalStorage)")]
+        UI["Interfaz Gráfica con Diseño Andino<br/>Astro SSG más Islands y Estilos CSS"]
+        SW["Service Worker y Workbox<br/>Cache Storage y Estrategias Offline"]
+        IDB[("Almacenamiento Local<br/>IndexedDB y LocalStorage")]
         
-        subgraph CORE_AI["Motor de IA Determinista (TypeScript)"]
-            GEN["Generador de Evaluaciones<br/>(Permutación de oraciones certificadas)"]
-            DIST["Selector de Distractores Verosímiles<br/>(Filtro de misma categoría gramatical)"]
-            EVAL["Evaluador Local de Respuestas<br/>(Cálculo inmediato de aciertos)"]
+        subgraph CORE_AI["Motor de IA Determinista en TypeScript"]
+            GEN["Generador de Evaluaciones<br/>Permutación de oraciones base"]
+            DIST["Selector de Distractores Verosímiles<br/>Filtro de misma categoría gramatical"]
+            EVAL["Evaluador Local de Respuestas<br/>Cálculo inmediato de aciertos"]
         end
     end
 
-    subgraph NET_TIER["Canal Seguro de Conectividad (HTTPS / TLS 1.3)"]
+    subgraph NET_TIER["Canal Seguro de Conectividad - HTTPS TLS 1.3"]
         NET_STAT{"¿Conectividad<br/>Disponible?"}
     end
 
-    subgraph CLOUD_TIER["Servicios de Plataforma en la Nube (Google Cloud / Firebase)"]
-        FAUTH["Firebase Authentication<br/>(JWT, Roles: Estudiante / Docente / Admin)"]
-        FSTORE[("Cloud Firestore DB<br/>(/users, /oraciones, /niveles, /evaluaciones)")]
-        FSTORE_RULES["Reglas de Seguridad Firestore<br/>(Validación de permisos por rol)"]
+    subgraph CLOUD_TIER["Servicios de Plataforma en la Nube - Firebase"]
+        FAUTH["Firebase Authentication<br/>JWT y Roles: Estudiante, Docente, Admin"]
+        FSTORE[("Cloud Firestore DB<br/>Colecciones de usuarios, oraciones y notas")]
+        FSTORE_RULES["Reglas de Seguridad Firestore<br/>Validación estricta por rol"]
     end
 
-    subgraph VPS_TIER["Infraestructura Autogestionada (VPS UPDS - Uptime >= 95%)"]
-        NGINX["Servidor Web / Reverse Proxy Nginx<br/>(Compresión Brotli/Gzip, Caché HTTP)"]
-        STATIC_ASSETS["Repositorio de Assets WebP<br/>(Imágenes léxicas < 100KB)"]
-        DATA_EXPORT["Servicio de Datos Abiertos (RS-004)<br/>(Exportador CSV/JSON para Lingüistas)"]
+    subgraph VPS_TIER["Infraestructura Autogestionada - VPS UPDS"]
+        NGINX["Servidor Web y Reverse Proxy Nginx<br/>Compresión HTTP y Caché de Red"]
+        STATIC_ASSETS["Repositorio de Assets WebP<br/>Imágenes léxicas menores a 100KB"]
+        DATA_EXPORT["Servicio de Datos Abiertos RS-004<br/>Exportador CSV y JSON"]
     end
 
-    %% Interconexiones
-    UI -->|"Interacción táctil / vistas"| SW
-    SW -->|"Sin red / Caché de lecciones"| IDB
-    UI -->|"Ejecuta sin consumo de datos"| CORE_AI
+    UI --> SW
+    SW --> IDB
+    UI --> CORE_AI
     GEN --> DIST
     DIST --> EVAL
     
-    SW -->|"Solicitud de sincronización"| NET_STAT
+    SW --> NET_STAT
     
-    NET_STAT -->|"Online (Sync de progreso)"| FAUTH
-    NET_STAT -->|"Online (Lectura/Escritura)"| FSTORE
+    NET_STAT -->|Online - Sync de progreso| FAUTH
+    NET_STAT -->|Online - Lectura y Escritura| FSTORE
     FSTORE --> FSTORE_RULES
     
-    NET_STAT -->|"Descarga inicial de bundle y WebP"| NGINX
+    NET_STAT -->|Online - Descarga inicial de assets| NGINX
     NGINX --> STATIC_ASSETS
     NGINX --> DATA_EXPORT
     
-    EVAL -.->|"Encola resultados offline"| IDB
-    IDB -.->|"Sincronización diferida al reconectar"| FSTORE
+    EVAL -.->|Encola resultados offline| IDB
+    IDB -.->|Sincronización diferida al reconectar| FSTORE
 
     classDef clientStyle fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#f8fafc;
     classDef aiStyle fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#f8fafc;
@@ -118,49 +117,46 @@ graph TB
 
 ```mermaid
 graph LR
-    %% Actores
     subgraph ACTORS["Actores del Sistema"]
-        EST["Estudiante<br/>(Usuario Final)"]
-        DOC["Docente Quechua<br/>(Validador Pedagógico)"]
-        ADM["Administrador<br/>(Infraestructura VPS)"]
+        EST["Estudiante<br/>Usuario Final"]
+        DOC["Docente Quechua<br/>Validador Pedagógico"]
+        ADM["Administrador<br/>Gestión de Infraestructura"]
     end
 
-    %% Frontera del Sistema
-    subgraph SYSTEM_BOUNDARY["Sistema YAPU (PWA & Backend)"]
+    subgraph SYSTEM_BOUNDARY["Sistema YAPU - PWA y Backend"]
         direction TB
 
         subgraph MOD_AUTH["Módulo de Acceso y Seguridad"]
             UC01(["RF-001: Registrar Cuenta"])
-            UC02(["RF-002: Iniciar Sesión / Cerrar Sesión"])
+            UC02(["RF-002: Iniciar o Cerrar Sesión"])
             UC_VERIF(["Verificar Correo Electrónico"])
         end
 
         subgraph MOD_LEARN["Módulo Pedagógico y Gamificación"]
-            UC03(["RF-003: Visualizar Mapa y Progresión A1"])
+            UC03(["RF-003: Visualizar Mapa de Niveles A1"])
             UC04(["RF-004: Practicar Lecciones de Vocabulario"])
             UC05(["RF-005: Rendir Evaluación con IA Determinista"])
-            UC08(["RF-008: Consultar Tablero de Métricas y Progreso"])
-            UC_DESB(["Desbloquear Siguiente Nivel (Umbral >= 70%)"])
+            UC08(["RF-008: Consultar Tablero de Progreso"])
+            UC_DESB(["Desbloquear Siguiente Nivel al 70 por ciento"])
         end
 
         subgraph MOD_OFFLINE["Módulo de Resiliencia"]
-            UC09(["RF-009: Descargar Lecciones para Modo Offline"])
+            UC09(["RF-009: Descargar Lecciones en Modo Offline"])
             UC_SYNC(["Sincronizar Progreso al Reconectar"])
         end
 
         subgraph MOD_TEACHER["Módulo de Contenidos y Moderación"]
-            UC06(["RF-006: Gestionar Oraciones Base y Contexto"])
-            UC07(["RF-007: Proponer Retos Comunitarios (Nivel 7+)"])
-            UC_MOD(["Doble Validación y Moderación Pedagógica"])
+            UC06(["RF-006: Gestionar Oraciones y Contexto Cultural"])
+            UC07(["RF-007: Proponer Retos Comunitarios Nivel 7"])
+            UC_MOD(["Doble Validación y Moderación Docente"])
         end
 
         subgraph MOD_ADMIN["Módulo de Infraestructura y Datos Abiertos"]
-            UC_EXPORT(["RS-004: Exportar Corpus Lingüístico CSV/JSON"])
+            UC_EXPORT(["RS-004: Exportar Corpus Lingüístico CSV o JSON"])
             UC_HEALTH(["RNF-004: Monitorear Disponibilidad del VPS"])
         end
     end
 
-    %% Relaciones de Estudiante
     EST --> UC01
     EST --> UC02
     EST --> UC03
@@ -168,24 +164,21 @@ graph LR
     EST --> UC05
     EST --> UC08
     EST --> UC09
-    EST -.->|"Solo si nivel >= 7"| UC07
+    EST -.->|Si alcanza Nivel 7 o mas| UC07
 
-    %% Relaciones de Docente
     DOC --> UC02
     DOC --> UC06
     DOC --> UC_MOD
 
-    %% Relaciones de Administrador
     ADM --> UC02
     ADM --> UC_EXPORT
     ADM --> UC_HEALTH
 
-    %% Relaciones internas <<include>> y <<extend>>
-    UC01 -.->|"<<include>>"| UC_VERIF
-    UC05 -.->|"<<extend>> (si nota >= 70%)"| UC_DESB
-    UC09 -.->|"<<include>>"| UC_SYNC
-    UC07 -.->|"<<include>>"| UC_MOD
-    UC06 -.->|"<<include>>"| UC_MOD
+    UC01 -.->|include| UC_VERIF
+    UC05 -.->|extend si nota es 70 o mas| UC_DESB
+    UC09 -.->|include| UC_SYNC
+    UC07 -.->|include| UC_MOD
+    UC06 -.->|include| UC_MOD
 
     classDef actorStyle fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#f8fafc;
     classDef useCaseStyle fill:#0f172a,stroke:#38bdf8,stroke-width:1px,color:#f8fafc;
@@ -219,32 +212,32 @@ graph LR
 
 ```mermaid
 graph TB
-    subgraph CU_DET_IA["Caso de Uso Detallado: Rendir Evaluación con IA Determinista (RF-005)"]
+    subgraph CU_DET_IA["Caso de Uso Detallado: Rendir Evaluación con IA Determinista - RF-005"]
         direction TB
-        E["Estudiante"] -->|"1. Solicita rendir test de nivel"| CLI["Cliente PWA (Astro)"]
+        E["Estudiante"] -->|Paso 1: Solicita rendir test de nivel| CLI["Cliente PWA Astro"]
         
-        CLI -->|"2. Obtiene oraciones base del nivel"| BANK[("Banco Local de Oraciones<br/>(Caché / Firestore)")]
+        CLI -->|Paso 2: Obtiene oraciones base del nivel| BANK[("Banco Local de Oraciones<br/>Caché o Firestore")]
         
-        CLI -->|"3. Invoca motor en TypeScript"| ENGINE["Motor Determinista Local"]
+        CLI -->|Paso 3: Invoca motor en TypeScript| ENGINE["Motor Determinista Local"]
         
-        subgraph ALGORITMO["Proceso Algorítmico sin LLMs"]
-            P1["a. Selección de oración base"]
-            P2["b. Identificación de componentes sintácticos (Sujeto - Objeto - Verbo)"]
-            P3["c. Permutación morfológica controlada (Raíces / Sufijos: -pi, -man, -manta)"]
-            P4["d. Extracción de 3 distractores del MISMO campo semántico"]
-            P5["e. Ensamblado aleatorio de opciones (A, B, C, D) con semilla determinista"]
+        subgraph ALGORITMO["Algoritmo Determinista sin LLMs"]
+            P1["1. Selección de oración base certificada"]
+            P2["2. Extracción sintáctica: Sujeto, Objeto y Verbo"]
+            P3["3. Permutación morfológica controlada: Sufijos -pi, -man, -manta"]
+            P4["4. Extracción de 3 distractores del mismo campo semántico"]
+            P5["5. Mezcla de opciones aleatorias con semilla determinista"]
             P1 --> P2 --> P3 --> P4 --> P5
         end
         
         ENGINE --- ALGORITMO
         
-        ALGORITMO -->|"4. Retorna test de 10 preguntas"| CLI
-        CLI -->|"5. Estudiante responde cuestionario"| E
-        CLI -->|"6. Corrige respuestas en local"| EVAL_LOC["Evaluador de Aciertos"]
+        ALGORITMO -->|Paso 4: Retorna test de 10 preguntas| CLI
+        CLI -->|Paso 5: Estudiante responde cuestionario| E
+        CLI -->|Paso 6: Corrige respuestas en local| EVAL_LOC["Evaluador de Aciertos"]
         
-        EVAL_LOC -->|"¿Nota >= 70%?"| CHECK{Umbral 70%}
-        CHECK -->|"SÍ (Aprobado)"| OK["Desbloquea Nivel Siguiente en Firestore<br/>Registra Nota y Fecha"]
-        CHECK -->|"NO (Reprobado)"| FAIL["Muestra retroalimentación correctiva<br/>Permite reintento con nuevas permutaciones"]
+        EVAL_LOC -->|Comprueba calificación| CHECK{¿Nota es 70% o más?}
+        CHECK -->|Aprobado| OK["Desbloquea Nivel Siguiente en Firestore<br/>Registra Nota y Fecha"]
+        CHECK -->|Reprobado| FAIL["Muestra retroalimentación correctiva<br/>Permite reintento con nuevas permutaciones"]
     end
 
     classDef act fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#ffffff;
@@ -271,24 +264,24 @@ graph TB
 ```mermaid
 graph TD
     subgraph CU_MODERACION["Caso de Uso Detallado: Flujo de Doble Moderación Lingüística"]
-        DOC1["Docente 1 o Estudiante Nivel 7+"] -->|"1. Envía propuesta de contenido"| FORM["Formulario de Aporte"]
+        DOC1["Docente 1 o Estudiante Nivel 7"] -->|Paso 1: Envía propuesta de contenido| FORM["Formulario de Aporte"]
         
-        FORM -->|"Valida campos requeridos:<br/>Texto Quechua, Traducción, Nivel y Contexto Cultural"| VAL_INP{"¿Campos<br/>Válidos?"}
+        FORM -->|Valida campos requeridos| VAL_INP{"¿Campos completos?<br/>Texto, Traducción y Contexto"}
         
-        VAL_INP -->|"No"| REJ_INP["Rechazo formal en interfaz con advertencia"]
-        VAL_INP -->|"Sí"| SAVE_PEND["Guarda en Firestore /oraciones<br/>estado = 'pendiente'<br/>autor_id = Docente 1"]
+        VAL_INP -->|Incompleto| REJ_INP["Rechazo formal en interfaz con advertencia"]
+        VAL_INP -->|Completo| SAVE_PEND["Guarda en Firestore /oraciones<br/>estado = pendiente<br/>autor_id = Docente 1"]
         
         SAVE_PEND --> COLA["Cola de Aprobación Docente"]
         
-        DOC2["Docente 2 (Hablante Nativo / Certificado)"] -->|"2. Accede a cola de revisión"| COLA
+        DOC2["Docente 2 - Hablante Certificado"] -->|Paso 2: Accede a cola de revisión| COLA
         
-        COLA --> REV["Inspección Lingüística:<br/>1. Ortografía normalizada (Sucre)<br/>2. Pertinencia del Contexto Cultural<br/>3. Ausencia de mezcla con otras lenguas"]
+        COLA --> REV["Inspección Lingüística:<br/>1. Ortografía normalizada Sucre<br/>2. Pertinencia del Contexto Cultural<br/>3. Cero mezcla con otras lenguas"]
         
         REV --> DECISION{"Dictamen del<br/>Segundo Docente"}
         
-        DECISION -->|"Rechazado"| RECHAZO["Estado = 'rechazado'<br/>Registra motivo pedagógico para el autor"]
-        DECISION -->|"Corrección menor"| EDITAR["Docente 2 edita texto o contexto<br/>y aprueba con observaciones"]
-        DECISION -->|"Aprobado"| APROBADO["Estado = 'aprobado'<br/>validador_id = Docente 2<br/>fecha_aprobacion = timestamp"]
+        DECISION -->|Rechazado| RECHAZO["Estado = rechazado<br/>Registra motivo pedagógico para el autor"]
+        DECISION -->|Corrección menor| EDITAR["Docente 2 edita texto o contexto<br/>y aprueba con observaciones"]
+        DECISION -->|Aprobado| APROBADO["Estado = aprobado<br/>validador_id = Docente 2<br/>fecha_aprobacion = timestamp"]
         
         EDITAR --> APROBADO
         APROBADO --> LIVE["Integración Inmediata al Banco de IA<br/>Disponible para todos los estudiantes"]
@@ -320,56 +313,56 @@ El siguiente diagrama modela la dinámica global del sistema YAPU, organizando l
 ```mermaid
 sequenceDiagram
     autonumber
-    actor U as Estudiante (Dispositivo Móvil)
-    participant SW as Service Worker / Caché PWA
-    participant AI as Motor IA Determinista (TS)
-    participant DB as Cloud Firestore / Auth
+    actor U as Estudiante - Dispositivo Móvil
+    participant SW as Service Worker y Caché PWA
+    participant AI as Motor IA Determinista en TS
+    participant DB as Cloud Firestore y Auth
 
-    Note over U,DB: 1. CICLO DE AUTENTICACIÓN Y CARGA INICIAL
-    U->>SW: Abre YAPU en navegador móvil (PWA)
-    alt Está en Caché (Offline / 3G)
-        SW-->>U: Sirve App Shell y recursos WebP desde Cache Storage (< 2s)
-    else Primera Visita (Online)
+    Note over U,DB: 1. CICLO DE AUTENTICACION Y CARGA INICIAL
+    U->>SW: Abre YAPU en navegador móvil
+    alt Está en Caché - Offline o red 3G
+        SW-->>U: Sirve App Shell y recursos WebP desde Cache Storage
+    else Primera Visita - Conexión Online
         SW->>DB: Solicita validación de token y bundle
         DB-->>SW: Retorna credenciales y estado del estudiante
         SW-->>U: Renderiza pantalla principal con temática andina
     end
 
-    Note over U,DB: 2. EXPLORACIÓN DEL MAPA Y ESTUDIO LÉXICO (RF-003, RF-004)
-    U->>SW: Selecciona Nivel Habilitado (ej. Nivel 1)
+    Note over U,DB: 2. EXPLORACION DEL MAPA Y ESTUDIO LEXICO (RF-003, RF-004)
+    U->>SW: Selecciona Nivel Habilitado (ejemplo Nivel 1)
     SW-->>U: Presenta tarjetas de vocabulario con ilustración WebP y glosa
-    U->>U: Marca palabras en estado "Aprendida" o "Repasar"
+    U->>U: Marca palabras en estado Aprendida o Repasar
 
-    Note over U,DB: 3. RENDICIÓN DE EVALUACIÓN DETERMINISTA (RF-005)
+    Note over U,DB: 3. RENDICION DE EVALUACION DETERMINISTA (RF-005)
     U->>AI: Solicita inicio de evaluación del nivel
     AI->>SW: Obtiene oraciones base del nivel desde almacén local
     SW-->>AI: Retorna oraciones base certificadas
     AI->>AI: Ejecuta algoritmo de permutación y generación de distractores
-    AI-->>U: Despliega 10 preguntas de selección múltiple (< 40ms)
+    AI-->>U: Despliega 10 preguntas de selección múltiple
     
     U->>AI: Envía respuestas seleccionadas
     AI->>AI: Evalúa respuestas de forma determinista y calcula porcentaje
 
-    Note over U,DB: 4. DECISIÓN DE PROGRESIÓN Y GESTIÓN DE CONECTIVIDAD (RF-009)
-    alt Calificación >= 70% (Aprobado)
-        AI-->>U: Muestra pantalla de éxito y desbloqueo de Nivel + 1
+    Note over U,DB: 4. DECISION DE PROGRESION Y GESTION DE CONECTIVIDAD (RF-009)
+    alt Calificación es 70 por ciento o más - Aprobado
+        AI-->>U: Muestra pantalla de éxito y desbloqueo de Nivel siguiente
         alt Hay Conexión a Internet
             U->>DB: Escribe progreso, fecha y nivel desbloqueado
             DB-->>U: Confirma persistencia remota
-        else Modo Sin Conexión (Offline)
-            U->>SW: Almacena resultado en cola local (IndexedDB)
-            SW-->>U: Muestra aviso: "Guardado localmente. Se sincronizará al reconectar"
+        else Modo Sin Conexión - Offline
+            U->>SW: Almacena resultado en cola local IndexedDB
+            SW-->>U: Muestra aviso de guardado local para sincronizar luego
         end
-    else Calificación < 70% (Reprobado)
+    else Calificación es menor a 70 por ciento - Reprobado
         AI-->>U: Muestra desglose formativo de errores
         AI-->>U: Habilita botón de reintento con nuevas preguntas regeneradas
     end
 
-    Note over U,DB: 5. RESINCRONIZACIÓN EN SEGUNDO PLANO
-    opt Cuando se Detecta Restablecimiento de Red (Evento 'online')
+    Note over U,DB: 5. RESINCRONIZACION EN SEGUNDO PLANO
+    opt Cuando se detecta restablecimiento de red
         SW->>DB: Dispara Background Sync con registros pendientes de IndexedDB
         DB-->>SW: Confirma sincronización exitosa de métricas y niveles
-        SW-->>U: Notificación silenciosa: "Progreso sincronizado en la nube"
+        SW-->>U: Notificación silenciosa de progreso sincronizado
     end
 ```
 
@@ -391,16 +384,16 @@ stateDiagram-v2
     
     state SeleccionNivel {
         [*] --> ValidarEstadoNivel
-        ValidarEstadoNivel --> NivelBloqueado : Nota previa < 70%
-        ValidarEstadoNivel --> NivelHabilitado : Nivel 1 o aprobado
-        NivelBloqueado --> [*] : Muestra candado
+        ValidarEstadoNivel --> NivelBloqueado : Nota previa insuficiente
+        ValidarEstadoNivel --> NivelHabilitado : Nivel 1 o nivel aprobado
+        NivelBloqueado --> [*] : Muestra candado visual
     }
 
     NivelHabilitado --> SesionEstudio
     
     state SesionEstudio {
         [*] --> VisualizarTarjetasWebP
-        VisualizarTarjetasWebP --> ClasificarPalabra : Repasar / Aprendida
+        VisualizarTarjetasWebP --> ClasificarPalabra : Repasar o Aprendida
         ClasificarPalabra --> FinalizarLeccion
     }
 
@@ -413,15 +406,15 @@ stateDiagram-v2
         CalcularPuntuacion --> DictamenEvaluacion
     }
 
-    DictamenEvaluacion --> NivelHabilitado : Reprobado (< 70%) - Regenera test
-    DictamenEvaluacion --> PersistenciaProgreso : Aprobado (>= 70%)
+    DictamenEvaluacion --> NivelHabilitado : Reprobado menor a 70 por ciento
+    DictamenEvaluacion --> PersistenciaProgreso : Aprobado al 70 por ciento o mas
 
     state PersistenciaProgreso {
         [*] --> ComprobarRed
         ComprobarRed --> GuardarFirestore : Conexión activa
         ComprobarRed --> EncolarIndexedDB : Conexión nula
         EncolarIndexedDB --> EsperaReconexion
-        EsperaReconexion --> GuardarFirestore : Evento 'online'
+        EsperaReconexion --> GuardarFirestore : Evento reconexión
     }
 
     PersistenciaProgreso --> [*] : Nivel siguiente accesible
@@ -438,10 +431,10 @@ flowchart TD
     START([Inicio: Evaluación Solicitada]) --> FETCH[Obtener lista de oraciones base del nivel actual]
     FETCH --> CHECK_EMPTY{¿Existen oraciones<br/>aprobadas?}
     
-    CHECK_EMPTY -->|No| ERROR_STATE[Mostrar error: Nivel sin contenido certificado]
-    CHECK_EMPTY -->|Sí| LOOP_START[Iterar sobre el banco hasta completar 10 ítems]
+    CHECK_EMPTY -->|No| ERROR_STATE[Mostrar aviso: Nivel sin contenido certificado]
+    CHECK_EMPTY -->|Sí| LOOP_START[Iterar sobre el banco hasta completar 10 preguntas]
     
-    LOOP_START --> SEL_SENTENCE[Seleccionar oración O_i]
+    LOOP_START --> SEL_SENTENCE[Seleccionar oración base disponible]
     SEL_SENTENCE --> EXTRACT_LEMMA[Extraer raíz verbal, sujeto y objeto]
     EXTRACT_LEMMA --> PERMUTE[Generar permutación morfológica controlada]
     
@@ -449,10 +442,10 @@ flowchart TD
     
     QUERY_DISTRACTORS --> VALIDATE_DIST{¿Distractores pertenecen<br/>al mismo campo semántico?}
     VALIDATE_DIST -->|No| QUERY_DISTRACTORS
-    VALIDATE_DIST -->|Sí| SHUFFLE[Mezclar aleatoriamente 1 opción correcta + 3 distractores]
+    VALIDATE_DIST -->|Sí| SHUFFLE[Mezclar aleatoriamente 1 opción correcta y 3 distractores]
     
-    SHUFFLE --> COLLECT_ITEM[Añadir ítem a la batería de prueba]
-    COLLECT_ITEM --> COUNT_CHECK{¿Total de preguntas == 10?}
+    SHUFFLE --> COLLECT_ITEM[Añadir pregunta a la batería del test]
+    COLLECT_ITEM --> COUNT_CHECK{¿Total de preguntas es 10?}
     
     COUNT_CHECK -->|No| LOOP_START
     COUNT_CHECK -->|Sí| DISPLAY_TEST[Desplegar cuestionario interactivo en pantalla]
@@ -460,15 +453,15 @@ flowchart TD
     DISPLAY_TEST --> CAPTURE[Capturar selecciones del estudiante]
     CAPTURE --> SUBMIT[Envío de respuestas por el usuario]
     
-    SUBMIT --> SCORE_CALC[Calcular total de aciertos / 10]
-    SCORE_CALC --> THRESHOLD{¿Aciertos >= 7?}
+    SUBMIT --> SCORE_CALC[Calcular total de aciertos sobre 10]
+    SCORE_CALC --> THRESHOLD{¿Aciertos son 7 o más?}
     
-    THRESHOLD -->|Aprobado| SAVE_SUCCESS[Registrar completitud con éxito]
+    THRESHOLD -->|Aprobado| SAVE_SUCCESS[Registrar aprobación y habilitar nuevo nivel]
     THRESHOLD -->|Reprobado| RETRY_STATE[Ofrecer retroalimentación pedagógica y reintento]
     
-    SAVE_SUCCESS --> END([Fin])
-    RETRY_STATE --> END
-    ERROR_STATE --> END
+    SAVE_SUCCESS --> END_NODE([Fin de Evaluación])
+    RETRY_STATE --> END_NODE
+    ERROR_STATE --> END_NODE
 
     classDef proc fill:#0f172a,stroke:#38bdf8,stroke-width:1px,color:#ffffff;
     classDef decision fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#ffffff;
@@ -487,16 +480,14 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A([Estudiante interactúa con la PWA]) --> B{¿Hay conexión HTTP activa?}
+    A([Estudiante interactúa con la PWA]) --> B{¿Hay conexión de red activa?}
     
-    %% Camino Online
-    B -->|Sí (Online)| C[Petición estándar al servidor / Firebase]
-    C --> D[Service Worker intercepta respuesta]
-    D --> E[Almacena copia en Cache Storage / Workbox]
+    B -->|Con Conexión| C[Petición estándar al servidor o Firebase]
+    C --> D[Service Worker intercepta la respuesta]
+    D --> E[Almacena copia en Cache Storage local]
     E --> F[Renderiza vista al usuario]
     
-    %% Camino Offline
-    B -->|No (Offline / 3G caído)| G[Service Worker detecta fallo de red]
+    B -->|Sin Conexión| G[Service Worker detecta fallo de red]
     G --> H[Inspecciona Cache Storage local]
     H --> I{¿Recurso disponible<br/>en caché?}
     
@@ -508,10 +499,10 @@ flowchart TD
     M --> N{¿Se logró comunicar<br/>con Firestore?}
     
     N -->|Sí| O[Progreso consolidado en la nube]
-    N -->|No| P[Registrar transacción en tabla local IndexedDB 'pending_evals']
+    N -->|No| P[Registrar transacción en tabla local IndexedDB]
     P --> Q[Registrar tarea de Background Sync en el navegador]
     
-    Q --> R[Esperar evento de red 'window.online']
+    Q --> R[Esperar evento de red online del navegador]
     R --> S[Disparador de Service Worker: vaciar cola de sincronización]
     S --> T[Transmitir lotes de respuestas a Cloud Firestore]
     T --> U[Eliminar registros sincronizados de IndexedDB]
@@ -528,7 +519,7 @@ flowchart TD
     class A,C,D,E,F,G,H,J,L,M,P,Q,R,S,T,U normal;
     class B,I,N cond;
     class O,V ok;
-    class K,warn;
+    class K warn;
 ```
 
 ---
