@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # Base de Datos Relacional PostgreSQL (Puerto 9532)
+  postgres:
+    image: postgres:16-alpine
+    container_name: yapu-postgres
+    restart: unless-stopped
+    ports:
+      - "9532:5432"
+    environment:
+      POSTGRES_DB: yapu_db
+      POSTGRES_USER: yapu_user
+      POSTGRES_PASSWORD: yapu_secure_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - yapu-network
+
+  # Base de Datos MySQL (Puerto 9506) - Alternativa SQL
+  mysql:
+    image: mysql:8.0
+    container_name: yapu-mysql
+    restart: unless-stopped
+    ports:
+      - "9506:3306"
+    environment:
+      MYSQL_DATABASE: yapu_db
+      MYSQL_USER: yapu_user
+      MYSQL_PASSWORD: yapu_secure_password
+      MYSQL_ROOT_PASSWORD: yapu_root_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - yapu-network
+
+  # Gestor Web SQL Adminer (Puerto 9580)
+  adminer:
+    image: adminer:latest
+    container_name: yapu-adminer
+    restart: unless-stopped
+    ports:
+      - "9580:8080"
+    depends_on:
+      - postgres
+      - mysql
+    networks:
+      - yapu-network
+
+  # Cache Redis / Dragonfly (Puerto 9579)
+  redis:
+    image: redis:7-alpine
+    container_name: yapu-redis
+    restart: unless-stopped
+    ports:
+      - "9579:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - yapu-network
+
+networks:
+  yapu-network:
+    name: yapu-network
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mysql_data:
+  redis_data:
