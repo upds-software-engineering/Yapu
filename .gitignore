@@ -1,0 +1,18 @@
+# Build and runtime outputs
+dist/
+.astro/
+node_modules/
+.system_generated/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

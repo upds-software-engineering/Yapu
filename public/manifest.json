@@ -1,0 +1,22 @@
+{
+  "short_name": "YAPU",
+  "name": "YAPU — Plataforma de Aprendizaje de Quechua",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0B0F19",
+  "theme_color": "#B94700",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "description": "Aprende quechua desde cero con evaluaciones adaptativas de IA determinista, tarjetas interactivas y funcionamiento offline."
+}

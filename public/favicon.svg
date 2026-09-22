@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="14" fill="#0B0F19"/>
+  <!-- Chakana / Andean Cross Icon -->
+  <path d="M24 8h16v16h16v16H40v16H24V40H8V24h16V8z" fill="#B94700" stroke="#F59E0B" stroke-width="2"/>
+  <circle cx="32" cy="32" r="6" fill="#0D9488" stroke="#FCD34D" stroke-width="2"/>
+</svg>
