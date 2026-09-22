@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation';
+import DashboardComponent from '../components/Dashboard';
+---
+
+<Layout title="Mi Progreso y Estadísticas — YAPU">
+  <Navigation client:load currentPath="/dashboard" />
+  
+  <main class="min-h-screen py-4">
+    <DashboardComponent client:load />
+  </main>
+</Layout>

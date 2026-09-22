@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation';
+import CommunitySection from '../components/CommunitySection';
+---
+
+<Layout title="Comunidad y Retos — YAPU">
+  <Navigation client:load currentPath="/community" />
+  
+  <main class="min-h-screen py-4">
+    <CommunitySection client:load />
+  </main>
+</Layout>

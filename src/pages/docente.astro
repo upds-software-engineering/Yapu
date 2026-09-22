@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation';
+import DocentePanel from '../components/DocentePanel';
+---
+
+<Layout title="Portal Docente y Gestión de Contenidos — YAPU">
+  <Navigation client:load currentPath="/docente" />
+  
+  <main class="min-h-screen py-4">
+    <DocentePanel client:load />
+  </main>
+</Layout>

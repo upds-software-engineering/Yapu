@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation';
+import QuizRunner from '../../components/QuizRunner';
+import { SEED_NIVELES } from '../../data/seed-levels';
+
+export function getStaticPaths() {
+  return SEED_NIVELES.map((nivel) => ({
+    params: { level: nivel.id_nivel.toString() },
+    props: { nivel }
+  }));
+}
+
+const { level } = Astro.params;
+const levelNumber = parseInt(level || '1', 10);
+const nivel = SEED_NIVELES.find(n => n.id_nivel === levelNumber);
+---
+
+<Layout title={`Evaluación IA Nivel ${levelNumber}: ${nivel?.titulo_quechua} — YAPU`}>
+  <Navigation client:load currentPath="/" />
+  
+  <main class="min-h-screen py-4">
+    <QuizRunner client:only="react" levelId={levelNumber} />
+  </main>
+</Layout>

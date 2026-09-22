@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation';
+import LevelMap from '../components/LevelMap';
+import ParticleText from '../components/ParticleText';
+---
+
+<Layout title="YAPU — Plataforma de Aprendizaje de Quechua (PWA)">
+  <Navigation client:load currentPath="/" />
+
+  <main class="relative min-h-screen">
+    {/* Hero Section con Animación ParticleText de React Bits */}
+    <section class="relative pt-6 pb-4 px-4 text-center overflow-hidden border-b border-slate-800/80 bg-gradient-to-b from-[#0B0F19] via-[#0E1524] to-[#0B0F19]">
+      <div class="max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-andina-terracotta/20 border border-andina-terracotta/40 text-andina-gold text-xs font-bold mb-3">
+          <span class="w-2 h-2 rounded-full bg-andina-gold animate-ping"></span>
+          Plataforma Web Progresiva • Nivel A1 Certificable
+        </div>
+
+        {/* Componente ParticleText interactivo */}
+        <div class="my-2">
+          <ParticleText
+            client:only="react"
+            text="YAPU"
+            subtext="RUNASIMI YACHAY"
+            colors={['#F59E0B', '#B94700', '#0D9488', '#38BDF8', '#FCD34D']}
+            fontSize={84}
+            particleSize={2.2}
+            spacing={4}
+          />
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto mt-2 leading-relaxed">
+          Aprende vocabulario y estructuras en quechua con evaluaciones generadas por 
+          <strong class="text-andina-gold"> IA determinista local</strong>, tarjetas interactivas y soporte sin conexión a internet.
+        </p>
+      </div>
+    </section>
+
+    {/* Camino de Aprendizaje de los 10 Niveles */}
+    <section class="py-6">
+      <LevelMap client:load />
+    </section>
+
+    {/* Footer Andino */}
+    <footer class="border-t border-slate-800/80 py-8 px-4 text-center text-xs text-slate-500 bg-[#0B0F19]">
+      <p class="font-medium text-slate-400">
+        YAPU — Universidad Privada Domingo Savio (UPDS) • Ingeniería de Software
+      </p>
+      <p class="text-[11px] text-slate-600 mt-1">
+        Validado pedagógicamente por la Lic. María Elena Quispe Mamani • Sucre / Santa Cruz, Bolivia
+      </p>
+    </footer>
+  </main>
+</Layout>

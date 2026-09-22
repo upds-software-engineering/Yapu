@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation';
+import FlashcardLesson from '../../components/FlashcardLesson';
+import { SEED_NIVELES } from '../../data/seed-levels';
+
+export function getStaticPaths() {
+  return SEED_NIVELES.map((nivel) => ({
+    params: { level: nivel.id_nivel.toString() },
+    props: { nivel }
+  }));
+}
+
+const { level } = Astro.params;
+const levelNumber = parseInt(level || '1', 10);
+const nivel = SEED_NIVELES.find(n => n.id_nivel === levelNumber);
+---
+
+<Layout title={`Nivel ${levelNumber}: ${nivel?.titulo_quechua} — Lección YAPU`}>
+  <Navigation client:load currentPath="/" />
+  
+  <main class="min-h-screen py-4">
+    <FlashcardLesson client:load levelId={levelNumber} />
+  </main>
+</Layout>
