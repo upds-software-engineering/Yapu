@@ -4,117 +4,487 @@
 
 ---
 
-**PROYECTO YAPU — PLATAFORMA DE APRENDIZAJE DE LENGUA QUECHUA**  
-**MAPA DE DIAGRAMAS ARQUITECTÓNICOS, DE COMPORTAMIENTO Y MODELADO DE DATOS UML / ERD (BLOQUE 2)**  
+**PROYECTO YAPU — PLATAFORMA COMUNITARIA DE APRENDIZAJE DE LENGUA QUECHUA**  
+**ACTIVIDAD 03 — ÁLBUM DE MODELOS UML (ENTREGABLE GRUPAL — 30 PUNTOS / CRITERIO DE VERIFICACIÓN #2)**  
+**DOCUMENTO DE DESCRIPCIÓN DE DISEÑO DE SOFTWARE (IEEE Std 1016-2009 SDD)**
 
-- **Asignatura:** Ingeniería de Software  
-- **Docente:** Ingeniero Jimmy Nataniel Requena / Ing. Fernando Pardo  
+- **Asignatura:** Ingeniería de Software I
+- **Docentes de Cátedra:** Ing. Jimmy Nataniel Requena / Ing. Fernando Pardo
 - **Equipo de Desarrollo (Autores):**
   - Emmanuel Ponce Quiroga (Líder Técnico & Gobernanza de IA)
-  - Jhoel Álvaro Cruz Zurita (Arquitectura VPS & Gestión de Datos)
+  - Jhoel Álvaro Cruz Zurita (Arquitectura VPS, Persistencia & Múltiples DBs)
   - Luis Mario Rocha Vela (Aseguramiento de Calidad & Estándares APA)
 - **Stakeholder Pedagógica:** Lic. María Elena Quispe Mamani (Docente Titular de Lengua Quechua — Unidad Educativa Simón Bolívar, Sucre)
-- **Fecha de Emisión:** 18 de septiembre de 2026  
-- **Ubicación:** Santa Cruz de la Sierra / Sucre, Bolivia  
-- **Versión:** 2.1 (Consolidada con Modelo de Datos ERD, Relaciones Fuertes/Débiles, SRS APA 7 y Defensa Bloque 2)
+- **Fecha de Emisión:** 23 de septiembre de 2026
+- **Ubicación:** Santa Cruz de la Sierra / Sucre, Bolivia
+- **Versión:** 3.1 (Específica y Exclusiva para el Proyecto YAPU — Cero componentes externos / Persistencia Multibase de Datos: IndexedDB + Cloud Firestore)
 
 ---
 
-## 1. Introducción y Contexto del Documento
+## 1. Guía de la Actividad 03 y Marco Normativo (IEEE Std 1016-2009)
 
-El presente documento constituye el **Mapa Integral de Diagramas de Arquitectura, Modelado de Datos y Comportamiento UML** para el proyecto **YAPU** (*Sembradío* en lengua quechua), una Plataforma Web Progresiva (PWA) de alta eficiencia concebida para la enseñanza, democratización y revitalización de la lengua originaria quechua (variante sureña Collao/Chuquisaca) en el Estado Plurinacional de Bolivia.
+### 1.1 ¿Qué es la Actividad 03 — Álbum de Modelos UML (30 Puntos)?
+En el marco del ciclo de vida del desarrollo de software (SDLC) de la UPDS y el Gate 3 de Ingeniería de Software I, la **Actividad 03: Álbum de Modelos UML** constituye el compendio formal de diseño arquitectónico, estructural, de persistencia y de comportamiento del sistema. Su objetivo es modelar con rigor de ingeniería el sistema **YAPU** (*Sembradío*), traduciendo los requerimientos funcionales (RF-001 al RF-010) y no funcionales del SRS en modelos visuales auditables y ejecutables.
 
-Este compendio traduce formalmente los requerimientos especificados en el documento institucional `Docs/Informe_SRS_APA7_Bloque2.pdf` y expuestos en `Docs/presentacion_srs_bloque2.html`. Incorpora el rigor del estándar **IEEE Std 830-1998** adaptado al paradigma ágil, operacionalizando las historias de usuario, criterios de aceptación BDD (Gherkin), esquemas relacionales y de documentos NoSQL mediante modelos visuales ejecutables y auditables.
-
-### Objetivos Específicos del Mapa:
-1. **Modelar la Arquitectura Integral del Sistema:** Exponer la separación de capas entre el cliente PWA (Astro + Service Workers), los servicios distribuidos en la nube (Firebase) y la infraestructura VPS autogestionada (Nginx).
-2. **Modelar la Estructura y Persistencia de Datos (ERD):** Definir el diagrama entidad-relación del dominio, clasificando taxónomicamente las relaciones fuertes, débiles por existencia y débiles por identificación, así como su equivalencia en Cloud Firestore e IndexedDB.
-3. **Definir el Diagrama General de Casos de Uso:** Mapear la interacción de los tres actores del ecosistema (Estudiante, Docente y Administrador) frente a los 10 Requisitos Funcionales (RF-001 al RF-010).
-4. **Detallar Casos de Uso Específicos:** Describir con granularidad técnica los módulos críticos (Motor de IA Determinista, Navegación con umbral del 70% y Moderación Docente).
-5. **Modelar el Diagrama General de Actividades:** Diagramar el flujo de ejecución global del software, contemplando bifurcaciones de conectividad (online/offline) y decisiones pedagógicas.
-6. **Presentar la Matriz de Auditoría de IA:** Registrar de forma verificable la gobernanza sobre los diagramas y componentes estructurales propuestos inicialmente por modelos de IA y ajustados por el equipo humano en función de las directrices del stakeholder pedagógico.
+### 1.2 Criterio de Verificación #2 y Estándar de Documentación
+Cada modelo del presente álbum se documenta de acuerdo con el estándar **IEEE Std 1016-2009 (Software Design Description)** y la rúbrica de evaluación de la asignatura, desarrollando cinco dimensiones analíticas obligatorias:
+1. **Resumen Ejecutivo:** Propósito del diseño y alcance técnico dentro del ecosistema YAPU.
+2. **Diccionario de Elementos / Clases / Schemas:** Detalle exhaustivo de componentes, atributos (con justificación técnica de tipos de datos) y operaciones tipadas.
+3. **Análisis de Relaciones:** Justificación formal de conectores, asociaciones, agregaciones, composiciones, herencias, realizaciones y dependencias (Principios SOLID).
+4. **Seguridad, Integridad y Gobernanza de Datos:** Mecanismos de protección (cifrado TLS 1.3, control de acceso basado en roles RBAC, aislamiento de datos, no-alucinación algorítmica y coherencia multibase de datos).
+5. **Guía de Explicación para Evaluación:** Preguntas clave y argumentos técnicos de defensa oral para la exposición grupal de 5 minutos ante el tribunal docente.
 
 ---
 
-## 2. Diagrama 1: Arquitectura General del Sistema
+## 2. Diagrama 1: Arquitectura General del Sistema YAPU (Componentes y Protocolos de 4 Capas)
+
+> **Nota de Diseño Arquitectónico:** La arquitectura se modela mediante capas físicas, componentes y protocolos reales de red (HTTPS / TLS 1.3, HTTP/2, Cache API). No se introducen rombos de decisión condicional en la red, ya que la comunicación es desacoplada y gobernada por el Service Worker en el cliente.
 
 ### 2.1 Representación Arquitectónica (Mermaid)
 
 ```mermaid
 graph TB
-    subgraph CLIENT_TIER["Capa de Cliente: PWA Ligera - RAM menor a 150MB"]
+    subgraph CLIENT_TIER["1. Capa de Cliente: PWA Ligera (Memoria RAM < 150MB en Android 8.0+)"]
         direction TB
-        UI["Interfaz Gráfica con Diseño Andino<br/>Astro SSG más Islands y Estilos CSS"]
-        SW["Service Worker y Workbox<br/>Cache Storage y Estrategias Offline"]
-        IDB[("Almacenamiento Local<br/>IndexedDB y LocalStorage")]
+        UI["Interfaz de Usuario con Diseño Andino<br/>Astro SSG + Islands Architecture (RNF-001)"]
+        SW["Service Worker & Workbox<br/>Interceptador de Eventos Fetch y Estrategias Caché (RF-009)"]
+        CACHE_API[("Cache Storage API<br/>App Shell, CSS y Activos WebP")]
+        IDB_LOCAL[("Base de Datos Local: IndexedDB<br/>ObjectStores: Evaluaciones, Léxico y Cola Offline")]
         
-        subgraph CORE_AI["Motor de IA Determinista en TypeScript"]
-            GEN["Generador de Evaluaciones<br/>Permutación de oraciones base"]
-            DIST["Selector de Distractores Verosímiles<br/>Filtro de misma categoría gramatical"]
-            EVAL["Evaluador Local de Respuestas<br/>Cálculo inmediato de aciertos"]
+        subgraph CORE_AI["Motor de IA Determinista en TypeScript (RF-005)"]
+            GEN["Generador de Evaluaciones<br/>Permutación sintáctica de oraciones"]
+            DIST["Filtro de Distractores Verosímiles<br/>Misma categoría gramatical y nivel"]
+            EVAL["Evaluador Local de Desempeño<br/>Cálculo inmediato de aciertos sin red"]
         end
     end
 
-    subgraph NET_TIER["Canal Seguro de Conectividad - HTTPS TLS 1.3"]
-        NET_STAT{"¿Conectividad<br/>Disponible?"}
+    subgraph CLOUD_TIER["2. Servicios Gestionados en la Nube (Google Firebase BaaS)"]
+        direction TB
+        FAUTH["Firebase Authentication<br/>Emisión de JWT y Claims de Roles: Estudiante, Docente, Admin (RF-001, RF-002)"]
+        FSTORE_ENGINE[("Cloud Firestore NoSQL Engine<br/>Colecciones /users, /niveles, /evaluaciones, /oraciones_base")]
+        FSTORE_RULES["Reglas de Seguridad Declarativas<br/>firestore.rules: Validación de Roles e Inmutabilidad"]
+        FAUTH -.->|Inyecta contexto auth.token| FSTORE_RULES
+        FSTORE_RULES --- FSTORE_ENGINE
     end
 
-    subgraph CLOUD_TIER["Servicios de Plataforma en la Nube - Firebase"]
-        FAUTH["Firebase Authentication<br/>JWT y Roles: Estudiante, Docente, Admin"]
-        FSTORE[("Cloud Firestore DB<br/>Colecciones de usuarios, oraciones y notas")]
-        FSTORE_RULES["Reglas de Seguridad Firestore<br/>Validación estricta por rol"]
+    subgraph VPS_TIER["3. Infraestructura Autogestionada (Servidor VPS Linux UPDS)"]
+        direction TB
+        NGINX["Servidor Web & Reverse Proxy Nginx<br/>Compresión Brotli/Gzip y Caché HTTP/2 (RNF-004)"]
+        STATIC_ASSETS["Repositorio de Activos Léxicos<br/>Imágenes WebP comprimidas (< 100KB, RS-001)"]
+        DATA_EXPORT["Servicio de Exportación Abierta (RS-004)<br/>Endpoint REST para Corpus Lingüístico CSV/JSON"]
+        NGINX --> STATIC_ASSETS
+        NGINX --> DATA_EXPORT
     end
 
-    subgraph VPS_TIER["Infraestructura Autogestionada - VPS UPDS"]
-        NGINX["Servidor Web y Reverse Proxy Nginx<br/>Compresión HTTP y Caché de Red"]
-        STATIC_ASSETS["Repositorio de Assets WebP<br/>Imágenes léxicas menores a 100KB"]
-        DATA_EXPORT["Servicio de Datos Abiertos RS-004<br/>Exportador CSV y JSON"]
-    end
-
-    UI --> SW
-    SW --> IDB
-    UI --> CORE_AI
+    %% Protocolos y Enlaces Reales de Comunicación
+    UI -->|Llamadas internas a la API DOM| SW
+    UI -->|Invocación directa en memoria| CORE_AI
     GEN --> DIST
     DIST --> EVAL
     
-    SW --> NET_STAT
-    
-    NET_STAT -->|Online - Sync de progreso| FAUTH
-    NET_STAT -->|Online - Lectura y Escritura| FSTORE
-    FSTORE --> FSTORE_RULES
-    
-    NET_STAT -->|Online - Descarga inicial de assets| NGINX
-    NGINX --> STATIC_ASSETS
-    NGINX --> DATA_EXPORT
-    
-    EVAL -.->|Encola resultados offline| IDB
-    IDB -.->|Sincronización diferida al reconectar| FSTORE
+    SW -->|CacheFirst: Lectura/Escritura de Assets| CACHE_API
+    SW -->|Lectura/Escritura transaccional IndexedDB API| IDB_LOCAL
+    EVAL -.->|Persiste resultado local| IDB_LOCAL
 
+    %% Conectores de Red Segura
+    SW -->|Canal Seguro HTTPS TLS 1.3: Autenticación REST| FAUTH
+    SW -->|Canal Seguro HTTPS TLS 1.3 / gRPC: Mutaciones y Batch Writes| FSTORE_ENGINE
+    SW -->|Canal Seguro HTTPS TLS 1.3: Descarga de Imágenes WebP| NGINX
+    IDB_LOCAL -.->|Background Sync API: Sincronización asíncrona de evaluaciones diferidas| FSTORE_ENGINE
+
+    %% Estilos de Nodos
     classDef clientStyle fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#f8fafc;
     classDef aiStyle fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#f8fafc;
     classDef cloudStyle fill:#0c4a6e,stroke:#0284c7,stroke-width:2px,color:#ffffff;
     classDef vpsStyle fill:#14532d,stroke:#10b981,stroke-width:2px,color:#ffffff;
-    classDef netStyle fill:#334155,stroke:#94a3b8,stroke-width:1px,color:#ffffff;
 
-    class UI,SW,IDB clientStyle;
+    class UI,SW,CACHE_API,IDB_LOCAL clientStyle;
     class GEN,DIST,EVAL aiStyle;
-    class FAUTH,FSTORE,FSTORE_RULES cloudStyle;
+    class FAUTH,FSTORE_ENGINE,FSTORE_RULES cloudStyle;
     class NGINX,STATIC_ASSETS,DATA_EXPORT vpsStyle;
-    class NET_STAT netStyle;
 ```
 
-### 2.2 Descripción Técnica y Mapeo con el SRS
-- **Propósito:** Describir la topología física y lógica de la solución de software, garantizando que el sistema sea viable en entornos con infraestructura restringida.
-- **Capa Cliente (PWA):** Construida sobre el framework Astro para maximizar la velocidad de carga (FCP < 1.8s, RNF-001) sirviendo HTML pre-renderizado con JavaScript mínimo. Opera como PWA gobernada por un Service Worker (RF-009) que gestiona Cache Storage e IndexedDB, consumiendo menos de 150 MB de memoria RAM en ejecución (RS-002) para permitir su uso en smartphones económicos Android 8.0+.
-- **Motor de IA Determinista:** Aislado en el cliente en TypeScript (RF-005). No efectúa peticiones HTTP externas ni llamadas a LLMs comerciales (OpenAI/Anthropic), eliminando costos recurrentes ($0 en APIs) y garantizando ausencia absoluta de alucinaciones lingüísticas.
-- **Capa de Servicios Cloud (Firebase):** Maneja la autenticación robusta de usuarios con hashing no accesible por código cliente (RNF-003, RF-001, RF-002) y la base de datos documental Cloud Firestore, configurada con clústeres capaces de absorber picos de hasta 500 usuarios concurrentes (RNF-005).
-- **Capa de Servidor Privado Virtual (VPS):** Un VPS Linux Debian administrado por el equipo UPDS que actúa como origen confiable mediante Nginx (RNF-004), sirviendo activos gráficos comprimidos en WebP a menos de 100 KB por recurso (RS-001) y proporcionando un endpoint utilitario para la exportación de corpus en formatos abiertos CSV/JSON (RS-004).
+### 2.2 Desglose Técnico bajo Estándar IEEE 1016
+
+#### 1. Resumen Ejecutivo
+- **Propósito:** Especificar la topología física y lógica de componentes y protocolos de comunicación de la plataforma YAPU. El sistema desacopla la ejecución cliente en dispositivos móviles rurales de los servicios backend mediante un patrón *Offline-First* mediado por Service Workers.
+- **Alcance:** Modela la capa cliente PWA (Astro, Service Worker, IndexedDB, Motor IA), la capa Cloud (Firebase Auth y Cloud Firestore NoSQL) y la capa VPS (Nginx en Linux Debian UPDS con soporte de datos abiertos).
+
+#### 2. Diccionario de Componentes y Protocolos de Red
+| Componente / Protocolo | Naturaleza Técnica | Justificación y Especificación de Ingeniería |
+|---|---|---|
+| **Astro SSG + Islands** | Capa de Presentación | Generación de páginas estáticas con cero JavaScript bloqueante por defecto. Hidratación selectiva de componentes interactivos (mapa de niveles, test), manteniendo el consumo de memoria RAM por debajo de 150 MB (RS-002) y FCP < 1.8 s (RNF-001). |
+| **Service Worker & Workbox** | Interceptador de Red | Hilo de ejecución en segundo plano que intercepta eventos `fetch`. Implementa estrategia *Stale-While-Revalidate* para lecciones y *CacheFirst* para activos gráficos. |
+| **IndexedDB API** | Base de Datos Cliente | Base NoSQL transaccional local del navegador. Alberga los registros de notas, vocabulario descargado y la cola de mutaciones diferidas (`SyncQueue`). |
+| **HTTPS TLS 1.3** | Protocolo de Transporte | Cifrado punto a punto con suite criptográfica AES-GCM-256 para todas las comunicaciones hacia Firebase y el VPS. |
+| **Cloud Firestore NoSQL** | Base de Datos Remota | Almacén documental multirregión con capacidad de absorción de hasta 500 conexiones simultáneas concurrentes (RNF-005). |
+| **Nginx HTTP/2 Reverse Proxy** | Servidor de Origen VPS | Servidor web autogestionado en la UPDS. Distribuye imágenes léxicas WebP optimizadas (< 100 KB) con cabeceras `Cache-Control: public, max-age=31536000, immutable`. |
+
+#### 3. Análisis de Relaciones e Interfaces de Comunicación
+- **`UI` a `SW`:** Relación de mediación transparente. La interfaz no realiza llamadas `fetch` directas hacia internet; todas las peticiones son procesadas por el manejador de eventos del Service Worker.
+- **`SW` a `IDB_LOCAL` y `CACHE_API`:** Interacción local de almacenamiento. Operaciones sin latencia de red ni consumo de cuotas de datos móviles.
+- **`SW` a `CLOUD_TIER` (Firebase):** Comunicación asíncrona mediante HTTPS REST y WebSockets/gRPC protegida con tokens JWT emitidos tras la autenticación.
+- **`IDB_LOCAL` a `FSTORE_ENGINE` (Background Sync):** Conector asíncrono no bloqueante. Al recuperar la red, el Service Worker despierta y transmite las evaluaciones encoladas en lotes atómicos (*Batch Writes*).
+
+#### 4. Seguridad, Integridad y Gobernanza
+- **Aislamiento de Lógica Sensible:** El motor determinista en TypeScript corre en el navegador sin invocar APIs de LLMs comerciales externas, garantizando coste \$0 y confidencialidad total de las respuestas.
+- **Reglas de Seguridad Firestore (`firestore.rules`):** Verificación declarativa en el servidor. Solo el usuario cuyo `auth.uid` coincida con el documento puede modificar su progreso.
+- **Datos Abiertos sin PII (RS-004):** El microservicio de exportación de corpus lingüístico en el VPS purga cualquier información de identificación personal (Habeas Data boliviano).
+
+#### 5. Guía de Explicación para Evaluación (Defensa Oral de 5 Minutos)
+- **Pregunta del Tribunal: ¿Por qué en este diagrama no aparece un rombo de decisión para comprobar si hay internet antes de conectarse?**  
+  *Respuesta:* Porque en arquitectura de software formal, un diagrama de arquitectura modela componentes estáticos, subsistemas y protocolos de comunicación, no el flujo de control procedural de un algoritmo. En una PWA moderna, la aplicación siempre emite peticiones HTTP estándar. Es el Service Worker quien intercepta el evento de red y decide de forma transparente si responde desde la Cache API / IndexedDB o si delega a internet. Modelar un rombo en la red es un error conceptual que confunde arquitectura con un diagrama de actividades.
+- **Pregunta del Tribunal: ¿Por qué se utiliza un VPS propio en la UPDS si ya se tiene Firebase en la nube?**  
+  *Respuesta:* Por soberanía de datos y sostenibilidad económica (RS-001, RS-004). Servir miles de imágenes léxicas WebP desde Cloud Storage generaría costes de ancho de banda innecesarios. El VPS universitario con Nginx entrega los archivos estáticos a coste cero y aloja el endpoint institucional de datos abiertos para la comunidad lingüística de Chuquisaca.
 
 ---
 
-## 3. Diagrama 2: Diagrama de Modelado de Datos (Entidad-Relación y Dominio)
+## 3. Diagrama 2: Diagrama de Clases UML del Dominio Pedagógico y Motor IA de YAPU
 
-### 3.1 Representación del Diagrama Entidad-Relación (Mermaid ERD)
+### 3.1 Representación de Clases Orientada a Objetos (Mermaid classDiagram)
+
+```mermaid
+classDiagram
+    namespace PresentationAndState {
+        class EvaluationController {
+            -IEvaluationEngine evaluationEngine
+            -IOfflineFirstRepository repository
+            -StudentSession activeSession
+            +initExam(levelId: int) void
+            +submitAnswer(questionId: String, selectedOption: String) void
+            +finalizeExam() EvaluationResult
+        }
+
+        class StudentSession {
+            -String studentId
+            -int currentLevel
+            -int currentStreak
+            -DateTime sessionStart
+            +updateStreak() void
+            +canAccessLevel(targetLevel: int) boolean
+        }
+
+        class EvaluationResult {
+            -String evaluationId
+            -int totalScore
+            -int correctAnswers
+            -boolean passed
+            -List~String~ feedbackNotes
+            +isApproved() boolean
+        }
+    }
+
+    namespace CoreLearningDomain {
+        class Evaluation {
+            -String evaluationId
+            -String studentId
+            -int levelId
+            -int scorePercentage
+            -DateTime timestamp
+            -boolean isSynchronized
+            +calculateScore() int
+            +isPassed() boolean
+            +getQuestions() List~Question~
+        }
+
+        class Question {
+            -String questionId
+            -String rawSentenceId
+            -String statementText
+            -String correctOption
+            -List~String~ distractors
+            -String userSelection
+            -boolean isCorrect
+            +evaluateAnswer(selected: String) boolean
+        }
+
+        class VocabularyCard {
+            -String wordId
+            -int levelId
+            -String termQuechua
+            -String translationEs
+            -String grammaticalCategory
+            -String webpAssetUrl
+            -String culturalContext
+            +markAsLearned() void
+            +markForReview() void
+        }
+    }
+
+    namespace SecurityAndDeterministicAI {
+        class IEvaluationEngine {
+            <<interface>>
+            +generateAssessment(levelId: int, baseCorpus: List~BaseSentence~) List~Question~
+            +validateAnswerDeterministically(qId: String, selected: String) boolean
+            +computePassingGrade(score: int) boolean
+        }
+
+        class DeterministicAIEngine {
+            -int PASSING_THRESHOLD_PERCENT = 70
+            -int ITEMS_PER_TEST = 10
+            +generateAssessment(levelId: int, baseCorpus: List~BaseSentence~) List~Question~
+            -permuteMorphology(root: String, suffix: String) String
+            -filterPlausibleDistractors(category: String, pool: List~VocabularyCard~) List~String~
+            +validateAnswerDeterministically(qId: String, selected: String) boolean
+            +computePassingGrade(score: int) boolean
+        }
+
+        class BaseSentence {
+            -String sentenceId
+            -int levelId
+            -String textQuechua
+            -String translationEs
+            -String culturalContext
+            -String authorTeacherId
+            -String validatorTeacherId
+            -String moderationStatus
+            +isApprovedForExams() boolean
+        }
+
+        class ContentModerator {
+            -String teacherId
+            +reviewContent(sentence: BaseSentence, approved: boolean, note: String) void
+            +enforceFourEyesPrinciple(authorId: String, reviewerId: String) boolean
+        }
+    }
+
+    %% Relaciones Orientadas a Objetos
+    EvaluationController ..> IEvaluationEngine : invoca contrato del motor
+    EvaluationController o-- "1" StudentSession : mantiene sesión activa
+    EvaluationController ..> EvaluationResult : produce al finalizar examen
+    
+    IEvaluationEngine <|.. DeterministicAIEngine : realiza contrato abstracto
+    DeterministicAIEngine ..> Question : sintetiza 10 reactivos
+    DeterministicAIEngine ..> BaseSentence : consume como insumo lingüístico
+    DeterministicAIEngine ..> VocabularyCard : extrae distractores del mismo campo
+
+    Evaluation "1" *-- "10" Question : composición estricta (ciclo de vida idéntico)
+    ContentModerator ..> BaseSentence : aprueba o rechaza bajo 4 ojos
+```
+
+### 3.2 Desglose Técnico bajo Estándar IEEE 1016
+
+#### 1. Resumen Ejecutivo
+- **Propósito:** Especificar el diseño orientado a objetos del dominio pedagógico de YAPU, aplicando el **Principio de Inversión de Dependencias (DIP)** y el **Principio de Responsabilidad Única (SRP)** para aislar la lógica evaluativa de los mecanismos de presentación e infraestructura.
+- **Alcance:** Modela la sesión del alumno, la controladora de evaluaciones, las entidades pedagógicas (`Evaluation`, `Question`, `VocabularyCard`), el motor determinista de sufijos quechuas (`IEvaluationEngine`) y la curaduría docente de oraciones base.
+
+#### 2. Diccionario de Clases e Interfaces
+| Clase / Interfaz | Atributos Críticos y Tipos | Justificación Técnica de Tipos y Operaciones |
+|---|---|---|
+| **`EvaluationController`** | `-IEvaluationEngine evaluationEngine` | Controlador GRASP. Depende de la interfaz abstracta `IEvaluationEngine`, lo que permite sustituir el motor algorítmico o inyectar Mocks en pruebas unitarias automatizadas. |
+| **`Evaluation`** | `-String evaluationId: String`<br/>`-int scorePercentage: int` | `evaluationId` se tipa como String para almacenar UUIDv4 sin colisiones. `scorePercentage` se tipa como entero [0..100] para descartar imprecisiones de coma flotante. |
+| **`Question`** | `-List<String> distractors`<br/>`-boolean isCorrect: boolean` | Cada pregunta alberga exactamente 3 distractores generados por el algoritmo. `isCorrect` registra el dictamen de corrección inmediata. |
+| **`IEvaluationEngine` («interface»)** | `+generateAssessment(...)`<br/>`+validateAnswerDeterministically(...)` | Contrato abstracto que declara los servicios de generación y corrección. Desacopla la lógica algorítmica de la capa de interfaz Astro. |
+| **`DeterministicAIEngine`** | `-int PASSING_THRESHOLD_PERCENT = 70`<br/>`-int ITEMS_PER_TEST = 10` | Implementación basada en combinatoria lingüística y permutación de sufijos (-pi, -man, -manta). Contiene constantes de negocio inmutables. |
+| **`BaseSentence`** | `-String authorTeacherId: String`<br/>`-String validatorTeacherId: String` | Entidad de soporte curricular. Modela las oraciones base certificadas que alimentan los algoritmos de examen. |
+| **`ContentModerator`** | `+enforceFourEyesPrinciple(...)` | Servicio de dominio que valida que el docente que aprueba la oración sea distinto del que la ingresó. |
+
+#### 3. Análisis de Relaciones Orientadas a Objetos
+- **`Evaluation` "1" `*--` "10" `Question` (Composición Estricta):**  
+  *Justificación:* Una pregunta de examen no tiene identidad ni sentido de negocio fuera de la evaluación que la generó. Si la instancia de `Evaluation` se elimina o se descarta por reintento, las 10 instancias de `Question` se destruyen sincrónicamente en memoria.
+- **`EvaluationController` `o--` "1" `StudentSession` (Agregación):**  
+  *Justificación:* La sesión del estudiante preexiste a la evaluación y continuará viva tras su conclusión. El controlador referencia la sesión pero no es dueño exclusivo de su existencia.
+- **`IEvaluationEngine` `<|..` `DeterministicAIEngine` (Realización):**  
+  *Justificación:* `DeterministicAIEngine` cumple el contrato de la interfaz sin compartir estado heredado.
+- **`EvaluationController` `..>` `IEvaluationEngine` (Dependencia / Inversión de Dependencias):**  
+  *Justificación:* La controladora invoca al motor exclusivamente a través de la abstracción, garantizando bajo acoplamiento.
+
+#### 4. Seguridad y Determinismo Algorítmico
+- **Inmutabilidad y Cero Alucinaciones:** Las funciones de `DeterministicAIEngine` son deterministas puras: para una misma semilla de oración y mismo nivel, la respuesta correcta es matemáticamente verificable, eliminando el riesgo de que la IA invente términos quechuas inexistentes.
+- **Regla de Cuatro Ojos:** `ContentModerator.enforceFourEyesPrinciple()` bloquea a nivel de código cualquier intento de auto-aprobación de contenidos.
+
+#### 5. Guía de Explicación para Evaluación (Defensa Oral de 5 Minutos)
+- **Pregunta del Tribunal: ¿Por qué la relación entre `Evaluation` y `Question` es de composición y no de agregación?**  
+  *Respuesta:* En la semántica de UML, la composición (`*--`) denota una relación parte-todo con coincidencia estricta en el ciclo de vida. Cada pregunta de examen es un reactivo generado *al vuelo* por el motor determinista con permutaciones únicas para ese intento específico. Si el alumno cancela o finaliza el test, esas 10 preguntas carecen de valor autónomo y son destruidas junto con la evaluación.
+- **Pregunta del Tribunal: ¿Cómo garantiza este diseño que no se dependa de APIs de IA como OpenAI?**  
+  *Respuesta:* A través de la clase `DeterministicAIEngine`. Todo el procesamiento morfológico y la mezcla aleatoria con el algoritmo Fisher-Yates se ejecutan en el cliente en TypeScript consumiendo menos de 10 MB de memoria, logrando coste \$0 en APIs y disponibilidad offline total.
+
+---
+
+## 4. Diagrama 3: Diagrama de Clases Estructural de Persistencia y Schemas Multibase de Datos (IndexedDB vs. Cloud Firestore)
+
+> **Decisión Técnica Fundamental:** En sistemas modernos Offline-First existen múltiples motores de persistencia con diferentes paradigmas (IndexedDB en el cliente y Cloud Firestore NoSQL en la nube). En UML, esto se modela separando las **Entidades del Dominio**, los **Schemas Físicos de cada Base de Datos**, los **Data Mappers** de transformación y el **Repositorio Unificado**.
+
+### 4.1 Representación de Clases de Persistencia Multibase de Datos (Mermaid classDiagram)
+
+```mermaid
+classDiagram
+    namespace DomainEntities {
+        class Evaluation {
+            -String evaluationId
+            -String studentId
+            -int levelId
+            -int scorePercentage
+            -DateTime timestamp
+            -boolean isSynchronized
+            +isPassed() boolean
+        }
+
+        class VocabularyCard {
+            -String wordId
+            -int levelId
+            -String termQuechua
+            -String translationEs
+            -String grammaticalCategory
+            -String webpAssetUrl
+            -String culturalContext
+        }
+    }
+
+    namespace LocalPersistence_IndexedDB_Schemas {
+        class EvaluationStoreRecord {
+            <<schema-indexeddb>>
+            +String evaluationId : keyPath
+            +int levelId : index_by_level
+            +String syncStatus : index_by_status
+            +int scorePercentage
+            +long timestampEpochMs
+            +String questionsPayloadJSON
+            +String clientDeviceFingerprint
+        }
+
+        class VocabularyStoreRecord {
+            <<schema-indexeddb>>
+            +String wordId : keyPath
+            +int levelId : index_by_level
+            +String termQuechua : index_by_term
+            +String translationEs
+            +String categoryGrammatical
+            +String cachedAssetBlobUrl
+            +long lastReviewEpochMs
+        }
+
+        class SyncQueueRecord {
+            <<schema-indexeddb>>
+            +String queueId : keyPath
+            +String entityType : index_by_entity
+            +String operationType : INSERT_UPDATE
+            +String payloadJSON
+            +int retryCount
+            +long queuedAtEpochMs
+            +String lastSyncError
+        }
+    }
+
+    namespace RemotePersistence_Firestore_Schemas {
+        class FirestoreEvaluationDocument {
+            <<schema-firestore-doc>>
+            +String docId : path_evaluaciones_id
+            +String studentUid : indexed_field
+            +int levelId : indexed_field
+            +int scorePercentage
+            +Timestamp createdAt : server_timestamp
+            +boolean approvedStatus
+            +Map~string, any~ auditMetadata
+        }
+
+        class FirestoreQuestionSubdocument {
+            <<schema-firestore-subdoc>>
+            +String questionId : path_preguntas_id
+            +String rawSentenceId
+            +String statementText
+            +String correctOption
+            +List~String~ distractors
+            +String studentAnswer
+            +boolean isCorrect
+        }
+
+        class FirestoreVocabularyDocument {
+            <<schema-firestore-doc>>
+            +String docId : path_niveles_id_vocabulario_id
+            +String termQuechua
+            +String translationEs
+            +String category
+            +String cdnWebpUrl
+            +String culturalContext
+            +String validatedByDocenteId
+        }
+    }
+
+    namespace DataMappersAndCoordination {
+        class IOfflineFirstRepository {
+            <<interface>>
+            +saveEvaluation(eval: Evaluation) Promise~boolean~
+            +getOfflineCurriculum(levelId: int) Promise~List~VocabularyCard~~
+            +synchronizePendingQueue() Promise~int~
+        }
+
+        class EvaluationLocalMapper {
+            +toLocalRecord(domain: Evaluation) EvaluationStoreRecord
+            +toDomain(record: EvaluationStoreRecord) Evaluation
+        }
+
+        class EvaluationRemoteMapper {
+            +toFirestoreDocument(domain: Evaluation) FirestoreEvaluationDocument
+            +toDomain(doc: FirestoreEvaluationDocument) Evaluation
+        }
+
+        class OfflineFirstEvaluationRepository {
+            -EvaluationLocalMapper localMapper
+            -EvaluationRemoteMapper remoteMapper
+            +saveEvaluation(eval: Evaluation) Promise~boolean~
+            +pushBatchToFirestore(records: List~EvaluationStoreRecord~) Promise~boolean~
+            +reconcileConflicts(localEpoch: long, remoteTimestamp: Timestamp) boolean
+        }
+    }
+
+    %% Relaciones Estructurales y Mapeos
+    IOfflineFirstRepository <|.. OfflineFirstEvaluationRepository : implementa contrato unificado
+    OfflineFirstEvaluationRepository --> EvaluationLocalMapper : usa mapper local
+    OfflineFirstEvaluationRepository --> EvaluationRemoteMapper : usa mapper remoto
+    
+    OfflineFirstEvaluationRepository ..> EvaluationStoreRecord : persiste en IndexedDB
+    OfflineFirstEvaluationRepository ..> SyncQueueRecord : encola si falla la red
+    OfflineFirstEvaluationRepository ..> FirestoreEvaluationDocument : transmite a Cloud Firestore
+
+    EvaluationLocalMapper ..> Evaluation : mapea desde y hacia dominio
+    EvaluationLocalMapper ..> EvaluationStoreRecord : produce registro local
+    
+    EvaluationRemoteMapper ..> Evaluation : mapea desde y hacia dominio
+    EvaluationRemoteMapper ..> FirestoreEvaluationDocument : produce documento NoSQL
+
+    FirestoreEvaluationDocument "1" *-- "10" FirestoreQuestionSubdocument : subcolección anidada en Firestore
+```
+
+### 4.2 Desglose Técnico bajo Estándar IEEE 1016
+
+#### 1. Resumen Ejecutivo
+- **Propósito:** Resolver estructuralmente la coexistencia de múltiples bases de datos en YAPU mediante la separación clara entre las entidades del dominio, los esquemas locales de **IndexedDB** (ObjectStores indexados) y los esquemas remotos de **Cloud Firestore** (Colecciones y Subcolecciones NoSQL), aplicando el patrón **Data Mapper** y el patrón **Offline-First Repository**.
+- **Alcance:** Modela la serialización de evaluaciones, léxico descargado y la cola transaccional de sincronización diferida (`SyncQueueRecord`), garantizando la integridad de datos entre el navegador del estudiante y el clúster en la nube.
+
+#### 2. Diccionario de Schemas y Mappers
+| Elemento del Modelo | Paradigma / Base de Datos | Justificación Técnica de Tipos y Campos |
+|---|---|---|
+| **`EvaluationStoreRecord`** | **IndexedDB Local** (Schema de Registro) | Modela el registro en el ObjectStore `evaluaciones_store`. Utiliza `evaluationId` como `keyPath` primario e índices secundarios B-Tree (`index_by_level`, `index_by_status`) para consultas rápidas sin escanear toda la base de datos local. Las preguntas se serializan en `questionsPayloadJSON` para almacenamiento atómico en un solo bloque. |
+| **`SyncQueueRecord`** | **IndexedDB Local** (Cola de Mutaciones) | Schema dedicado a la tolerancia a fallos. Almacena las operaciones pendientes con `retryCount`, marca temporal `queuedAtEpochMs` y estado para que el Service Worker las despache en orden FIFO estricto. |
+| **`FirestoreEvaluationDocument`** | **Cloud Firestore** (Documento NoSQL) | Schema remoto ubicado en `/evaluaciones/{evalId}`. Almacena el `studentUid` indexado para consultas compuestas y utiliza el tipo nativo `Timestamp` de Google para auditoría temporal a nivel de servidor (`server_timestamp`). |
+| **`FirestoreQuestionSubdocument`** | **Cloud Firestore** (Subcolección) | Documento anidado en la subcolección `/evaluaciones/{evalId}/preguntas/{qId}`. Normaliza los reactivos en la nube para auditoría curricular sin sobrepasar el límite de 1 MB por documento de Firestore. |
+| **`EvaluationLocalMapper`** | Componente de Transformación | Clase pura responsable de traducir entre la entidad rica del dominio `Evaluation` y el registro plano `EvaluationStoreRecord` de IndexedDB. |
+| **`EvaluationRemoteMapper`** | Componente de Transformación | Clase pura que transforma entre `Evaluation` y la estructura de documento NoSQL `FirestoreEvaluationDocument`. |
+| **`OfflineFirstEvaluationRepository`** | Repositorio Coordinador | Implementa la interfaz `IOfflineFirstRepository`. Orquesta la estrategia de persistencia dual: primero escribe atómicamente en IndexedDB local; luego, si `navigator.onLine` es verdadero, transmite a Firestore. Si la red falla, encola en `SyncQueueRecord`. |
+
+#### 3. Análisis de Relaciones y Patrones de Arquitectura
+- **Patrón Data Mapper:** Las clases del dominio (`Evaluation`) no conocen las APIs de IndexedDB ni el SDK de Firebase. Los mappers `EvaluationLocalMapper` y `EvaluationRemoteMapper` desacoplan completamente las entidades de los detalles de almacenamiento físico.
+- **`FirestoreEvaluationDocument` "1" `*--` "10" `FirestoreQuestionSubdocument` (Composición NoSQL):**  
+  *Justificación:* Modela una subcolección documental en Cloud Firestore. Cada documento de evaluación es propietario exclusivo de sus documentos anidados de detalle.
+- **`OfflineFirstEvaluationRepository` `..>` `SyncQueueRecord` (Dependencia de Cola):**  
+  *Justificación:* El repositorio utiliza la cola de sincronización para garantizar que ninguna operación de guardado se pierda cuando el estudiante opera sin señal de internet en el campo.
+
+#### 4. Seguridad, Integridad y Resolución de Conflictos
+- **Estrategia de Reconciliación:** En caso de que se presenten mutaciones concurrentes al recuperar la red, el repositorio aplica una política de **Última Escritura Gana (Last-Write-Wins)** basada en la comparación entre `timestampEpochMs` de IndexedDB y el `createdAt` canónico emitido por el servidor de Firestore.
+- **Validación de Integridad Local:** Antes de encolar un registro en IndexedDB, se calcula una suma de verificación criptográfica simple para asegurar que el registro local no ha sido alterado por extensiones de navegador de terceros.
+
+#### 5. Guía de Explicación para Evaluación (Defensa Oral de 5 Minutos)
+- **Pregunta del Tribunal: ¿Cómo se manejan los diagramas de clases estructurales cuando el sistema tiene múltiples bases de datos?**  
+  *Respuesta:* Se resuelve desacoplando el modelo en capas mediante el patrón Data Mapper: en el centro se definen las **Entidades del Dominio** que representan la lógica de negocio pura; por separado se modelan los **Schemas Físicos de IndexedDB** con sus keyPaths e índices locales, y los **Schemas Documentales de Firestore** con sus colecciones y marcas de tiempo. Los **Mappers** convierten bidireccionalmente entre el dominio y cada base de datos, mientras que un **Repositorio Unificado** (`OfflineFirstRepository`) encapsula la coordinación de escritura local inmediata y sincronización remota.
+- **Pregunta del Tribunal: ¿Por qué en IndexedDB se guarda el detalle de preguntas como un JSON en un campo, mientras que en Firestore se modela como una subcolección?**  
+  *Respuesta:* Por optimización de rendimiento y cuotas. En IndexedDB en el móvil, guardar todo el examen en un único registro atómico minimiza las transacciones de I/O sobre la memoria flash del teléfono, garantizando rapidez y consumo de RAM < 150 MB. En Cloud Firestore, en cambio, estructurarlo como subcolección permite a los docentes ejecutar consultas analíticas sobre preguntas específicas (por ejemplo, ver qué distractor morfológico falló más) sin tener que descargar documentos de evaluación masivos, optimizando las lecturas facturables de la base de datos.
+
+---
+
+## 5. Diagrama 4: Diagrama de Modelado de Datos Entidad-Relación (ERD) & Persistencia
+
+### 5.1 Representación del Diagrama Entidad-Relación (Mermaid ERD)
 
 ```mermaid
 erDiagram
@@ -135,245 +505,220 @@ erDiagram
     PERFIL_ESTUDIANTE ||--o{ EVALUACION : "rinde_evaluacion"
     NIVEL ||--o{ EVALUACION : "evalua_nivel"
     
-    EVALUACION ||--|{ DETALLE_PREGUNTA : "genera_preguntas"
+    EVALUACION ||--|{ DETALLE_PREGUNTA : "genera_preguntas_composicion"
     ORACION_BASE ||--o{ DETALLE_PREGUNTA : "sirve_de_semilla"
     
     PERFIL_ESTUDIANTE ||--o{ RETO_COMUNITARIO : "propone_reto"
     USUARIO ||--o{ RETO_COMUNITARIO : "modera_reto"
 
     USUARIO {
-        string id_usuario PK
-        string nombre_completo
-        string correo_electronico
-        string rol_sistema
-        string estado_cuenta
-        string fecha_registro
+        string id_usuario PK "UUIDv4 emitido por Firebase Auth"
+        string nombre_completo "Nombre y apellidos del usuario"
+        string correo_electronico "Email validado bajo RFC 5322"
+        string rol_sistema "estudiante | docente | admin"
+        string estado_cuenta "activo | suspendido | pendiente"
+        string fecha_registro "Timestamp ISO 8601 UTC"
     }
 
     PERFIL_ESTUDIANTE {
-        string id_estudiante PK
-        int nivel_actual
-        int racha_dias
-        int total_palabras_aprendidas
-        string fecha_ultima_sesion
+        string id_estudiante PK "Coincide biunívocamente con id_usuario"
+        int nivel_actual "Nivel curricular activo del 1 al 10"
+        int racha_dias "Días consecutivos de práctica completada"
+        int total_palabras_aprendidas "Contador acumulativo de léxico"
+        string fecha_ultima_sesion "Timestamp ISO 8601"
     }
 
     NIVEL {
-        int id_nivel PK
-        string titulo_quechua
-        string titulo_espanol
-        int orden_secuencial
-        int umbral_minimo_aprobacion
+        int id_nivel PK "Identificador secuencial del 1 al 10 (A1)"
+        string titulo_quechua "Nombre temático en lengua originaria"
+        string titulo_espanol "Traducción formal en castellano"
+        int orden_secuencial "Posición curricular obligatoria"
+        int umbral_minimo_aprobacion "Porcentaje fijo: 70 por ciento"
     }
 
     PROGRESO_NIVEL {
-        string id_progreso PK
-        string id_estudiante FK
-        int id_nivel FK
-        string estado_desbloqueo
-        int calificacion_maxima
-        string fecha_desbloqueo
+        string id_progreso PK "UUID compuesto: idEstudiante_idNivel"
+        string id_estudiante FK "Clave foránea a PERFIL_ESTUDIANTE"
+        int id_nivel FK "Clave foránea a NIVEL"
+        string estado_desbloqueo "bloqueado | en_curso | aprobado"
+        int calificacion_maxima "Puntaje máximo obtenido [0..100]"
+        string fecha_desbloqueo "Timestamp de habilitación del nivel"
     }
 
     PALABRA_VOCABULARIO {
-        string id_palabra PK
-        int id_nivel FK
-        string termino_quechua
-        string traduccion_espanol
-        string categoria_gramatical
-        string url_imagen_webp
-        string contexto_cultural
+        string id_palabra PK "Identificador único léxico"
+        int id_nivel FK "Nivel temático asociado"
+        string termino_quechua "Término en ortografía normalizada"
+        string traduccion_espanol "Significado pedagógico castellano"
+        string categoria_gramatical "sustantivo | verbo | adjetivo | sufijo"
+        string url_imagen_webp "Ruta relativa en VPS (< 100KB)"
+        string contexto_cultural "Ámbito comunitario de uso tradicional"
     }
 
     VOCABULARIO_ESTUDIANTE {
-        string id_registro PK
-        string id_estudiante FK
-        string id_palabra FK
-        string estado_aprendizaje
-        int contador_aciertos
-        string fecha_ultimo_repaso
+        string id_registro PK "UUID asociativo único"
+        string id_estudiante FK "Estudiante que practica el término"
+        string id_palabra FK "Palabra de vocabulario practicada"
+        string estado_aprendizaje "por_aprender | repasar | aprendida"
+        int contador_aciertos "Requiere 3 aciertos para pasar a aprendida"
+        string fecha_ultimo_repaso "Timestamp de última interacción"
     }
 
     ORACION_BASE {
-        string id_oracion PK
-        int id_nivel FK
-        string texto_quechua
-        string traduccion_espanol
-        string contexto_cultural
-        string autor_id FK
-        string validador_id FK
-        string estado_moderacion
+        string id_oracion PK "Clave primaria de la oración base"
+        int id_nivel FK "Nivel curricular asociado"
+        string texto_quechua "Estructura Sujeto-Objeto-Verbo"
+        string traduccion_espanol "Traducción contextual certificada"
+        string contexto_cultural "Contexto etnográfico obligatorio"
+        string autor_id FK "Docente o alumno proponente"
+        string validador_id FK "Segundo docente validador"
+        string estado_moderacion "pendiente | aprobada | rechazada"
     }
 
     EVALUACION {
-        string id_evaluacion PK
-        string id_estudiante FK
-        int id_nivel FK
-        int puntuacion_obtenida
-        int total_aciertos
-        string estado_aprobacion
-        boolean sincronizado_nube
+        string id_evaluacion PK "UUID único de la prueba rendida"
+        string id_estudiante FK "Estudiante evaluado"
+        int id_nivel FK "Nivel evaluado"
+        int puntuacion_obtenida "Porcentaje obtenido [0..100]"
+        int total_aciertos "Cantidad de respuestas válidas [0..10]"
+        string estado_aprobacion "aprobado | reprobado"
+        boolean sincronizado_nube "Flag booleano de sincronización"
     }
 
     DETALLE_PREGUNTA {
-        string id_pregunta PK
-        string id_evaluacion FK
-        string id_oracion_base FK
-        string enunciado_pregunta
-        string opcion_correcta
-        string distractor_1
-        string distractor_2
-        string distractor_3
-        string respuesta_marcada
-        boolean es_correcta
+        string id_pregunta PK "UUID de la pregunta individual"
+        string id_evaluacion FK "Evaluación padre obligatoria"
+        string id_oracion_base FK "Semilla utilizada por el motor"
+        string enunciado_pregunta "Texto de la pregunta generada"
+        string opcion_correcta "Alternativa válida"
+        string distractor_1 "Distractor verosímil 1"
+        string distractor_2 "Distractor verosímil 2"
+        string distractor_3 "Distractor verosímil 3"
+        string respuesta_marcada "Opción seleccionada por el estudiante"
+        boolean es_correcta "Flag booleano de calificación"
     }
 
     RETO_COMUNITARIO {
-        string id_reto PK
-        string id_estudiante FK
-        string id_docente_validador FK
-        string texto_quechua
-        string traduccion_sugerida
-        string pista_cultural
-        string estado_reto
+        string id_reto PK "UUID del reto colaborativo"
+        string id_estudiante FK "Estudiante Nivel 7+ creador"
+        string id_docente_validador FK "Docente evaluador del reto"
+        string texto_quechua "Propuesta de frase comunitaria"
+        string traduccion_sugerida "Traducción sugerida"
+        string pista_cultural "Pista lingüística para el reto"
+        string estado_reto "en_espera | publicado | descartado"
     }
 ```
 
----
+### 5.2 Taxonomía Visual de Relaciones de Persistencia (Mermaid Flowchart)
 
-### 3.2 Explicación Exhaustiva de las Relaciones de Datos
+```mermaid
+flowchart TD
+    ROOT["TAXONOMÍA FORMAL DE RELACIONES DE PERSISTENCIA EN YAPU"] --> STR["1. RELACIONES FUERTES<br/>(Entidades con Identidad Ontológica Propia)"]
+    ROOT --> WEAK["2. RELACIONES DÉBILES<br/>(Dependencia Estructural y de Ciclo de Vida)"]
 
-En el diseño de bases de datos para sistemas educativos resilientes, la categorización de las relaciones entre entidades determina la **integridad referencial**, las **reglas de cascada** en operaciones de borrado o actualización, y la **estrategia de particionamiento** entre el almacenamiento local (IndexedDB) y la nube (Cloud Firestore). A continuación se desglosa el significado conceptual y técnico de cada tipo de relación presente en el modelo:
+    STR --> STR_ASSOC["Asociación Independiente<br/>USUARIO 1:N ORACION_BASE<br/>(autor_id y validador_id cruzados)"]
+    STR --> STR_CAT["Catálogo Estructural Curricular<br/>NIVEL 1:N PALABRA_VOCABULARIO<br/>(Nivel agrupa léxico A1)"]
 
+    WEAK --> WEAK_EXIST["Débiles por Existencia (1:0..1 / 1:N)<br/>Regla ON DELETE CASCADE Lógica"]
+    WEAK --> WEAK_IDENT["Débiles por Identificación<br/>(Composición Estricta y Tablas Asociativas)"]
+
+    WEAK_EXIST --> W_PROF["USUARIO ||--o| PERFIL_ESTUDIANTE<br/>No existe perfil sin usuario en Firebase Auth"]
+    WEAK_EXIST --> W_EVAL["PERFIL_ESTUDIANTE ||--o{ EVALUACION<br/>No existen evaluaciones huérfanas sin estudiante"]
+
+    WEAK_IDENT --> W_COMP["EVALUACION ||--|{ DETALLE_PREGUNTA<br/>Composición Pura: exactamente 10 preguntas por test.<br/>Se destruyen en cascada si la evaluación se purga"]
+    WEAK_IDENT --> W_ASSOC1["PERFIL + NIVEL --> PROGRESO_NIVEL<br/>Tabla asociativa de estado N:M"]
+    WEAK_IDENT --> W_ASSOC2["PERFIL + PALABRA --> VOCABULARIO_ESTUDIANTE<br/>Seguimiento de aciertos de estudio N:M"]
+
+    classDef main fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef strongStyle fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#ffffff;
+    classDef weakStyle fill:#78350f,stroke:#f59e0b,stroke-width:2px,color:#ffffff;
+    classDef detailStyle fill:#1e293b,stroke:#94a3b8,stroke-width:1px,color:#ffffff;
+
+    class ROOT main;
+    class STR,STR_ASSOC,STR_CAT strongStyle;
+    class WEAK,WEAK_EXIST,WEAK_IDENT weakStyle;
+    class W_PROF,W_EVAL,W_COMP,W_ASSOC1,W_ASSOC2 detailStyle;
 ```
-                  ┌─────────────────────────────────────────────────────────────┐
-                  │                 TAXONOMÍA DE RELACIONES                     │
-                  └──────────────────────────────┬──────────────────────────────┘
-                                                 │
-                   ┌─────────────────────────────┴─────────────────────────────┐
-                   ▼                                                           ▼
-    ┌─────────────────────────────┐                             ┌─────────────────────────────┐
-    │     RELACIONES FUERTES      │                             │      RELACIONES DÉBILES     │
-    │  (Existencia Independiente) │                             │  (Dependencia Estructural)  │
-    └──────────────┬──────────────┘                             └──────────────┬──────────────┘
-                   │                                                           │
-        ┌──────────┴──────────┐                                     ┌──────────┴──────────┐
-        ▼                     ▼                                     ▼                     ▼
- ┌──────────────┐      ┌──────────────┐                      ┌──────────────┐      ┌──────────────┐
- │ Asociación   │      │ Composición  │                      │ Por          │      │ Por          │
- │ Independiente│      │ Referencial  │                      │ Existencia   │      │Identificación│
- │ (USUARIO a   │      │ (NIVEL a     │                      │ (USUARIO a   │      │ (EVALUACION a│
- │ ORACION_BASE)│      │ PALABRA)     │                      │ PERFIL)      │      │ DETALLE)     │
- └──────────────┘      └──────────────┘                      └──────────────┘      └──────────────┘
-```
 
-#### A. Relaciones Fuertes (Existencia Independiente)
-Una relación es **fuerte** cuando vincula dos entidades regulares (fuertes) que poseen identidad ontológica e histórica propia en el sistema. Ambas entidades disponen de claves primarias independientes y la desaparición de una no compromete necesariamente la existencia de la otra en el registro maestro:
+### 5.3 Desglose Técnico bajo Estándar IEEE 1016
 
-1. **`USUARIO` $\rightarrow$ `ORACION_BASE` (Relación de Creación y Validación 1:N):**
-   - *Tipo:* Relación Fuerte de Asociación.
-   - *Significado:* Un usuario con rol Docente crea una oración base lingüística (`autor_id`), mientras que un segundo usuario docente diferente certifica su corrección (`validador_id`). 
-   - *Comportamiento de Integridad:* Si el usuario docente es desactivado o pasa a estado inactivo, la `ORACION_BASE` **permanece intacta** en el banco de oraciones para no descalibrar el motor de IA determinista ni privar a los estudiantes de su material de estudio (integridad histórica).
-2. **`NIVEL` $\rightarrow$ `PALABRA_VOCABULARIO` (Relación Estructural de Catálogo 1:N):**
-   - *Tipo:* Relación Fuerte / Jerárquica de Catálogo.
-   - *Significado:* El Nivel (del 1 al 10, según la progresión A1 del Marco Común Europeo) agrupa el léxico correspondiente. Cada palabra posee su propio identificador único y metadatos léxicos autónomos.
-3. **`NIVEL` $\rightarrow$ `ORACION_BASE` (Relación de Agrupación Curricular 1:N):**
-   - *Tipo:* Relación Fuerte.
-   - *Significado:* Vincula cada estructura oracional al nivel lingüístico específico, permitiendo al motor de IA filtrar los bancos de reactivos de acuerdo al avance curricular del estudiante.
+#### 1. Resumen Ejecutivo
+- **Propósito:** Definir el modelo conceptual y relacional de persistencia de YAPU, garantizando la integridad referencial, reglas de normalización hasta 3FN y las estrategias de propagación en cascada.
+- **Alcance:** Modela las 10 entidades esenciales de la plataforma, cubriendo la gestión de usuarios, catálogo curricular de 10 niveles, banco de reactivos pedagógicos, trazabilidad de notas y gamificación.
 
----
-
-#### B. Relaciones Débiles por Existencia
-Una entidad es **débil por existencia** cuando su permanencia en el sistema carece de sentido lógico si no existe la entidad fuerte de la cual depende. Si la entidad padre es dada de baja o purgada, la entidad débil dependiente debe ser eliminada en cascada (*ON DELETE CASCADE*):
-
-1. **`USUARIO` $\rightarrow$ `PERFIL_ESTUDIANTE` (Relación de Especialización 1:0..1):**
-   - *Tipo:* Relación Débil por Existencia.
-   - *Significado:* Todo estudiante registrado posee un perfil específico donde se acumula su gamificación (racha de días, nivel máximo y palabras dominadas). No puede existir un `PERFIL_ESTUDIANTE` sin su correspondiente cuenta raíz en `USUARIO`. Si un estudiante solicita el ejercicio de su derecho de supresión de cuenta (Habeas Data / Privacidad RNF-003), su perfil académico queda eliminado de forma sincrónica.
-2. **`PERFIL_ESTUDIANTE` $\rightarrow$ `EVALUACION` (Relación Histórica de Desempeño 1:N):**
-   - *Tipo:* Relación Débil por Existencia.
-   - *Significado:* Cada evaluación representa el evento temporal en que un estudiante rinde una prueba de nivel. No pueden registrarse evaluaciones anónimas o huérfanas sin asociarse al identificador del estudiante que contestó las preguntas.
-
----
-
-#### C. Relaciones Débiles por Identificación (Entidades Asociativas e Hijas Puras)
-Una entidad es **débil por identificación** cuando, además de depender de la existencia de otra entidad, **no puede identificarse unívocamente sin la clave foránea de su entidad padre o de sus entidades relacionadas**. Su clave primaria se compone total o sustancialmente de claves foráneas:
-
-1. **`EVALUACION` $\rightarrow$ `DETALLE_PREGUNTA` (Relación Débil por Identificación 1:N):**
-   - *Tipo:* **Relación Débil por Identificación Pura (Composición Estricta).**
-   - *Significado:* Una evaluación se compone de exactamente 10 preguntas generadas de forma determinista. Cada `DETALLE_PREGUNTA` registra la combinación específica de oración base, la permutación morfológica, los 3 distractores generados por el algoritmo y la opción elegida por el alumno.
-   - *Comportamiento de Integridad:* Las preguntas individuales no poseen valor autónomo fuera de la evaluación que las originó. Si una evaluación se elimina o recalcula, sus 10 preguntas asociadas se destruyen en cascada.
-2. **`PERFIL_ESTUDIANTE` y `NIVEL` $\rightarrow$ `PROGRESO_NIVEL` (Relación Débil Asociativa N:M):**
-   - *Tipo:* Relación Débil por Identificación / Tabla Asociativa de Estado.
-   - *Significado:* Resuelve la relación de muchos a muchos entre estudiantes y los 10 niveles disponibles. Cada registro modela el estado de desbloqueo (bloqueado, en curso, aprobado con fecha y nota máxima obtenida). 
-   - *Regla de Negocio Crítica:* La tupla `(id_estudiante, id_nivel)` es estrictamente única (*UNIQUE CONSTRAINT*), impidiendo duplicaciones en la progresión.
-3. **`PERFIL_ESTUDIANTE` y `PALABRA_VOCABULARIO` $\rightarrow$ `VOCABULARIO_ESTUDIANTE` (Relación Débil Asociativa de Aprendizaje N:M):**
-   - *Tipo:* Relación Débil Asociativa.
-   - *Significado:* Materializa el estado de dominio léxico individual del estudiante (RF-004). Almacena el `contador_aciertos` (requiere acumular 3 aciertos consecutivos en repasos espaciados para transicionar el estado de `"repasar"` a `"aprendida"`).
-
----
-
-### 3.3 Mapeo Arquitectónico: Del Modelo Entidad-Relación al Esquema NoSQL en Cloud Firestore
-
-En virtud de que YAPU es una aplicación web progresiva orientada a operar en redes móviles 3G con conectividad intermitente (RF-009, RNF-001), el modelo Entidad-Relación relacional conceptual se implementa físicamente sobre **Cloud Firestore** y **IndexedDB** siguiendo el patrón de documentos y subcolecciones optimizadas para consulta offline:
-
-| Entidad Lógica (DER) | Colección / Subcolección Física Firestore | Estrategia de Caché Local en PWA (IndexedDB) |
+#### 2. Diccionario de Entidades y Justificación de Tipos de Datos
+| Entidad / Atributo | Tipo Físico | Justificación Técnica |
 |---|---|---|
-| `USUARIO` | `/users/{id_usuario}` | Almacena perfil activo del usuario autenticado en `session_user`. |
-| `PERFIL_ESTUDIANTE` | Subdocumento embebido en `/users/{id_usuario}` | Caché local con persistencia inmediata para consultas de dashboard sin red (RF-008). |
-| `NIVEL` | `/niveles/{id_nivel}` | Descargado íntegramente durante la instalación del Service Worker (Cache Storage estático). |
-| `PALABRA_VOCABULARIO` | `/niveles/{id_nivel}/vocabulario/{id_palabra}` | Precargado por nivel mediante Workbox. Assets WebP asociados cacheados en disco local. |
-| `PROGRESO_NIVEL` | `/users/{uid}/progreso_niveles/{id_nivel}` | Mutación inmediata en IndexedDB; encolado para *Background Sync* hacia Firestore al reconectar. |
-| `ORACION_BASE` | `/oraciones_base/{id_oracion}` | Sincronizado localmente para servir de insumo directo al motor determinista en TypeScript. |
-| `EVALUACION` y `DETALLE_PREGUNTA` | `/evaluaciones/{id_evaluacion}/preguntas/{id_pregunta}` | Grabación atómica en lote (*Firestore Batch Write*) para minimizar consumo de cuotas concurrentes (RNF-005). |
+| `USUARIO.id_usuario` | `string (UUIDv4)` | Clave primaria generada por Firebase Authentication. Proporciona entropía criptográfica de 128 bits, imposibilitando ataques de enumeración secuencial. |
+| `PERFIL_ESTUDIANTE.racha_dias` | `int` | Entero no negativo. Se incrementa de forma determinista al completar al menos una lección en un ciclo de 24 horas. |
+| `NIVEL.umbral_minimo_aprobacion` | `int = 70` | Porcentaje de corte pedagógico inmutable acordado con la docente stakeholder (Lic. Quispe Mamani). |
+| `ORACION_BASE.estado_moderacion` | `string` | Enumeración controlada: `pendiente`, `aprobada`, `rechazada`. Solo las aprobadas son leídas por el motor de IA. |
+| `EVALUACION.sincronizado_nube` | `boolean` | Flag booleano local en IndexedDB. Permite al Service Worker filtrar rápidamente los registros que deben enviarse a Firestore al recuperar conexión. |
+| `DETALLE_PREGUNTA.es_correcta` | `boolean` | Indicador booleano derivado de comparar `respuesta_marcada == opcion_correcta`. Evita recalcular notas en consultas analíticas. |
+
+#### 3. Análisis Exhaustivo de Relaciones de Persistencia
+1. **Relación Fuerte: `USUARIO` a `ORACION_BASE` (Creación y Certificación 1:N):**
+   - *Comportamiento:* Un docente crea la oración (`autor_id`) y otro la revisa (`validador_id`). Si el usuario docente es eliminado, la oración **permanece intacta** (`ON DELETE SET NULL` o persistencia del histórico) para garantizar la continuidad del servicio y la integridad del banco curricular.
+2. **Relación Débil por Existencia: `USUARIO` a `PERFIL_ESTUDIANTE` (Especialización 1:0..1):**
+   - *Comportamiento:* Dependencia existencial estricta. Si un estudiante ejerce su derecho legal de supresión de datos personales (Habeas Data boliviano y GDPR), la eliminación de `USUARIO` borra sincrónicamente su `PERFIL_ESTUDIANTE` en cascada.
+3. **Relación Débil por Identificación Pura: `EVALUACION` a `DETALLE_PREGUNTA` (Composición 1:10):**
+   - *Comportamiento:* Las preguntas individuales no poseen clave primaria natural fuera de la evaluación que las albergó. Su identificador conceptual depende de la evaluación. Si la evaluación se elimina, sus 10 detalles se purgan inmediatamente.
+
+#### 4. Guía de Explicación para Evaluación (Defensa Oral de 5 Minutos)
+- **Pregunta del Tribunal: ¿Por qué `DETALLE_PREGUNTA` es una entidad débil por identificación y no una relación independiente de catálogo?**  
+  *Respuesta:* Porque una pregunta de examen en YAPU no es una entidad reutilizable aislada, sino una instancia efímera de evaluación sintetizada algorítmicamente por el motor determinista. Contiene la combinación exacta de distractores generados y la respuesta marcada por el estudiante en ese milisegundo de ejecución. Carece por completo de sentido de negocio conservar los detalles de una pregunta si se destruye la evaluación padre.
+- **Pregunta del Tribunal: ¿Cómo se implementa el principio de los "cuatro ojos" en el modelo de datos?**  
+  *Respuesta:* En la entidad `ORACION_BASE` se modelaron dos claves foráneas distintas hacia la entidad `USUARIO`: `autor_id` y `validador_id`. A nivel de reglas de negocio en la base de datos y en las reglas de seguridad de Firestore, se establece una restricción inviolable: `request.resource.data.validador_id != request.resource.data.autor_id`. Ninguna oración puede alcanzar el estado `aprobada` si ambos identificadores son idénticos.
 
 ---
 
-## 4. Diagrama 3: Diagrama General de Casos de Uso del Sistema
+## 6. Diagrama 5: Diagrama General de Casos de Uso del Sistema YAPU
 
-### 4.1 Representación UML de Casos de Uso (Mermaid)
+### 6.1 Representación UML de Casos de Uso (Mermaid)
 
 ```mermaid
 graph LR
-    subgraph ACTORS["Actores del Sistema"]
-        EST["Estudiante<br/>Usuario Final"]
-        DOC["Docente Quechua<br/>Validador Pedagógico"]
-        ADM["Administrador<br/>Gestión de Infraestructura"]
+    subgraph ACTORS["Actores del Ecosistema YAPU"]
+        EST["Estudiante Quechua<br/>(Usuario Final Móvil)"]
+        DOC["Docente Quechua<br/>(Validador Pedagógico Certificado)"]
+        ADM["Administrador UPDS<br/>(Gestión de Infraestructura)"]
     end
 
-    subgraph SYSTEM_BOUNDARY["Sistema YAPU - PWA y Backend"]
+    subgraph YAPU_BOUNDARY["Límite del Sistema YAPU (PWA & Backend Serverless)"]
         direction TB
 
-        subgraph MOD_AUTH["Módulo de Acceso y Seguridad"]
+        subgraph MOD_AUTH["Módulo de Acceso & Seguridad"]
             UC01(["RF-001: Registrar Cuenta"])
-            UC02(["RF-002: Iniciar o Cerrar Sesión"])
-            UC_VERIF(["Verificar Correo Electrónico"])
+            UC02(["RF-002: Iniciar / Cerrar Sesión"])
+            UC_VERIF(["Verificar Token de Correo"])
         end
 
-        subgraph MOD_LEARN["Módulo Pedagógico y Gamificación"]
-            UC03(["RF-003: Visualizar Mapa de Niveles A1"])
-            UC04(["RF-004: Practicar Lecciones de Vocabulario"])
-            UC05(["RF-005: Rendir Evaluación con IA Determinista"])
-            UC08(["RF-008: Consultar Tablero de Progreso"])
-            UC_DESB(["Desbloquear Siguiente Nivel al 70 por ciento"])
+        subgraph MOD_PEDAGOGIC["Módulo Pedagógico & Gamificación"]
+            UC03(["RF-003: Visualizar Mapa A1"])
+            UC04(["RF-004: Practicar Vocabulario"])
+            UC05(["RF-005: Rendir Evaluación IA"])
+            UC08(["RF-008: Consultar Progreso"])
+            UC_DESB(["Desbloquear Siguiente Nivel al 70%"])
         end
 
-        subgraph MOD_OFFLINE["Módulo de Resiliencia"]
-            UC09(["RF-009: Descargar Lecciones en Modo Offline"])
+        subgraph MOD_OFFLINE["Módulo de Resiliencia Offline-First"]
+            UC09(["RF-009: Descargar Lecciones en Caché"])
             UC_SYNC(["Sincronizar Progreso al Reconectar"])
         end
 
-        subgraph MOD_TEACHER["Módulo de Contenidos y Moderación"]
-            UC06(["RF-006: Gestionar Oraciones y Contexto Cultural"])
-            UC07(["RF-007: Proponer Retos Comunitarios Nivel 7"])
-            UC_MOD(["Doble Validación y Moderación Docente"])
+        subgraph MOD_CONTENT["Módulo de Contenidos & Curaduría"]
+            UC06(["RF-006: Gestionar Oraciones Base"])
+            UC07(["RF-007: Proponer Retos Comunitarios N7"])
+            UC_MOD(["Doble Validación Docente (Cuatro Ojos)"])
         end
 
-        subgraph MOD_ADMIN["Módulo de Infraestructura y Datos Abiertos"]
-            UC_EXPORT(["RS-004: Exportar Corpus Lingüístico CSV o JSON"])
-            UC_HEALTH(["RNF-004: Monitorear Disponibilidad del VPS"])
+        subgraph MOD_OPS["Módulo de Operaciones & Datos Abiertos"]
+            UC_EXPORT(["RS-004: Exportar Corpus Lingüístico CSV/JSON"])
+            UC_HEALTH(["RNF-004: Monitorear Disponibilidad VPS"])
         end
     end
 
+    %% Asociaciones Actor - Caso de Uso
     EST --> UC01
     EST --> UC02
     EST --> UC03
@@ -381,7 +726,7 @@ graph LR
     EST --> UC05
     EST --> UC08
     EST --> UC09
-    EST -.->|Si alcanza Nivel 7 o mas| UC07
+    EST -.->|Condición: Si alcanza Nivel 7| UC07
 
     DOC --> UC02
     DOC --> UC06
@@ -391,12 +736,14 @@ graph LR
     ADM --> UC_EXPORT
     ADM --> UC_HEALTH
 
-    UC01 -.->|include| UC_VERIF
-    UC05 -.->|extend si nota es 70 o mas| UC_DESB
-    UC09 -.->|include| UC_SYNC
-    UC07 -.->|include| UC_MOD
-    UC06 -.->|include| UC_MOD
+    %% Relaciones Include y Extend
+    UC01 -.->|«include»| UC_VERIF
+    UC05 -.->|«extend» (Guarda: nota >= 70%)| UC_DESB
+    UC09 -.->|«include»| UC_SYNC
+    UC06 -.->|«include»| UC_MOD
+    UC07 -.->|«include»| UC_MOD
 
+    %% Estilos de los nodos
     classDef actorStyle fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#f8fafc;
     classDef useCaseStyle fill:#0f172a,stroke:#38bdf8,stroke-width:1px,color:#f8fafc;
     classDef highlightUC fill:#0c4a6e,stroke:#10b981,stroke-width:2px,color:#ffffff;
@@ -406,55 +753,72 @@ graph LR
     class UC05,UC_DESB,UC_MOD highlightUC;
 ```
 
-### 4.2 Descripción y Catálogo de Casos de Uso
+### 6.2 Desglose Técnico bajo Estándar IEEE 1016
 
-| Caso de Uso | Requisito Trazable | Actor Primario | Precondición | Postcondición Crítica |
+#### 1. Resumen Ejecutivo
+- **Propósito:** Mapear el comportamiento funcional del sistema YAPU desde la perspectiva de los actores que interactúan con sus límites, estableciendo trazabilidad formal hacia los 10 Requisitos Funcionales del SRS.
+- **Alcance:** Modela las interacciones de los tres actores primarios: Estudiante, Docente Quechua y Administrador del VPS, categorizando las relaciones funcionales estándar `<<include>>` y `<<extend>>`.
+
+#### 2. Catálogo de Casos de Uso y Trazabilidad de Requisitos
+| Caso de Uso | Requisito SRS | Actor Primario | Precondición Formal | Postcondición Crítica |
 |---|---|---|---|---|
-| **CU-01: Registrar Cuenta** | RF-001 | Estudiante / Docente | Dispositivo con conexión y navegador moderno. | Cuenta creada en Firebase Auth, documento inicializado en Firestore `/users` con rol seleccionado y correo de validación despachado. |
-| **CU-02: Iniciar Sesión** | RF-002 | Todos los actores | Usuario registrado con correo y contraseña. | Token JWT emitido, carga de perfil según rol y restauración de progreso en el cliente. |
-| **CU-03: Visualizar Mapa A1** | RF-003, RF-010 | Estudiante | Sesión activa de estudiante. | Renderizado del mapa de 10 niveles con estilo andino; niveles no alcanzados bloqueados con candado visual. |
-| **CU-04: Practicar Vocabulario** | RF-004 | Estudiante | Nivel actual desbloqueado. | Despliegue de tarjetas interactivas con ilustración WebP, glosa en castellano, ortografía normalizada y opción de marcar para repaso. |
-| **CU-05: Rendir Evaluación IA** | RF-005 | Estudiante | Vocabulario de la lección completado. | Generación algorítmica local de test de 10 ítems de opción múltiple; cálculo de nota inmediata sin latencia de red. |
-| **CU-06: Desbloquear Nivel** | RF-003, RF-005 | Estudiante (Disparado por Sistema) | Calificación obtenida en la evaluación $\ge 70\%$. | Se escribe en Firestore la fecha de aprobación y el Nivel $N+1$ queda habilitado para el usuario. |
-| **CU-07: Gestionar Oraciones Base** | RF-006, RS-003 | Docente Quechua | Sesión iniciada con rol docente certificado. | Oración creada con texto quechua, traducción, nivel y el campo obligatorio `contexto_cultural`. Queda en cuarentena (`pendiente`). |
-| **CU-08: Doble Moderación** | RF-007, RS-003 | Docente Quechua | Existencia de oraciones o retos en estado `pendiente`. | Un segundo docente evalúa lingüísticamente el contenido; al aprobarlo se publica para el motor determinista. |
-| **CU-09: Descargar Modo Offline** | RF-009 | Estudiante | Conexión a internet activa al momento de navegar. | El Service Worker almacena en Cache Storage las lecciones y recursos WebP del nivel activo para su uso posterior sin internet. |
-| **CU-10: Exportar Corpus Lingüístico** | RS-004 | Administrador | Rol de Administrador en el VPS. | Generación de archivo descargable CSV/JSON con metadatos léxicos libres de datos personales (GDPR/Habeas Data). |
+| **CU-01: Registrar Cuenta** | RF-001 | Estudiante / Docente | Navegador compatible y correo no registrado. | Creación de credencial en Firebase Auth y documento base `/users/{uid}`. |
+| **CU-02: Iniciar / Cerrar Sesión** | RF-002 | Todos los actores | Usuario previamente registrado. | Emisión de token JWT, hidratación de perfil en memoria local. |
+| **CU-03: Visualizar Mapa A1** | RF-003, RF-010 | Estudiante | Sesión activa de estudiante. | Renderizado del mapa andino con estados bloqueado/habilitado. |
+| **CU-04: Practicar Vocabulario** | RF-004 | Estudiante | Nivel temático habilitado. | Carga de tarjetas interactivas con WebP y glosa en castellano. |
+| **CU-05: Rendir Evaluación IA** | RF-005 | Estudiante | Nivel practicado. | Generación algorítmica de 10 ítems; corrección local inmediata. |
+| **CU-06: Gestionar Oraciones** | RF-006, RS-003 | Docente Quechua | Sesión con rol `docente` verificado. | Oración creada en estado `pendiente` con contexto cultural. |
+| **CU-07: Proponer Retos N7** | RF-007 | Estudiante Avanzado | Progreso en Nivel $\ge 7$. | Frase enviada a la cola docente en estado `pendiente`. |
+| **CU-08: Doble Moderación** | RF-007, RS-003 | Docente Quechua | Existencia de contenidos pendientes. | Segundo docente certifica o rechaza el aporte con motivo. |
+| **CU-09: Descargar Modo Offline** | RF-009 | Estudiante | Conexión activa al momento de navegar. | Almacenamiento de lecciones en Cache Storage e IndexedDB. |
+| **CU-10: Exportar Corpus** | RS-004 | Administrador | Rol `admin` en el sistema. | Fichero CSV/JSON descargable sin datos personales de alumnos. |
+
+#### 3. Análisis de Relaciones `<<include>>` y `<<extend>>`
+- **`UC01` a `UC_VERIF` (`<<include>>`):**  
+  *Justificación:* La verificación del token de correo electrónico es un paso indispensable y obligatorio dentro del flujo de registro. No puede existir un alta formal de usuario que omita este subproceso.
+- **`UC05` a `UC_DESB` (`<<extend>>` condicionado a nota $\ge 70\%$):**  
+  *Justificación:* El desbloqueo del nivel siguiente es un comportamiento opcional y contingente. Solo se dispara como extensión del caso de uso de rendir evaluación **si y solo si** la condición de guarda (*Guard Condition: calificación obtenida $\ge 70\%$*) es evaluada como verdadera por el sistema.
+- **`UC06` y `UC07` a `UC_MOD` (`<<include>>`):**  
+  *Justificación:* Ningún contenido nuevo (oración de docente o reto de estudiante) entra al banco activo sin atravesar el subproceso mandatorio de doble moderación.
+
+#### 4. Guía de Explicación para Evaluación (Defensa Oral de 5 Minutos)
+- **Pregunta del Tribunal: ¿Por qué el desbloqueo del nivel es un `<<extend>>` y no un `<<include>>` de rendir evaluación?**  
+  *Respuesta:* En la semántica formal de UML, una relación `<<include>>` denota una ejecución incondicional y obligatoria cada vez que el caso de uso base se ejecuta. Si el estudiante reprueba la evaluación con un 40%, el nivel siguiente **no se desbloquea**, lo que violaría la semántica de un include. Al ser un `<<extend>>`, el comportamiento de desbloquear nivel solo se activa en el punto de extensión si se cumple la condición de guarda de obtener 70% o más de aciertos.
 
 ---
 
-## 5. Diagrama 4: Diagramas de Casos de Uso Específicos por Módulo Clave
+## 7. Diagrama 6: Casos de Uso Específicos por Módulo Clave
 
-### 5.1 Módulo Pedagógico: Generación de Evaluaciones con IA Determinista (RF-005)
+### 7.1 Módulo Pedagógico: Generación de Evaluaciones con IA Determinista (RF-005)
 
 ```mermaid
 graph TB
-    subgraph CU_DET_IA["Caso de Uso Detallado: Rendir Evaluación con IA Determinista - RF-005"]
+    subgraph CU_DET_IA["Caso de Uso Detallado: Rendir Evaluación con IA Determinista (RF-005)"]
         direction TB
-        E["Estudiante"] -->|Paso 1: Solicita rendir test de nivel| CLI["Cliente PWA Astro"]
+        EST["Estudiante"] -->|1. Solicita rendir test de nivel| CLI["Cliente PWA Astro"]
         
-        CLI -->|Paso 2: Obtiene oraciones base del nivel| BANK[("Banco Local de Oraciones<br/>Caché o Firestore")]
+        CLI -->|2. Consulta oraciones certificadas| BANK[("Banco Local de Oraciones<br/>(Cache Storage / IndexedDB)")]
         
-        CLI -->|Paso 3: Invoca motor en TypeScript| ENGINE["Motor Determinista Local"]
+        CLI -->|3. Invoca motor determinista en TypeScript| ENGINE["Motor Determinista Local"]
         
         subgraph ALGORITMO["Algoritmo Determinista sin LLMs"]
-            P1["1. Selección de oración base certificada"]
-            P2["2. Extracción sintáctica: Sujeto, Objeto y Verbo"]
-            P3["3. Permutación morfológica controlada: Sufijos -pi, -man, -manta"]
-            P4["4. Extracción de 3 distractores del mismo campo semántico"]
-            P5["5. Mezcla de opciones aleatorias con semilla determinista"]
+            P1["1. Selección pseudoaleatoria con semilla de 10 oraciones base"]
+            P2["2. Análisis de componentes sintácticos (Sujeto, Objeto, Verbo)"]
+            P3["3. Aplicación de permutación morfológica controlada (Sufijos -pi, -man, -manta)"]
+            P4["4. Selección de 3 distractores del mismo campo semántico y nivel"]
+            P5["5. Mezcla de alternativas (Fisher-Yates Shuffle determinista)"]
             P1 --> P2 --> P3 --> P4 --> P5
         end
         
         ENGINE --- ALGORITMO
         
-        ALGORITMO -->|Paso 4: Retorna test de 10 preguntas| CLI
-        CLI -->|Paso 5: Estudiante responde cuestionario| E
-        CLI -->|Paso 6: Corrige respuestas en local| EVAL_LOC["Evaluador de Aciertos"]
+        ALGORITMO -->|4. Retorna batería de 10 reactivos| CLI
+        CLI -->|5. Presenta interfaz interactiva| EST
+        EST -->|6. Envía respuestas marcadas| EVAL_LOC["Evaluador de Desempeño Local"]
         
-        EVAL_LOC -->|Comprueba calificación| CHECK{¿Nota es 70% o más?}
-        CHECK -->|Aprobado| OK["Desbloquea Nivel Siguiente en Firestore<br/>Registra Nota y Fecha"]
-        CHECK -->|Reprobado| FAIL["Muestra retroalimentación correctiva<br/>Permite reintento con nuevas permutaciones"]
+        EVAL_LOC -->|7. Calcula aciertos| CHECK{¿Nota es 70% o más?}
+        CHECK -->|Aprobado| OK["Desbloquea Nivel Siguiente en Local y Firestore<br/>Registra Nota y Fecha de Aprobación"]
+        CHECK -->|Reprobado| FAIL["Despliega desglose formativo de fallos<br/>Habilita reintento con nuevas permutaciones"]
     end
 
     classDef act fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#ffffff;
@@ -462,40 +826,38 @@ graph TB
     classDef passStyle fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#ffffff;
     classDef failStyle fill:#7f1d1d,stroke:#ef4444,stroke-width:2px,color:#ffffff;
 
-    class E act;
+    class EST act;
     class CLI,BANK,ENGINE,P1,P2,P3,P4,P5,EVAL_LOC,CHECK nodeStyle;
     class OK passStyle;
     class FAIL failStyle;
 ```
 
----
-
-### 5.2 Módulo Docente: Gestión y Doble Moderación de Contenidos (RF-006, RF-007, RS-003)
+### 7.2 Módulo Docente: Gestión y Doble Moderación de Contenidos (RF-006, RF-007, RS-003)
 
 ```mermaid
 graph TD
     subgraph CU_MODERACION["Caso de Uso Detallado: Flujo de Doble Moderación Lingüística"]
-        DOC1["Docente 1 o Estudiante Nivel 7"] -->|Paso 1: Envía propuesta de contenido| FORM["Formulario de Aporte"]
+        DOC1["Docente 1 o Estudiante N7"] -->|1. Envía propuesta de reactivo| FORM["Formulario de Aporte"]
         
-        FORM -->|Valida campos requeridos| VAL_INP{"¿Campos completos?<br/>Texto, Traducción y Contexto"}
+        FORM -->|2. Validación de campos obligatorios| VAL_INP{"¿Campos completos?<br/>Texto Quechua, Traducción y Contexto"}
         
-        VAL_INP -->|Incompleto| REJ_INP["Rechazo formal en interfaz con advertencia"]
-        VAL_INP -->|Completo| SAVE_PEND["Guarda en Firestore /oraciones<br/>estado = pendiente<br/>autor_id = Docente 1"]
+        VAL_INP -->|Incompleto| REJ_INP["Rechazo preventivo en interfaz con advertencia"]
+        VAL_INP -->|Completo| SAVE_PEND["Persiste en Firestore /oraciones<br/>estado = 'pendiente'<br/>autor_id = Docente 1"]
         
         SAVE_PEND --> COLA["Cola de Aprobación Docente"]
         
-        DOC2["Docente 2 - Hablante Certificado"] -->|Paso 2: Accede a cola de revisión| COLA
+        DOC2["Docente 2 (Hablante Certificado)"] -->|3. Inspecciona reactivos pendientes| COLA
         
-        COLA --> REV["Inspección Lingüística:<br/>1. Ortografía normalizada Sucre<br/>2. Pertinencia del Contexto Cultural<br/>3. Cero mezcla con otras lenguas"]
+        COLA --> REV["Inspección Lingüística & Etnográfica:<br/>1. Ortografía normalizada Collao/Sucre<br/>2. Pertinencia del Contexto Cultural<br/>3. Ausencia de préstamos o interferencias"]
         
         REV --> DECISION{"Dictamen del<br/>Segundo Docente"}
         
-        DECISION -->|Rechazado| RECHAZO["Estado = rechazado<br/>Registra motivo pedagógico para el autor"]
-        DECISION -->|Corrección menor| EDITAR["Docente 2 edita texto o contexto<br/>y aprueba con observaciones"]
-        DECISION -->|Aprobado| APROBADO["Estado = aprobado<br/>validador_id = Docente 2<br/>fecha_aprobacion = timestamp"]
+        DECISION -->|Rechazado| RECHAZO["Estado = 'rechazado'<br/>Registra retroalimentación pedagógica"]
+        DECISION -->|Corrección Menor| EDITAR["Docente 2 ajusta texto o glosa<br/>y aprueba con observaciones"]
+        DECISION -->|Aprobado Directo| APROBADO["Estado = 'aprobado'<br/>validador_id = Docente 2<br/>fecha_aprobacion = timestamp"]
         
         EDITAR --> APROBADO
-        APROBADO --> LIVE["Integración Inmediata al Banco de IA<br/>Disponible para todos los estudiantes"]
+        APROBADO --> LIVE["Publicación Inmediata al Banco de IA<br/>Sincronizado a dispositivos de los estudiantes"]
     end
 
     classDef doc1Style fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#ffffff;
@@ -513,123 +875,138 @@ graph TD
 
 ---
 
-## 6. Diagrama 5: Diagrama General de Actividades del Sistema
+## 8. Diagrama 7: Diagrama General de Secuencia del Sistema YAPU
+
+### 8.1 Representación Temporal (Mermaid sequenceDiagram)
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor U as Estudiante - Dispositivo Móvil
-    participant SW as Service Worker y Caché PWA
-    participant AI as Motor IA Determinista en TS
-    participant DB as Cloud Firestore y Auth
+    actor U as Estudiante (PWA Móvil)
+    participant SW as Service Worker & Cache Storage
+    participant AI as Motor IA Determinista (TS)
+    participant IDB as IndexedDB (Almacén Local)
+    participant DB as Cloud Firestore & Auth (Nube)
 
-    Note over U,DB: 1. CICLO DE AUTENTICACION Y CARGA INICIAL
-    U->>SW: Abre YAPU en navegador móvil
-    alt Está en Caché - Offline o red 3G
-        SW-->>U: Sirve App Shell y recursos WebP desde Cache Storage
-    else Primera Visita - Conexión Online
-        SW->>DB: Solicita validación de token y bundle
-        DB-->>SW: Retorna credenciales y estado del estudiante
-        SW-->>U: Renderiza pantalla principal con temática andina
+    Note over U,DB: FASE 1: CICLO DE CARGA INICIAL Y AUTENTICACIÓN
+    U->>SW: Abre la PWA en el navegador móvil
+    SW->>SW: Intercepta petición de App Shell
+    alt Cache Storage Disponible (Modo Offline o Red Rural 3G)
+        SW-->>U: Sirve HTML, CSS e imágenes WebP desde Cache local
+    else Primera Visita (Modo Online)
+        SW->>DB: Valida token JWT y obtiene perfil
+        DB-->>SW: Retorna credenciales, rol y nivel activo
+        SW-->>U: Renderiza pantalla principal con mapa andino
     end
 
-    Note over U,DB: 2. EXPLORACION DEL MAPA Y ESTUDIO LEXICO (RF-003, RF-004)
-    U->>SW: Selecciona Nivel Habilitado (ejemplo Nivel 1)
-    SW-->>U: Presenta tarjetas de vocabulario con ilustración WebP y glosa
-    U->>U: Marca palabras en estado Aprendida o Repasar
+    Note over U,DB: FASE 2: EXPLORACIÓN CURRICULAR Y PRÁCTICA LÉXICA (RF-003, RF-004)
+    U->>SW: Selecciona Nivel Habilitado (ej. Nivel 1: Saludos)
+    SW-->>U: Presenta tarjetas de vocabulario con activos WebP y glosa
+    U->>U: Clasifica palabras en estado "Aprendida" o "Repasar"
 
-    Note over U,DB: 3. RENDICION DE EVALUACION DETERMINISTA (RF-005)
-    U->>AI: Solicita inicio de evaluación del nivel
-    AI->>SW: Obtiene oraciones base del nivel desde almacén local
-    SW-->>AI: Retorna oraciones base certificadas
-    AI->>AI: Ejecuta algoritmo de permutación y generación de distractores
-    AI-->>U: Despliega 10 preguntas de selección múltiple
+    Note over U,DB: FASE 3: RENDICIÓN DE EVALUACIÓN DETERMINISTA (RF-005)
+    U->>AI: Solicita inicio de evaluación de nivel
+    AI->>SW: Solicita oraciones base certificadas del nivel
+    SW-->>AI: Retorna lista de oraciones precargadas
+    AI->>AI: Ejecuta algoritmo de permutación y distractores verosímiles
+    AI-->>U: Despliega cuestionario interactivo de 10 preguntas
     
-    U->>AI: Envía respuestas seleccionadas
-    AI->>AI: Evalúa respuestas de forma determinista y calcula porcentaje
+    U->>AI: Envía respuestas marcadas
+    AI->>AI: Califica respuestas en local y calcula porcentaje sobre 100
 
-    Note over U,DB: 4. DECISION DE PROGRESION Y GESTION DE CONECTIVIDAD (RF-009)
-    alt Calificación es 70 por ciento o más - Aprobado
-        AI-->>U: Muestra pantalla de éxito y desbloqueo de Nivel siguiente
-        alt Hay Conexión a Internet
-            U->>DB: Escribe progreso, fecha y nivel desbloqueado
-            DB-->>U: Confirma persistencia remota
-        else Modo Sin Conexión - Offline
-            U->>SW: Almacena resultado en cola local IndexedDB
-            SW-->>U: Muestra aviso de guardado local para sincronizar luego
+    Note over U,DB: FASE 4: DECISIÓN DE APROBACIÓN Y RESILIENCIA OFFLINE (RF-009)
+    alt Calificación es 70% o más (Aprobado)
+        AI-->>U: Muestra pantalla de éxito y desbloqueo de Nivel Siguiente
+        AI->>IDB: Persiste evaluación aprobada localmente en IndexedDB
+        IDB-->>AI: Confirmación de escritura atómica local
+        
+        alt Conexión a Internet Disponible (navigator.onLine == true)
+            SW->>DB: Transmite evaluación a Cloud Firestore
+            DB-->>SW: Confirma persistencia remota
+            SW-->>U: Aviso sutil de progreso sincronizado
+        else Modo Sin Conexión (Offline)
+            SW->>IDB: Encola registro en SyncQueueRecord
+            SW-->>U: Informa guardado local y programa Background Sync
         end
-    else Calificación es menor a 70 por ciento - Reprobado
-        AI-->>U: Muestra desglose formativo de errores
-        AI-->>U: Habilita botón de reintento con nuevas preguntas regeneradas
+    else Calificación es menor a 70% (Reprobado)
+        AI-->>U: Muestra desglose pedagógico de errores
+        AI-->>U: Habilita botón de reintento con nuevas permutaciones
     end
 
-    Note over U,DB: 5. RESINCRONIZACION EN SEGUNDO PLANO
-    opt Cuando se detecta restablecimiento de red
-        SW->>DB: Dispara Background Sync con registros pendientes de IndexedDB
-        DB-->>SW: Confirma sincronización exitosa de métricas y niveles
-        SW-->>U: Notificación silenciosa de progreso sincronizado
+    Note over U,DB: FASE 5: RESINCRONIZACIÓN ASÍNCRONA EN SEGUNDO PLANO
+    opt Al detectarse evento 'online' del navegador
+        SW->>IDB: Lee registros pendientes de SyncQueueRecord
+        IDB-->>SW: Retorna lote de evaluaciones diferidas
+        SW->>DB: Ejecuta Firestore Batch Write con el lote completo
+        DB-->>SW: Confirma éxito de escritura en la nube
+        SW->>IDB: Marca registros como sincronizados o elimina de la cola
+        SW-->>U: Emite notificación de progreso consolidado en la nube
     end
 ```
 
-### 6.1 Diagrama de Flujo de Estados del Sistema
+---
+
+## 9. Diagrama 8: Diagrama de Máquina de Estados del Sistema YAPU
+
+### 9.1 Representación de Estados Finitos (Mermaid stateDiagram-v2)
 
 ```mermaid
 stateDiagram-v2
     [*] --> AccesoPlataforma
     
     state AccesoPlataforma {
-        [*] --> VerificacionConexion
-        VerificacionConexion --> CargaCache : Modo Offline
-        VerificacionConexion --> AutenticacionRemota : Modo Online
-        AutenticacionRemota --> Dashboard
-        CargaCache --> Dashboard
+        [*] --> VerificandoConectividad
+        VerificandoConectividad --> CargaCacheLocal : navigator.onLine == false
+        VerificandoConectividad --> AutenticacionRemota : navigator.onLine == true
+        AutenticacionRemota --> DashboardActivo : Token JWT Válido
+        CargaCacheLocal --> DashboardActivo : Sesión en Cache Valida
     }
 
-    Dashboard --> SeleccionNivel
+    DashboardActivo --> SeleccionNivel
     
     state SeleccionNivel {
-        [*] --> ValidarEstadoNivel
-        ValidarEstadoNivel --> NivelBloqueado : Nota previa insuficiente
-        ValidarEstadoNivel --> NivelHabilitado : Nivel 1 o nivel aprobado
-        NivelBloqueado --> [*] : Muestra candado visual
+        [*] --> InspeccionarEstadoCurricular
+        InspeccionarEstadoCurricular --> NivelBloqueado : Nota del nivel previo < 70%
+        InspeccionarEstadoCurricular --> NivelHabilitado : Nivel 1 o nivel previo aprobado >= 70%
+        NivelBloqueado --> [*] : Muestra candado visual y deshabilita clic
     }
 
-    NivelHabilitado --> SesionEstudio
+    NivelHabilitado --> SesionEstudioLexico
     
-    state SesionEstudio {
-        [*] --> VisualizarTarjetasWebP
-        VisualizarTarjetasWebP --> ClasificarPalabra : Repasar o Aprendida
-        ClasificarPalabra --> FinalizarLeccion
+    state SesionEstudioLexico {
+        [*] --> VisualizandoTarjetasWebP
+        VisualizandoTarjetasWebP --> ClasificandoPalabra : Usuario pulsa 'Aprendida' o 'Repasar'
+        ClasificandoPalabra --> CompletarVocabulario : Todas las tarjetas vistas
     }
 
-    FinalizarLeccion --> EvaluacionIA
+    CompletarVocabulario --> EvaluacionDeterminista
     
-    state EvaluacionIA {
-        [*] --> GenerarPermutacionesLocal
-        GenerarPermutacionesLocal --> ResponderCuestionario
-        ResponderCuestionario --> CalcularPuntuacion
-        CalcularPuntuacion --> DictamenEvaluacion
+    state EvaluacionDeterminista {
+        [*] --> GenerandoPermutacionesEnMemoria
+        GenerandoPermutacionesEnMemoria --> CuestionarioEnCurso : Presenta 10 preguntas
+        CuestionarioEnCurso --> EvaluandoAciertos : Usuario envía respuestas
+        EvaluandoAciertos --> DictamenFinal
     }
 
-    DictamenEvaluacion --> NivelHabilitado : Reprobado menor a 70 por ciento
-    DictamenEvaluacion --> PersistenciaProgreso : Aprobado al 70 por ciento o mas
+    DictamenFinal --> NivelHabilitado : Reprobado (aciertos < 7) -> Permite reintento
+    DictamenFinal --> PersistenciaProgreso : Aprobado (aciertos >= 7) -> Habilita nuevo nivel
 
     state PersistenciaProgreso {
-        [*] --> ComprobarRed
-        ComprobarRed --> GuardarFirestore : Conexión activa
-        ComprobarRed --> EncolarIndexedDB : Conexión nula
-        EncolarIndexedDB --> EsperaReconexion
-        EsperaReconexion --> GuardarFirestore : Evento reconexión
+        [*] --> ComprobandoEstadoRed
+        ComprobandoEstadoRed --> GuardadoInmediatoFirestore : Red activa
+        ComprobandoEstadoRed --> EncoladoLocalIndexedDB : Red nula
+        EncoladoLocalIndexedDB --> EsperandoReconexion
+        EsperandoReconexion --> GuardadoInmediatoFirestore : Evento 'online' detectado
     }
 
-    PersistenciaProgreso --> [*] : Nivel siguiente accesible
+    PersistenciaProgreso --> [*] : Nivel N+1 disponible en el mapa
 ```
 
 ---
 
-## 7. Diagramas de Actividades Específicos por Caso de Uso Clave
+## 10. Diagrama 9: Diagramas de Actividades Específicos
 
-### 7.1 Actividad A: Ciclo de Vida del Motor Determinista de Preguntas (RF-005)
+### 10.1 Actividad A: Ciclo de Vida del Motor Determinista de Preguntas (RF-005)
 
 ```mermaid
 flowchart TD
@@ -641,7 +1018,7 @@ flowchart TD
     
     LOOP_START --> SEL_SENTENCE[Seleccionar oración base disponible]
     SEL_SENTENCE --> EXTRACT_LEMMA[Extraer raíz verbal, sujeto y objeto]
-    EXTRACT_LEMMA --> PERMUTE[Generar permutación morfológica controlada]
+    EXTRACT_LEMMA --> PERMUTE[Generar permutación morfológica controlada: Sufijos -pi, -man, -manta]
     
     PERMUTE --> QUERY_DISTRACTORS[Buscar en el léxico del nivel 3 distractores<br/>de la misma clase gramatical]
     
@@ -662,7 +1039,7 @@ flowchart TD
     SCORE_CALC --> THRESHOLD{¿Aciertos son 7 o más?}
     
     THRESHOLD -->|Aprobado| SAVE_SUCCESS[Registrar aprobación y habilitar nuevo nivel]
-    THRESHOLD -->|Reprobado| RETRY_STATE[Ofrecer retroalimentación pedagógica y reintento]
+    THRESHOLD -->|Reprobado| RETRY_STATE[Ofrecer retroalimentación formativa y reintento]
     
     SAVE_SUCCESS --> END_NODE([Fin de Evaluación])
     RETRY_STATE --> END_NODE
@@ -679,38 +1056,37 @@ flowchart TD
     class ERROR_STATE,RETRY_STATE fail;
 ```
 
----
-
-### 7.2 Actividad B: Funcionamiento Offline-First y Background Sync (RF-009)
+### 10.2 Actividad B: Funcionamiento Offline-First y Background Sync (RF-009)
 
 ```mermaid
 flowchart TD
-    A([Estudiante interactúa con la PWA]) --> B{¿Hay conexión de red activa?}
+    A([Estudiante interactúa con la PWA]) --> B[Service Worker intercepta petición HTTP estándar]
     
-    B -->|Con Conexión| C[Petición estándar al servidor o Firebase]
-    C --> D[Service Worker intercepta la respuesta]
-    D --> E[Almacena copia en Cache Storage local]
-    E --> F[Renderiza vista al usuario]
+    B --> C{¿Conexión a internet<br/>disponible?}
     
-    B -->|Sin Conexión| G[Service Worker detecta fallo de red]
+    C -->|Con Conexión| D[Petición estándar HTTP/2 a Cloud Firestore o VPS]
+    D --> E[Service Worker almacena copia en Cache Storage local]
+    E --> F[Renderiza vista al estudiante]
+    
+    C -->|Sin Conexión| G[Service Worker activa estrategia Offline]
     G --> H[Inspecciona Cache Storage local]
-    H --> I{¿Recurso disponible<br/>en caché?}
+    H --> I{¿Recurso disponible<br/>en caché local?}
     
-    I -->|Sí| J[Sirve lección y WebP desde Caché local]
+    I -->|Sí| J[Sirve lección y activos WebP desde Cache local]
     I -->|No| K[Despliega pantalla amigable de recurso no descargado]
     
-    J --> L[Estudiante completa estudio o evaluación]
-    L --> M[Intento de enviar nota a la nube]
-    M --> N{¿Se logró comunicar<br/>con Firestore?}
+    J --> L[Estudiante completa estudio o examen]
+    L --> M[Intento de persistir calificación]
+    M --> N{¿Se logró comunicar<br/>con Cloud Firestore?}
     
     N -->|Sí| O[Progreso consolidado en la nube]
-    N -->|No| P[Registrar transacción en tabla local IndexedDB]
-    P --> Q[Registrar tarea de Background Sync en el navegador]
+    N -->|No| P[Registrar transacción atómica en tabla IndexedDB]
+    P --> Q[Registrar tarea en SyncManager de Background Sync]
     
-    Q --> R[Esperar evento de red online del navegador]
+    Q --> R[Esperar evento de reconexión del navegador]
     R --> S[Disparador de Service Worker: vaciar cola de sincronización]
     S --> T[Transmitir lotes de respuestas a Cloud Firestore]
-    T --> U[Eliminar registros sincronizados de IndexedDB]
+    T --> U[Eliminar registros confirmados de IndexedDB]
     U --> V([Fin: Base de datos sincronizada])
     O --> V
     F --> V
@@ -721,45 +1097,55 @@ flowchart TD
     classDef ok fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#ffffff;
     classDef warn fill:#78350f,stroke:#f59e0b,stroke-width:2px,color:#ffffff;
 
-    class A,C,D,E,F,G,H,J,L,M,P,Q,R,S,T,U normal;
-    class B,I,N cond;
+    class A,B,D,E,F,G,H,J,L,M,P,Q,R,S,T,U normal;
+    class C,I,N cond;
     class O,V ok;
     class K warn;
 ```
 
 ---
 
-## 8. Matriz de Auditoría de Inteligencia Artificial (Gobernanza de Modelos UML y ERD)
+## 11. Matriz de Auditoría y Gobernanza de Inteligencia Artificial (UPDS)
 
-De acuerdo con las exigencias académicas y éticas de la Universidad Privada Domingo Savio (UPDS), esta sección transparenta qué componentes estructurales, de modelado de datos y de comportamiento fueron generados o sugeridos por modelos de Inteligencia Artificial y de qué manera el equipo humano de desarrollo los adaptó y corrigió para ajustarse a los requerimientos del proyecto.
+En cumplimiento de las normativas éticas y académicas de la **Universidad Privada Domingo Savio (UPDS)** para la materia de Ingeniería de Software, esta sección documenta de manera transparente y verificable cómo se utilizaron modelos de IA como asistentes de diseño y cuáles fueron las intervenciones y correcciones críticas efectuadas por el equipo de ingeniería humano.
 
 ### Tabla 1
-*Matriz de Auditoría de Componentes Estructurales, de Datos y de Comportamiento UML*
+*Matriz de Auditoría de Decisiones Estructurales, de Datos y Comportamiento UML*
 
-| Identificador | Componente / Diagrama | Propuesta Inicial de la IA | Ajuste Crítico Realizado por el Equipo Humano | Justificación y Fuente de Cambio |
+| Identificador | Componente del Diseño | Propuesta Inicial Asistida por IA | Ajuste Crítico Realizado por el Equipo Humano | Justificación Técnica y Pedagógica |
 |:---:|:---|:---|:---|:---|
-| **AUD-01** | Diagrama de Arquitectura: Motor de IA (RF-005) | La IA propuso integrar una API externa REST de OpenAI/Gemini para generar preguntas mediante prompts en lenguaje natural. | **Se descartó la API externa.** Se sustituyó por un Motor Determinista local en TypeScript basado en permutaciones morfológicas y banco estático. | **Restricción de Presupuesto $0 (SRS 3.3)** y necesidad de ejecución offline en áreas rurales (RF-009). Cero alucinaciones lingüísticas. |
-| **AUD-02** | Diagrama de Casos de Uso: Criterio de Aprobación (RF-003) | La IA propuso un umbral estándar de gamificación del 50% o simple avance por lectura lineal. | **Se impuso un umbral estricto del 70%** como precondición formal para el caso de uso `Desbloquear Nivel`. | **Validación con la Lic. Quispe Mamani (12/09/2026)**: El 70% asegura fijación cognitiva sin frustración pedagógica. |
-| **AUD-03** | Diagrama de Casos de Uso: Contenido Comunitario (RF-007) | La IA propuso aprobación directa por cualquier usuario mediante un sistema de "votos positivos" tipo Reddit. | **Se estableció un flujo estricto de Doble Validación Docente** con cuarentena obligatoria en estado `pendiente`. | **Requisito de Sostenibilidad Cultural RS-003**: Evitar errores ortográficos, variantes no estandarizadas o préstamos forzados del castellano o aymara. |
-| **AUD-04** | Diagrama de Actividades: Generador de Distractores | La IA propuso selección puramente aleatoria de palabras del diccionario global como distractores. | **Se implementó restricción semántica:** Los distractores deben pertenecer a la misma categoría gramatical y campo semántico del nivel en curso. | **Dictamen Pedagógico Stakeholder:** Previene que el estudiante identifique la respuesta correcta por simple descarte de opciones absurdas. |
-| **AUD-05** | Diagrama de Datos (ERD): Entidad de Oraciones y Retos | La IA diseñó una sola relación simple `Usuario 1:N OracionBase` sin discriminar roles ni estados de revisión. | **Se diseñó doble relación de asociación independiente:** `autor_id` y `validador_id`, prohibiendo que coincidan. | **Principio de Doble Validación y Cuatro Ojos**: Ningún docente puede aprobar sus propios reactivos pedagógicos. |
-| **AUD-06** | Diagrama de Datos (ERD): Detalle de Preguntas | La IA propuso almacenar las preguntas de evaluación como texto plano en un string JSON desnormalizado en la tabla de usuario. | **Se definió la entidad débil `DETALLE_PREGUNTA`** con cardinalidad 1:N hacia `EVALUACION` y claves foráneas tipadas. | **Rigor de Normalización e Integridad**: Permite auditar qué reactivos fallan con mayor frecuencia para mejora curricular continua. |
-| **AUD-07** | Diagrama de Arquitectura: Capa de Presentación (RF-010) | La IA propuso un SPA tradicional en React pesado con Tailwind genérico y gráficos complejos de alta resolución. | **Se adoptó Astro SSG + Islands con tokens andinos**, limitando el consumo total a < 150MB de RAM y assets WebP < 100KB. | **Requisito No Funcional RNF-001 y RS-002**: Garantizar compatibilidad con dispositivos de gama de entrada (2GB RAM) frecuentes en Sucre. |
-| **AUD-08** | Diagrama de Casos de Uso y Datos: Panel Docente (RF-006) | La IA omitió el contexto etnográfico, incluyendo únicamente los campos `palabra_quechua` y `traduccion_espanol`. | **Se añadió el campo obligatorio `contexto_cultural`** en el caso de uso y en la tabla de persistencia `ORACION_BASE`. | **Observación Docente (Minuta 12/09/2026)**: En quechua, la significación de la frase depende del ámbito de interacción comunitaria (*ayllu*, siembra, familia). |
-
-*Nota.* Elaboración propia por el equipo de desarrollo UPDS en cumplimiento de las directrices de auditoría y gobernanza ética de IA para la materia de Ingeniería de Software.
+| **AUD-01** | Diagrama 1: Arquitectura General | Conectar el cliente móvil a una API comercial externa (OpenAI GPT-4o-mini) para generar preguntas en lenguaje natural. | **Descarte total de la API externa.** Implementación de un Motor Determinista local en TypeScript con banco estático certificado. | **Restricción de Presupuesto \$0 (SRS 3.3)** y necesidad de operar sin internet (RF-009). Cero alucinaciones gramaticales en quechua. |
+| **AUD-02** | Diagrama 5: Casos de Uso General | Umbral de aprobación estándar del 50% o progresión automática por simple lectura lineal. | **Se impuso un umbral estricto del 70%** como precondición formal para la extensión del caso de uso `Desbloquear Nivel`. | **Validación Pedagógica con Lic. Quispe Mamani**: El 70% asegura la fijación del vocabulario básico sin frustración pedagógica. |
+| **AUD-03** | Diagrama 6: Retos Comunitarios | Aprobación abierta por voto popular de la comunidad tipo foro o red social (estilo Reddit). | **Se estableció un flujo estricto de Doble Validación Docente (Principio de 4 Ojos)** con estado obligatorio `pendiente`. | **Requisito de Sostenibilidad Cultural RS-003**: Evitar errores ortográficos, variantes no estandarizadas o préstamos inapropiados. |
+| **AUD-04** | Diagrama 9: Generación de Distractores | Selección aleatoria simple de palabras de cualquier lección o categoría del diccionario global. | **Se implementó filtro semántico estricto:** Los distractores deben compartir nivel, clase gramatical y campo temático. | **Rigor Pedagógico**: Evita que el alumno identifique la opción correcta por simple descarte de alternativas gramaticalmente absurdas. |
+| **AUD-05** | Diagrama 4: Persistencia (ERD) | Una sola relación simple `Usuario 1:N OracionBase` sin discriminar autoría de validación. | **Se diseñó doble relación independiente:** `autor_id` y `validador_id` con restricción de unicidad cruzada. | **Segregación de Roles**: Ningún docente puede certificar sus propios reactivos pedagógicos. |
+| **AUD-06** | Diagrama 4: Detalle de Preguntas | Guardar las preguntas como un string JSON no estructurado dentro de la entidad `EVALUACION`. | **Se modeló la entidad débil `DETALLE_PREGUNTA`** con cardinalidad 1:10 y claves foráneas tipadas. | **Normalización e Integridad**: Permite ejecutar consultas analíticas sobre qué sufijos o reactivos presentan mayor tasa de error. |
+| **AUD-07** | Diagrama 1: Capa de Presentación | SPA tradicional en React o Next.js con Tailwind genérico y gráficos pesados sin optimizar. | **Se adoptó Astro SSG + Islands Architecture**, limitando el consumo a < 150 MB RAM y activos WebP < 100 KB. | **Requisito No Funcional RNF-001 y RS-002**: Garantizar compatibilidad fluida con smartphones de gama de entrada en Sucre. |
+| **AUD-08** | Diagrama 2 y 4: Contexto Lingüístico | Omitir información etnográfica, incluyendo únicamente los campos `palabra_quechua` y `traduccion_espanol`. | **Se añadió el campo obligatorio `contexto_cultural`** en todas las entidades léxicas y oracionales. | **Observación Docente (12/09/2026)**: En la cosmovisión quechua, el significado depende del ámbito comunitario (*ayllu*, siembra, familia). |
 
 ---
 
-## 9. Conclusiones y Trazabilidad con el Documento Formal
+## 12. Síntesis y Guía de Defensa Oral para la Exposición Grupal de 5 Minutos
 
-1. **Alineación con el Estándar IEEE Std 830-1998:** Cada diagrama presentado en este mapa se correlaciona de manera biunívoca con la especificación de requisitos formalizada en el informe `Docs/Informe_SRS_APA7_Bloque2.pdf` y la presentación `Docs/presentacion_srs_bloque2.html`.
-2. **Factibilidad Técnica y Sostenibilidad:** El modelo arquitectónico y de modelado de datos no solo resuelve los requerimientos funcionales básicos de aprendizaje (RF-001 a RF-005), sino que blinda el sistema frente a contingencias reales del contexto boliviano: conectividad deficiente mediante Service Workers (RF-009), gratuidad operativa total con IA determinista ($0.00 de costos recurrentes) y ligereza en dispositivos móviles económicos (RS-002).
-3. **Soberanía y Pertinencia Pedagógica:** La estructura de casos de uso, entidades asociativas y actividades asegura que la plataforma permanezca fiel a la variante dialectal Quechua Chanka/Collao de Chuquisaca, otorgando a los docentes el control absoluto sobre la moderación de los datos que nutren la inteligencia del sistema.
+Para optimizar la evaluación oral de 30 puntos ante el docente, el equipo estructurará su exposición de 5 minutos (300 segundos exactos) distribuyendo los roles de la siguiente manera:
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                        CRONOMETRAJE DE DEFENSA ORAL (5 MINUTOS)                        │
+├────────────────────┬──────────────────────────────────────────┬────────────────────────┤
+│ Intervalo Temporal │ Módulo / Diagrama Expuesto               │ Estudiante Responsable │
+├────────────────────┼──────────────────────────────────────────┼────────────────────────┤
+│ Minuto 0:00 - 0:45 │ Contexto Territorial & Arquitectura PWA  │ Emmanuel Ponce Quiroga │
+│ Minuto 0:45 - 2:00 │ Diagramas de Clases (Dominio & Multibase)│ Jhoel Álvaro Cruz      │
+│ Minuto 2:00 - 3:15 │ Motor IA Determinista & Doble Moderación │ Luis Mario Rocha Vela  │
+│ Minuto 3:15 - 4:15 │ Secuencia, Estados & Background Sync     │ Jhoel Álvaro Cruz      │
+│ Minuto 4:15 - 5:00 │ Gobernanza Ética de IA & Conclusiones    │ Emmanuel Ponce Quiroga │
+└────────────────────┴──────────────────────────────────────────┴────────────────────────┘
+```
 
 ---
 
-## 10. Referencias en Formato APA 7ma Edición
+## 13. Referencias Bibliográficas en Formato APA 7ma Edición
 
 <div style="padding-left: 2em; text-indent: -2em;">
 
@@ -768,6 +1154,8 @@ Cerrón-Palomino, R. (2003). *Lingüística quechua* (2.ª ed.). Centro de Estud
 Constitución Política del Estado Plurinacional de Bolivia. (2009). *Gaceta Oficial del Estado Plurinacional de Bolivia*. La Paz, Bolivia.
 
 Elmasri, R., & Navathe, S. B. (2017). *Fundamentals of database systems* (7.ª ed.). Pearson.
+
+IEEE Computer Society. (2009). *IEEE Std 1016-2009: IEEE Standard for Information Technology — Systems Design — Software Design Descriptions*. IEEE. https://doi.org/10.1109/IEEESTD.2009.5167255
 
 IEEE Computer Society. (2011). *IEEE Std 830-1998: IEEE Recommended Practice for Software Requirements Specifications*. IEEE. https://doi.org/10.1109/IEEESTD.1998.88286
 
