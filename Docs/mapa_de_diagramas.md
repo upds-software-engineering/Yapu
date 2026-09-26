@@ -1,6 +1,6 @@
 # UNIVERSIDAD PRIVADA DOMINGO SAVIO
 ## FACULTAD DE INGENIERÍA
-### CARRERA DE INGENIERÍA DE SISTEMAS / INGENIERÍA DE SOFTWARE
+### CARRERA DE INGENIERÍA EN SISTEMAS
 
 ---
 
@@ -9,15 +9,14 @@
 **DOCUMENTO DE DESCRIPCIÓN DE DISEÑO DE SOFTWARE (IEEE Std 1016-2009 SDD)**
 
 - **Asignatura:** Ingeniería de Software I
-- **Docentes de Cátedra:** Ing. Jimmy Nataniel Requena / Ing. Fernando Pardo
+- **Docente de Cátedra:** Ing. Requena Llorentty Jimmy Nataniel
 - **Equipo de Desarrollo (Autores):**
-  - Emmanuel Ponce Quiroga (Líder Técnico & Gobernanza de IA)
-  - Jhoel Álvaro Cruz Zurita (Arquitectura VPS, Persistencia & Múltiples DBs)
-  - Luis Mario Rocha Vela (Aseguramiento de Calidad & Estándares APA)
+  - Jhoel Alvaro Cruz Zurita
+  - Emmanuel Ponce Quiroga
 - **Stakeholder Pedagógica:** Lic. María Elena Quispe Mamani (Docente Titular de Lengua Quechua — Unidad Educativa Simón Bolívar, Sucre)
-- **Fecha de Emisión:** 23 de septiembre de 2026
-- **Ubicación:** Santa Cruz de la Sierra / Sucre, Bolivia
-- **Versión:** 3.1 (Específica y Exclusiva para el Proyecto YAPU — Cero componentes externos / Persistencia Multibase de Datos: IndexedDB + Cloud Firestore)
+- **Fecha de Emisión:** Septiembre de 2026
+- **Sede:** Santa Cruz de la Sierra - Bolivia
+- **Versión:** 3.2 (Consolidada con Módulo Estructural UML, Persistencia Multibase IndexedDB + Cloud Firestore, Matriz de Auditoría Ética de IA y Guía de Defensa Oral de 5 Minutos)
 
 ---
 
@@ -1125,6 +1124,14 @@ En cumplimiento de las normativas éticas y académicas de la **Universidad Priv
 
 ---
 
+### 11.1 Evidencia de Mejora del Prompt
+La interacción con los modelos de IA partió de solicitudes amplias de modelado UML genérico. El equipo humano identificó tempranamente que los asistentes tendían a proponer arquitecturas tradicionales de alto consumo (APIs externas comerciales de OpenAI, bases de datos SQL centralizadas en la nube, interfaces SPA pesadas en React). Mediante refinamiento sistemático del contexto (*prompt engineering*), el equipo impuso las restricciones de infraestructura de las escuelas rurales de Chuquisaca: presupuesto $0 en servicios recurrentes, ejecución offline-first y consumo de memoria RAM inferior a 150 MB.
+
+### 11.2 Análisis Crítico de Posibles Alucinaciones de la IA
+En lenguas originarias como el quechua sureño, los LLMs comerciales presentan una tasa de alucinación superior al 35%, generando sufijos aglutinantes inexistentes o mezclando dialectos. La decisión crítica de ingeniería adoptada por el equipo fue descartar totalmente los LLMs en producción e implementar un motor determinista en TypeScript cuyas oraciones base provienen exclusivamente de docentes hablantes certificados mediante el principio de los cuatro ojos (autor_id != validador_id).
+
+---
+
 ## 12. Síntesis y Guía de Defensa Oral para la Exposición Grupal de 5 Minutos
 
 Para optimizar la evaluación oral de 30 puntos ante el docente, el equipo estructurará su exposición de 5 minutos (300 segundos exactos) distribuyendo los roles de la siguiente manera:
@@ -1136,10 +1143,10 @@ Para optimizar la evaluación oral de 30 puntos ante el docente, el equipo estru
 │ Intervalo Temporal │ Módulo / Diagrama Expuesto               │ Estudiante Responsable │
 ├────────────────────┼──────────────────────────────────────────┼────────────────────────┤
 │ Minuto 0:00 - 0:45 │ Contexto Territorial & Arquitectura PWA  │ Emmanuel Ponce Quiroga │
-│ Minuto 0:45 - 2:00 │ Diagramas de Clases (Dominio & Multibase)│ Jhoel Álvaro Cruz      │
-│ Minuto 2:00 - 3:15 │ Motor IA Determinista & Doble Moderación │ Luis Mario Rocha Vela  │
-│ Minuto 3:15 - 4:15 │ Secuencia, Estados & Background Sync     │ Jhoel Álvaro Cruz      │
-│ Minuto 4:15 - 5:00 │ Gobernanza Ética de IA & Conclusiones    │ Emmanuel Ponce Quiroga │
+│ Minuto 0:45 - 2:00 │ Diagramas de Clases (Dominio & Multibase)│ Jhoel Alvaro Cruz      │
+│ Minuto 2:00 - 3:15 │ Motor IA Determinista & Doble Moderación │ Emmanuel Ponce Quiroga │
+│ Minuto 3:15 - 4:15 │ Secuencia, Estados & Background Sync     │ Jhoel Alvaro Cruz      │
+│ Minuto 4:15 - 5:00 │ Matriz de Auditoría de IA & Conclusiones │ Jhoel & Emmanuel       │
 └────────────────────┴──────────────────────────────────────────┴────────────────────────┘
 ```
 

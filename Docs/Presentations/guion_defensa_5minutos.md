@@ -1,17 +1,18 @@
-# UNIVERSIDAD PRIVADA DOMINGO SAVIO
-## FACULTAD DE INGENIERÍA — INGENIERÍA DE SISTEMAS
+# UNIVERSIDAD PRIVADA DOMINGO SAVIO — SEDE SANTA CRUZ
+## FACULTAD DE INGENIERÍA — INGENIERÍA EN SISTEMAS
 ### ASIGNATURA: INGENIERÍA DE SOFTWARE I
+### DOCENTE: ING. REQUENA LLORENTTY JIMMY NATANIEL
 
 ---
 
 # PROYECTO YAPU — ÁLBUM DE MODELOS UML (ACTIVIDAD 03)
 ## GUIÓN TÉCNICO DE DEFENSA ORAL CRONOMETRADA (5 MINUTOS / 300 SEGUNDOS)
-### Criterio de Verificación #2 — Gate 3 del SDLC
+### Criterio de Verificación #2 (30 Puntos) — Gate 3 del SDLC
 
-- **Equipo de Expositores:**
-  - **Expositor 1:** Emmanuel Ponce Quiroga (Líder Técnico & Gobernanza de IA) — *Minuto 0:00 - 0:45 y 4:15 - 5:00*
-  - **Expositor 2:** Jhoel Álvaro Cruz Zurita (Arquitectura VPS, Persistencia & Múltiples DBs) — *Minuto 0:45 - 2:00 y 3:15 - 4:15*
-  - **Expositor 3:** Luis Mario Rocha Vela (Aseguramiento de Calidad & Estándares APA/IEEE) — *Minuto 2:00 - 3:15*
+- **Equipo de Expositores (2 Integrantes):**
+  - **Expositor 1:** Emmanuel Ponce Quiroga — *Bloques 1 y 3 (0:00 - 0:45 y 2:00 - 3:15)*
+  - **Expositor 2:** Jhoel Alvaro Cruz Zurita — *Bloques 2 y 4 (0:45 - 2:00 y 3:15 - 4:15)*
+  - **Cierre Conjunto:** Jhoel Alvaro Cruz & Emmanuel Ponce — *Bloque 5 (4:15 - 5:00)*
 - **Tiempo Total Asignado:** 5 minutos exactos (300 segundos).
 - **Herramienta de Soporte:** Diapositivas interactivas en `Docs/Presentations/presentacion_actividad03_5min.html`.
 
@@ -24,10 +25,10 @@
 │ Intervalo Temporal │ Módulo / Diagrama Expuesto               │ Estudiante Responsable │
 ├────────────────────┼──────────────────────────────────────────┼────────────────────────┤
 │ Minuto 0:00 - 0:45 │ Contexto Territorial & Arquitectura PWA  │ Emmanuel Ponce Quiroga │
-│ Minuto 0:45 - 2:00 │ Diagramas de Clases (Dominio & Multibase)│ Jhoel Álvaro Cruz      │
-│ Minuto 2:00 - 3:15 │ Motor IA Determinista & Doble Moderación │ Luis Mario Rocha Vela  │
-│ Minuto 3:15 - 4:15 │ Secuencia, Estados & Background Sync     │ Jhoel Álvaro Cruz      │
-│ Minuto 4:15 - 5:00 │ Gobernanza Ética de IA & Conclusiones    │ Emmanuel Ponce Quiroga │
+│ Minuto 0:45 - 2:00 │ Diagramas de Clases (Dominio & Multibase)│ Jhoel Alvaro Cruz      │
+│ Minuto 2:00 - 3:15 │ Motor IA Determinista & Doble Moderación │ Emmanuel Ponce Quiroga │
+│ Minuto 3:15 - 4:15 │ Secuencia, Estados & Background Sync     │ Jhoel Alvaro Cruz      │
+│ Minuto 4:15 - 5:00 │ Matriz de Auditoría de IA & Conclusiones │ Jhoel & Emmanuel       │
 └────────────────────┴──────────────────────────────────────────┴────────────────────────┘
 ```
 
@@ -38,7 +39,7 @@
 **Expositor:** Emmanuel Ponce Quiroga  
 **Diapositivas:** 1, 2 y 3  
 
-> *"Buenos días, ingeniero y compañeros. Presentamos la Actividad 03: el Álbum de Modelos UML para el proyecto YAPU, bajo el estándar IEEE Std 1016.*
+> *"Buenos días, ingeniero Requena y compañeros. Presentamos la Actividad 03: el Álbum de Modelos UML para el proyecto YAPU, formalizado bajo el estándar IEEE Std 1016.*
 >
 > *YAPU nace para combatir la pérdida intergeneracional del quechua sureño en Chuquisaca. Al diseñar el software, enfrentamos una restricción crítica: en las comunidades periurbanas y rurales, los estudiantes cuentan con teléfonos inteligentes de gama baja con Android 8.0 y sufren conectividad intermitente 2G y 3G.*
 >
@@ -48,7 +49,7 @@
 
 ## BLOQUE 2: Vista Estructural — Clases del Dominio y Persistencia Multibase de Datos
 **Tiempo:** 0:45 - 2:00 (75 segundos)  
-**Expositor:** Jhoel Álvaro Cruz Zurita  
+**Expositor:** Jhoel Alvaro Cruz Zurita  
 **Diapositivas:** 4, 5 y 6  
 
 > *"Continuando con la Vista Estructural, en el Diagrama de Clases del Dominio aplicamos estrictamente los principios SOLID, en particular el Principio de Inversión de Dependencias (DIP). La controladora `EvaluationController` depende de la abstracción `IEvaluationEngine` y no de una clase concreta, lo que permite intercambiar el motor o inyectar pruebas unitarias sin tocar la interfaz.*
@@ -65,7 +66,7 @@
 
 ## BLOQUE 3: Vista Funcional — Motor IA Determinista y Doble Moderación
 **Tiempo:** 2:00 - 3:15 (75 segundos)  
-**Expositor:** Luis Mario Rocha Vela  
+**Expositor:** Emmanuel Ponce Quiroga  
 **Diapositivas:** 7, 8 y 9  
 
 > *"En la Vista Funcional, mapeamos los 10 Requisitos Funcionales del sistema. En el caso de uso `Rendir Evaluación`, el desbloqueo del siguiente nivel se modela como una relación `<<extend>>` condicionada a la guarda de obtener 70% o más de calificación, respetando la recomendación pedagógica de nuestra stakeholder, la Licenciada María Elena Quispe.*
@@ -82,7 +83,7 @@
 
 ## BLOQUE 4: Vista Dinámica — Secuencia Temporal, Estados y Background Sync
 **Tiempo:** 3:15 - 4:15 (60 segundos)  
-**Expositor:** Jhoel Álvaro Cruz Zurita  
+**Expositor:** Jhoel Alvaro Cruz Zurita  
 **Diapositivas:** 10 y 11  
 
 > *"En la Vista Dinámica, el Diagrama de Secuencia y el Diagrama de Máquina de Estados describen la resiliencia del software:*
@@ -97,14 +98,12 @@
 
 ## BLOQUE 5: Gobernanza de IA, Conclusiones y Defensa
 **Tiempo:** 4:15 - 5:00 (45 segundos)  
-**Expositor:** Emmanuel Ponce Quiroga  
+**Expositores:** Jhoel Alvaro Cruz Zurita & Emmanuel Ponce Quiroga  
 **Diapositiva:** 12  
 
-> *"Finalmente, en cumplimiento de los estándares éticos de la UPDS, presentamos la Matriz de Auditoría de IA con 8 intervenciones críticas donde el criterio humano corrigió propuestas de IA: descartamos APIs comerciales para garantizar gratuidad y funcionamiento offline, establecimos el umbral del 70%, e introdujimos el campo obligatorio de contexto cultural.*
+> *(Emmanuel Ponce)*: *"Finalmente, en cumplimiento de los estándares éticos de la UPDS, presentamos la Matriz de Auditoría de IA con decisiones críticas donde el criterio humano corrigió propuestas de IA: descartamos APIs comerciales para garantizar gratuidad y funcionamiento offline, establecimos el umbral del 70%, e introdujimos el campo obligatorio de contexto cultural.*
 >
-> *En conclusión, este Álbum de Modelos UML no es un ejercicio meramente visual: es una especificación ejecutable bajo IEEE Std 1016 que demuestra la viabilidad técnica, pedagógica y social de YAPU para democratizar el quechua en Bolivia.*
->
-> *Quedamos a disposición del docente para la ronda de preguntas. Muchas gracias."*
+> *(Jhoel Cruz)*: *En conclusión, este Álbum de Modelos UML no es un ejercicio meramente visual: es una especificación ejecutable bajo IEEE Std 1016 que demuestra la viabilidad técnica, pedagógica y social de YAPU para democratizar el quechua en Bolivia. Quedamos a disposición del docente para la ronda de preguntas. Muchas gracias."*
 
 ---
 
@@ -116,5 +115,5 @@
 ### P2: ¿Cómo modelaron la relación entre IndexedDB y Firestore en el diagrama de clases?
 - **Respuesta Técnica:** Aplicamos el patrón Data Mapper y Repository. En lugar de ensuciar las clases de negocio con llamadas a Firebase o IndexedDB, creamos schemas dedicados (`EvaluationStoreRecord` para IndexedDB con keyPaths e índices, y `FirestoreEvaluationDocument` con subcolecciones para Firestore). Mappers puros traducen entre el dominio y cada base de datos, mientras que `OfflineFirstEvaluationRepository` maneja la estrategia de persistir primero en local y sincronizar luego en la nube.
 
-### P3: ¿Por qué la relación entre Evaluación y Pregunta es Composición (`*--`) y no Agregación (`o--`)?
+### P3: ¿Por qué la relación entre Evaluación y Pregunta es Composición (*--) y no Agregación (o--)?
 - **Respuesta Técnica:** Porque las preguntas son sintetizadas dinámicamente con permutaciones específicas para ese intento evaluativo particular. No tienen existencia conceptual, clave primaria natural ni sentido de negocio fuera de la evaluación que las originó. Si la evaluación se descarta o se reinicia, sus 10 preguntas se destruyen en cascada en memoria.
