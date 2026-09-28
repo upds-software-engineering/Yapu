@@ -1,0 +1,48 @@
+graph TB
+    subgraph CLIENT_TIER["1. Capa de Cliente: PWA Ligera (Memoria RAM < 150MB en Android 8.0+)"]
+        direction TB
+        UI["Interfaz de Usuario con Diseño Andino<br/>Astro SSG + Islands Architecture (RNF-001)"]
+        SW["Service Worker & Workbox<br/>Interceptador de Eventos Fetch y Estrategias Caché (RF-009)"]
+        CACHE_API[("Cache Storage API<br/>App Shell, CSS y Activos WebP")]
+        IDB_LOCAL[("Base de Datos Local: IndexedDB<br/>ObjectStores: Evaluaciones, Léxico y Cola Offline")]
+        
+        subgraph CORE_AI["Motor de IA Determinista en TypeScript (RF-005)"]
+            GEN["Generador de Evaluaciones<br/>Permutación sintáctica de oraciones"]
+            DIST["Filtro de Distractores Verosímiles<br/>Misma categoría gramatical y nivel"]
+            EVAL["Evaluador Local de Desempeño<br/>Cálculo inmediato de aciertos sin red"]
+        end
+    end
+
+    subgraph CLOUD_TIER["2. Servicios Gestionados en la Nube (Google Firebase BaaS)"]
+        direction TB
+        FAUTH["Firebase Authentication<br/>Emisión de JWT y Claims de Roles: Estudiante, Docente, Admin (RF-001, RF-002)"]
+        FSTORE_ENGINE[("Cloud Firestore NoSQL Engine<br/>Colecciones /users, /niveles, /evaluaciones, /oraciones_base")]
+        FSTORE_RULES["Reglas de Seguridad Declarativas<br/>firestore.rules: Validación de Roles e Inmutabilidad"]
+        FAUTH -.->|Inyecta contexto auth.token| FSTORE_RULES
+        FSTORE_RULES --- FSTORE_ENGINE
+    end
+
+    subgraph VPS_TIER["3. Infraestructura Autogestionada (Servidor VPS Linux UPDS)"]
+        direction TB
+        NGINX["Servidor Web & Reverse Proxy Nginx<br/>Compresión Brotli/Gzip y Caché HTTP/2 (RNF-004)"]
+        STATIC_ASSETS["Repositorio de Activos Léxicos<br/>Imágenes WebP comprimidas (< 100KB, RS-001)"]
+        DATA_EXPORT["Servicio de Exportación Abierta (RS-004)<br/>Endpoint REST para Corpus Lingüístico CSV/JSON"]
+        NGINX --> STATIC_ASSETS
+        NGINX --> DATA_EXPORT
+    end
+
+    UI -->|Llamadas internas a la API DOM| SW
+    UI -->|Invocación directa en memoria| CORE_AI
+    GEN --> DIST
+    DIST --> EVAL
+    
+    SW -->|CacheFirst: Lectura/Escritura de Assets| CACHE_API
+    SW -->|Lectura/Escritura transaccional IndexedDB API| IDB_LOCAL
+    EVAL -.->|Persiste resultado local| IDB_LOCAL
+
+    SW -->|Canal Seguro HTTPS TLS 1.3: Autenticación REST| FAUTH
+    SW -->|Canal Seguro HTTPS TLS 1.3 / gRPC: Mutaciones y Batch Writes| FSTORE_ENGINE
+    SW -->|Canal Seguro HTTPS TLS 1.3: Descarga de Imágenes WebP| NGINX
+    IDB_LOCAL -.->|Background Sync API: Sincronización asíncrona de evaluaciones diferidas| FSTORE_ENGINE
+
+

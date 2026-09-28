@@ -1,0 +1,139 @@
+classDiagram
+class Evaluation {
+    -String evaluationId
+    -String studentId
+    -int levelId
+    -int scorePercentage
+    -DateTime timestamp
+    -boolean isSynchronized
+    +isPassed() boolean
+}
+class VocabularyCard {
+    -String wordId
+    -int levelId
+    -String termQuechua
+    -String translationEs
+    -String grammaticalCategory
+    -String webpAssetUrl
+    -String culturalContext
+}
+class EvaluationStoreRecord {
+    <<schema-indexeddb>>
+    +String evaluationId : keyPath
+    +int levelId : index_by_level
+    +String syncStatus : index_by_status
+    +int scorePercentage
+    +long timestampEpochMs
+    +String questionsPayloadJSON
+    +String clientDeviceFingerprint
+}
+class VocabularyStoreRecord {
+    <<schema-indexeddb>>
+    +String wordId : keyPath
+    +int levelId : index_by_level
+    +String termQuechua : index_by_term
+    +String translationEs
+    +String categoryGrammatical
+    +String cachedAssetBlobUrl
+    +long lastReviewEpochMs
+}
+class SyncQueueRecord {
+    <<schema-indexeddb>>
+    +String queueId : keyPath
+    +String entityType : index_by_entity
+    +String operationType : INSERT_UPDATE
+    +String payloadJSON
+    +int retryCount
+    +long queuedAtEpochMs
+    +String lastSyncError
+}
+class FirestoreEvaluationDocument {
+    <<schema-firestore-doc>>
+    +String docId : path_evaluaciones_id
+    +String studentUid : indexed_field
+    +int levelId : indexed_field
+    +int scorePercentage
+    +Timestamp createdAt : server_timestamp
+    +boolean approvedStatus
+    +Map~string, any~ auditMetadata
+}
+class FirestoreQuestionSubdocument {
+    <<schema-firestore-subdoc>>
+    +String questionId : path_preguntas_id
+    +String rawSentenceId
+    +String statementText
+    +String correctOption
+    +List~String~ distractors
+    +String studentAnswer
+    +boolean isCorrect
+}
+class FirestoreVocabularyDocument {
+    <<schema-firestore-doc>>
+    +String docId : path_niveles_id_vocabulario_id
+    +String termQuechua
+    +String translationEs
+    +String category
+    +String cdnWebpUrl
+    +String culturalContext
+    +String validatedByDocenteId
+}
+class IOfflineFirstRepository {
+    <<interface>>
+    +saveEvaluation(eval: Evaluation) Promise~boolean~
+    +getOfflineCurriculum(levelId: int) Promise~List~VocabularyCard~~
+    +synchronizePendingQueue() Promise~int~
+}
+class EvaluationLocalMapper {
+    +toLocalRecord(domain: Evaluation) EvaluationStoreRecord
+    +toDomain(record: EvaluationStoreRecord) Evaluation
+}
+class EvaluationRemoteMapper {
+    +toFirestoreDocument(domain: Evaluation) FirestoreEvaluationDocument
+    +toDomain(doc: FirestoreEvaluationDocument) Evaluation
+}
+class OfflineFirstEvaluationRepository {
+    -EvaluationLocalMapper localMapper
+    -EvaluationRemoteMapper remoteMapper
+    +saveEvaluation(eval: Evaluation) Promise~boolean~
+    +pushBatchToFirestore(records: List~EvaluationStoreRecord~) Promise~boolean~
+    +reconcileConflicts(localEpoch: long, remoteTimestamp: Timestamp) boolean
+}
+namespace DomainEntities {
+    class Evaluation
+    class VocabularyCard
+}
+namespace LocalPersistence_IndexedDB_Schemas {
+    class EvaluationStoreRecord
+    class VocabularyStoreRecord
+    class SyncQueueRecord
+}
+namespace RemotePersistence_Firestore_Schemas {
+    class FirestoreEvaluationDocument
+    class FirestoreQuestionSubdocument
+    class FirestoreVocabularyDocument
+}
+namespace DataMappersAndCoordination {
+    class IOfflineFirstRepository
+    class EvaluationLocalMapper
+    class EvaluationRemoteMapper
+    class OfflineFirstEvaluationRepository
+}
+
+
+
+
+    IOfflineFirstRepository <|.. OfflineFirstEvaluationRepository : implementa contrato unificado
+    OfflineFirstEvaluationRepository --> EvaluationLocalMapper : usa mapper local
+    OfflineFirstEvaluationRepository --> EvaluationRemoteMapper : usa mapper remoto
+    
+    OfflineFirstEvaluationRepository ..> EvaluationStoreRecord : persiste en IndexedDB
+    OfflineFirstEvaluationRepository ..> SyncQueueRecord : encola si falla la red
+    OfflineFirstEvaluationRepository ..> FirestoreEvaluationDocument : transmite a Cloud Firestore
+
+    EvaluationLocalMapper ..> Evaluation : mapea desde y hacia dominio
+    EvaluationLocalMapper ..> EvaluationStoreRecord : produce registro local
+    
+    EvaluationRemoteMapper ..> Evaluation : mapea desde y hacia dominio
+    EvaluationRemoteMapper ..> FirestoreEvaluationDocument : produce documento NoSQL
+
+    FirestoreEvaluationDocument "1" *-- "10" FirestoreQuestionSubdocument : subcolección anidada en Firestore

@@ -1,0 +1,20 @@
+graph LR
+    EST(["Estudiante"])
+    subgraph MVP["Flujo MVP de YAPU"]
+        direction LR
+        CU02(["CU-02: Iniciar sesión"])
+        CU11(["CU-11: Consultar progreso"])
+        CU03(["CU-03: Visualizar mapa de niveles"])
+        CU04(["CU-04: Practicar vocabulario"])
+        CU05(["CU-05: Rendir evaluación IA"])
+        CU02 -.->|redirige a| CU11
+        CU11 -.->|navega a| CU03
+        CU03 -.->|inicia| CU04
+        CU04 -.->|habilita| CU05
+        CU05 -.->|actualiza| CU11
+    end
+    EST --> CU02
+    EST --> CU11
+    EST --> CU03
+    EST --> CU04
+    EST --> CU05

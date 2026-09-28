@@ -1,0 +1,30 @@
+graph TB
+    subgraph CU_DET_IA["Caso de Uso Detallado: Rendir Evaluación con IA Determinista (RF-005)"]
+        direction TB
+        EST["Estudiante"] -->|1. Solicita rendir test de nivel| CLI["Cliente PWA Astro"]
+        
+        CLI -->|2. Consulta oraciones certificadas| BANK[("Banco Local de Oraciones<br/>(Cache Storage / IndexedDB)")]
+        
+        CLI -->|3. Invoca motor determinista en TypeScript| ENGINE["Motor Determinista Local"]
+        
+        subgraph ALGORITMO["Algoritmo Determinista sin LLMs"]
+            P1["1. Selección pseudoaleatoria con semilla de 10 oraciones base"]
+            P2["2. Análisis de componentes sintácticos (Sujeto, Objeto, Verbo)"]
+            P3["3. Aplicación de permutación morfológica controlada (Sufijos -pi, -man, -manta)"]
+            P4["4. Selección de 3 distractores del mismo campo semántico y nivel"]
+            P5["5. Mezcla de alternativas (Fisher-Yates Shuffle determinista)"]
+            P1 --> P2 --> P3 --> P4 --> P5
+        end
+        
+        ENGINE --- ALGORITMO
+        
+        ALGORITMO -->|4. Retorna batería de 10 reactivos| CLI
+        CLI -->|5. Presenta interfaz interactiva| EST
+        EST -->|6. Envía respuestas marcadas| EVAL_LOC["Evaluador de Desempeño Local"]
+        
+        EVAL_LOC -->|7. Calcula aciertos| CHECK{¿Nota es 70% o más?}
+        CHECK -->|Aprobado| OK["Desbloquea Nivel Siguiente en Local y Firestore<br/>Registra Nota y Fecha de Aprobación"]
+        CHECK -->|Reprobado| FAIL["Despliega desglose formativo de fallos<br/>Habilita reintento con nuevas permutaciones"]
+    end
+
+

@@ -1,0 +1,34 @@
+flowchart TD
+    A([Estudiante interactúa con la PWA]) --> B[Service Worker intercepta petición HTTP estándar]
+    
+    B --> C{¿Conexión a internet<br/>disponible?}
+    
+    C -->|Con Conexión| D[Petición estándar HTTP/2 a Cloud Firestore o VPS]
+    D --> E[Service Worker almacena copia en Cache Storage local]
+    E --> F[Renderiza vista al estudiante]
+    
+    C -->|Sin Conexión| G[Service Worker activa estrategia Offline]
+    G --> H[Inspecciona Cache Storage local]
+    H --> I{¿Recurso disponible<br/>en caché local?}
+    
+    I -->|Sí| J[Sirve lección y activos WebP desde Cache local]
+    I -->|No| K[Despliega pantalla amigable de recurso no descargado]
+    
+    J --> L[Estudiante completa estudio o examen]
+    L --> M[Intento de persistir calificación]
+    M --> N{¿Se logró comunicar<br/>con Cloud Firestore?}
+    
+    N -->|Sí| O[Progreso consolidado en la nube]
+    N -->|No| P[Registrar transacción atómica en tabla IndexedDB]
+    P --> Q[Registrar tarea en SyncManager de Background Sync]
+    
+    Q --> R[Esperar evento de reconexión del navegador]
+    R --> S[Disparador de Service Worker: vaciar cola de sincronización]
+    S --> T[Transmitir lotes de respuestas a Cloud Firestore]
+    T --> U[Eliminar registros confirmados de IndexedDB]
+    U --> V([Fin: Base de datos sincronizada])
+    O --> V
+    F --> V
+    K --> V
+
+

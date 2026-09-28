@@ -1,0 +1,38 @@
+graph TB
+    subgraph UI["Capa 1: Interfaz de usuario PWA (Astro)"]
+        direction LR
+        PD["Panel docente"]
+        CA["Comunidad Ayllu"]
+        DB["Dashboard del estudiante"]
+        MN["Mapa de niveles"]
+        FC["Flashcards"]
+        QR["Quiz Runner"]
+    end
+    subgraph CORE["Capa 2: Módulos funcionales core"]
+        direction LR
+        GU["Gestión de usuarios"]
+        PG["Progresión y gamificación"]
+        IA["Motor de IA determinista (TS)"]
+        OS["Offline y Background Sync"]
+    end
+    subgraph SB["Capa 3: Servicios base"]
+        direction LR
+        FA[("Firebase Auth")]
+        CF[("Cloud Firestore")]
+        IDB[("IndexedDB y caché PWA")]
+    end
+    PD --> GU
+    CA --> GU
+    DB --> GU
+    DB --> PG
+    MN --> PG
+    FC --> PG
+    QR --> IA
+    PD --> CF
+    CA --> CF
+    GU --> FA
+    GU --> CF
+    PG --> OS
+    IA --> OS
+    OS --> IDB
+    OS --> CF

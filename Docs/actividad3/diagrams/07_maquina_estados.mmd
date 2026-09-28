@@ -1,0 +1,54 @@
+stateDiagram-v2
+    [*] --> AccesoPlataforma
+    
+    state AccesoPlataforma {
+        direction LR
+        [*] --> VerificandoConectividad
+        VerificandoConectividad --> CargaCacheLocal : navigator.onLine == false
+        VerificandoConectividad --> AutenticacionRemota : navigator.onLine == true
+        AutenticacionRemota --> DashboardActivo : Token JWT Válido
+        CargaCacheLocal --> DashboardActivo : Sesión en Cache Valida
+    }
+
+    DashboardActivo --> SeleccionNivel
+    
+    state SeleccionNivel {
+        direction LR
+        [*] --> InspeccionarEstadoCurricular
+        InspeccionarEstadoCurricular --> NivelBloqueado : Nota del nivel previo < 70%
+        InspeccionarEstadoCurricular --> NivelHabilitado : Nivel 1 o nivel previo aprobado >= 70%
+        NivelBloqueado --> [*] : Muestra candado visual y deshabilita clic
+    }
+
+    NivelHabilitado --> SesionEstudioLexico
+    
+    state SesionEstudioLexico {
+        direction LR
+        [*] --> VisualizandoTarjetasWebP
+        VisualizandoTarjetasWebP --> ClasificandoPalabra : Usuario pulsa 'Aprendida' o 'Repasar'
+        ClasificandoPalabra --> CompletarVocabulario : Todas las tarjetas vistas
+    }
+
+    CompletarVocabulario --> EvaluacionDeterminista
+    
+    state EvaluacionDeterminista {
+        direction LR
+        [*] --> GenerandoPermutacionesEnMemoria
+        GenerandoPermutacionesEnMemoria --> CuestionarioEnCurso : Presenta 10 preguntas
+        CuestionarioEnCurso --> EvaluandoAciertos : Usuario envía respuestas
+        EvaluandoAciertos --> DictamenFinal
+    }
+
+    DictamenFinal --> NivelHabilitado : Reprobado (aciertos < 7) -> Permite reintento
+    DictamenFinal --> PersistenciaProgreso : Aprobado (aciertos >= 7) -> Habilita nuevo nivel
+
+    state PersistenciaProgreso {
+        direction LR
+        [*] --> ComprobandoEstadoRed
+        ComprobandoEstadoRed --> GuardadoInmediatoFirestore : Red activa
+        ComprobandoEstadoRed --> EncoladoLocalIndexedDB : Red nula
+        EncoladoLocalIndexedDB --> EsperandoReconexion
+        EsperandoReconexion --> GuardadoInmediatoFirestore : Evento 'online' detectado
+    }
+
+    PersistenciaProgreso --> [*] : Nivel N+1 disponible en el mapa
