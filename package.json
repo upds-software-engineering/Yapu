@@ -9,8 +9,8 @@
     "build": "astro build",
     "preview": "astro preview --port 9500 --host",
     "astro": "astro",
-    "test": "node --experimental-strip-types --test tests/**/*.test.ts",
-    "test:unit": "node --experimental-strip-types --test tests/unit/*.test.ts"
+    "test": "node --experimental-strip-types --test --test-reporter=spec tests/**/*.test.ts",
+    "test:unit": "node --experimental-strip-types --test --test-reporter=spec tests/unit/*.test.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.1",

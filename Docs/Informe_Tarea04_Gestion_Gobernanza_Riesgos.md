@@ -475,6 +475,59 @@ Basado en el documento oficial de catedra `Niveles de Testing de Software.pdf`, 
 * **UAT (Pruebas de Aceptacion del Usuario):** Ejecutadas por el docente especialista para validar si la aplicacion responde a la necesidad formativa real.
 * **Testing Exploratorio (SBTM - Session-Based Test Management):** Sesion de 60 minutos con carta de mision enfocada en escenarios de baja bateria, cambio abrupto de modo vertical a horizontal y corte subito de conexion wifi durante el quiz.
 
+### 10.5 Evidencia de Ejecucion de Pruebas Unitarias (Captura de Consola)
+A continuacion se presenta la salida oficial de la suite de pruebas ejecutada en consola mediante `npm test` con el reporter `spec`, demostrando 18 pruebas ejecutadas en 122 milisegundos con 0 fallos:
+
+```bash
+$ npm test
+
+> yapu@1.0.0 test
+> node --experimental-strip-types --test --test-reporter=spec tests/**/*.test.ts
+
+▶ Nivel 1: Pruebas Unitarias - Motor de IA Determinista YAPU
+  ▶ Generador de Evaluaciones (generateQuizForLevel)
+    ✔ deberia generar exactamente 10 preguntas para el Nivel 1 (1.469ms)
+    ✔ cada pregunta debe tener 4 opciones mezcladas y contener la opcion correcta (0.3708ms)
+    ✔ los distractores no deben ser identicos a la opcion correcta (0.3311ms)
+  ✔ Generador de Evaluaciones (generateQuizForLevel) (2.7761ms)
+  ▶ Calificador Determinista (evaluateQuiz)
+    ✔ debe aprobar con 100% cuando todas las respuestas son correctas (1.3485ms)
+    ✔ debe aprobar en el caso limite exacto del 70% (7 aciertos de 10) (0.1289ms)
+    ✔ debe reprobar con 60% (6 aciertos de 10, por debajo del umbral del 70%) (0.1687ms)
+    ✔ debe ser tolerante a mayusculas/minusculas y espacios en blanco accidentales (0.1102ms)
+  ✔ Calificador Determinista (evaluateQuiz) (2.0376ms)
+✔ Nivel 1: Pruebas Unitarias - Motor de IA Determinista YAPU (5.2422ms)
+▶ Nivel 1: Arquitectura Hexagonal y Principios SOLID
+  ▶ Value Objects del Dominio
+    ✔ PuntuacionVO: debe validar rango [0, 100] y umbral del 70% (1.4213ms)
+    ✔ NivelIdVO: debe restringir niveles estrictamente al rango de 1 a 10 (0.3311ms)
+    ✔ TerminoQuechuaVO: debe validar no vacio y normalizar (0.5403ms)
+  ✔ Value Objects del Dominio (2.7755ms)
+  ▶ Factory Method: EvaluacionFactory
+    ✔ debe crear una evaluacion valida con invariantes respetadas (0.8759ms)
+    ✔ debe rechazar aciertos negativos o mayores al total de preguntas (0.1433ms)
+  ✔ Factory Method: EvaluacionFactory (1.1225ms)
+  ▶ Caso de Uso: CalificarEvaluacionUseCase con Inyeccion de Dependencias
+    ✔ debe calificar, delegar al repositorio a traves del puerto y retornar el resultado (0.2878ms)
+  ✔ Caso de Uso: CalificarEvaluacionUseCase con Inyeccion de Dependencias (0.5802ms)
+✔ Nivel 1: Arquitectura Hexagonal y Principios SOLID (4.9515ms)
+▶ Nivel 1: Pruebas con Mocks y Stubs - LocalRepository (IndexedDB / LocalStorage)
+  ✔ debe devolver el perfil por defecto y guardarlo si el almacenamiento esta vacio (0.7606ms)
+  ✔ debe desbloquear el nivel siguiente y sumar 100 puntos de experiencia (0.1943ms)
+  ✔ no debe permitir desbloquear niveles superiores al maximo permitido (nivel 10) (0.1865ms)
+  ✔ debe marcar una palabra como aprendida e incrementar el contador de aciertos (0.2936ms)
+  ✔ debe almacenar una evaluacion y encolarla en la cola de sincronizacion offline cuando no hay red (0.501ms)
+✔ Nivel 1: Pruebas con Mocks y Stubs - LocalRepository (IndexedDB / LocalStorage) (2.784ms)
+ℹ tests 18
+ℹ suites 8
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 122.4293
+```
+
 ---
 
 ## 11. Estrategia de CI/CD, Git y Proteccion de Ramas (Segun Guia de GitHub)
@@ -502,6 +555,24 @@ Para evitar accidentes (como el `git push --force` a altas horas de la noche adv
 * **Require a pull request before merging:** Prohibicion absoluta de commits directos a `main`.
 * **Require status checks to pass:** El boton de merge se bloquea si el trabajo `lint_and_unit` o `build` falla en Actions.
 * **Do not allow force pushes / deletions:** Proteccion contra sobreescritura del historial.
+
+### 11.5 Evidencia de Versionado Git y Trazabilidad de Commits (Captura de Consola)
+A continuacion se presenta la captura textual del arbol de commits verificado mediante `git log --graph --oneline` y el estado limpio del repositorio mediante `git status`:
+
+```bash
+$ git log --graph --oneline -n 6
+* 2734999 feat(tarea-04): entrega final de gestion gobernanza y riesgos, arquitectura hexagonal, pruebas unitarias y ci-cd
+* 7480691 docs(actividad-03): album UML APA 7 actualizado con diagramas del mapa, presentacion PowerPoint y guion de defensa
+* 63bc2db docs: compendio humanizado de investigacion tecnica y laboratorio Java en tareas-varias.md
+* 0ceff5a docs(actividad-03): corregir caratula UPDS Santa Cruz, docente Ing. Requena, integrantes Jhoel y Emmanuel, e integrar matriz de auditoria de IA completa
+* 67e3680 docs(actividad-03): album de modelos UML IEEE 1016, informe APA 7, presentacion y guion de defensa
+* fe0fe1a docs: agregar README.md completo con arquitectura, puertos 9500+, motor IA y guia de despliegue
+
+$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+nothing to commit, working tree clean
+```
 
 ---
 
