@@ -76,7 +76,7 @@ export function TarjetaNivel({ nivel, esCtaPrimario = false }: PropsTarjetaNivel
         className={cn(
           'flex h-full flex-col gap-3',
           nivel.estado === 'actual' && 'border-andina-gold/50 shadow-lg shadow-andina-gold/10',
-          bloqueado && 'opacity-70'
+          bloqueado && 'bg-slate-900/60'
         )}
       >
         <div className="flex items-start gap-3">

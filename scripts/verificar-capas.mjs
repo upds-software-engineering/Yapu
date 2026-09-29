@@ -42,9 +42,6 @@ const ENTORNO_PROHIBIDO = {
   ui: []
 };
 
-/** Subrutas de infraestructura vetadas a la UI; el composition root sólo se permite en `ui/hooks`. */
-const SUBRUTAS_INFRA_VETADAS = ['persistence', 'catalog', 'system', 'sync'];
-
 export function capaDe(rutaRelativa) {
   const partes = rutaRelativa.split('/');
   if (partes[0] !== 'src') return null;

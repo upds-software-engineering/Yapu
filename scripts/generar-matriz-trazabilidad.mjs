@@ -345,7 +345,7 @@ function leerReportes() {
 
   for (const ruta of archivos) {
     const nombre = relative(RAIZ, ruta).split('\\').join('/');
-    let contenido = '';
+    let contenido;
     try {
       contenido = readFileSync(ruta, 'utf8');
     } catch (error) {

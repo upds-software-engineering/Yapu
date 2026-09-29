@@ -123,11 +123,17 @@ export default tseslint.config(
       'dist/**',
       '.astro/**',
       '.cache/**',
+      '.vitest/**',
       'node_modules/**',
       'reports/**',
       'playwright-report/**',
       'test-results/**',
       'public/**',
+      // Documentación y material académico: no es código de la aplicación y mezcla HTML, Python y
+      // activos generados (PDF/DOCX/PPTX) que no deben analizarse con las reglas del proyecto.
+      'Docs/**',
+      '.agents/**',
+      'presentacion_ai_dlc_inception.html',
       'scripts/**/*.py'
     ]
   },
@@ -147,6 +153,24 @@ export default tseslint.config(
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
       ]
+    }
+  },
+  {
+    // Scripts de build y de reportes: son Node ESM, así que se declaran sus globales a mano para no
+    // depender de un paquete adicional de `globals`.
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        URL: 'readonly',
+        Response: 'readonly',
+        fetch: 'readonly',
+        caches: 'readonly',
+        self: 'readonly',
+        structuredClone: 'readonly',
+        __dirname: 'readonly'
+      }
     }
   },
   {

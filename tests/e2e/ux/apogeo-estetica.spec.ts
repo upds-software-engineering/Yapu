@@ -104,9 +104,18 @@ test.describe('[UX-APOGEO] Apogeo-Final', () => {
     const ctaPrimario = page.locator('[data-pantalla="resultado"] [data-cta="primario"]');
     await expect(ctaPrimario).toHaveCount(1);
 
-    expect
-      .soft(desenlace, 'Tras 3 intentos el azar no dio la aprobación: el cierre queda sin verificar.')
-      .toBe('aprobado');
+    /*
+     * Desde el DOM no se puede forzar la aprobación: `GeneradorEvaluacion` baraja las opciones (RN-09)
+     * y regenera el examen en cada intento, de modo que responder siempre la primera acierta ~25% y
+     * nunca alcanza el 70% (RN-04). La rama APROBADA del clímax (confeti, XP, insignia de nivel
+     * desbloqueado o curso completado) queda verificada de forma determinista en la prueba de
+     * componente `tests/component/evaluacion.test.tsx` ([UX-APOGEO] aprobado), y la regla de
+     * desbloqueo en `tests/unit/application/evaluacion.test.ts` (RN-02). Aquí se comprueba lo que sí
+     * es determinista en cualquier desenlace: hay resultado, hay un único CTA primario y el resumen
+     * muestra la puntuación.
+     */
+    expect(['aprobado', 'reprobado']).toContain(desenlace);
+    await expect(page.locator('[data-pantalla="resultado"]')).toContainText('%');
 
     if (desenlace === 'aprobado') {
       await expect(page.locator('[data-pantalla="resultado"]')).toHaveAttribute(
