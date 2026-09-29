@@ -1,0 +1,95 @@
+# ============================================================================
+# YAPU — Actualizaciones automáticas de dependencias.
+#
+# Dos ecosistemas: npm (raíz del repo) y github-actions (las acciones usadas en
+# .github/workflows). Las actualizaciones se agrupan para no inundar de PRs: un
+# grupo para dependencias de producción y otro para las de desarrollo.
+#
+# Los PRs generados llegan con la etiqueta "dependencias" y se revisan con el
+# mismo .github/pull_request_template.md que cualquier otro cambio.
+# ============================================================================
+version: 2
+updates:
+  # --------------------------------------------------------------------------
+  # Dependencias npm declaradas en package.json (Astro, React, Tailwind, Zod).
+  # --------------------------------------------------------------------------
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/La_Paz
+    open-pull-requests-limit: 5
+    labels:
+      - dependencias
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: scope
+    # Se declaran las dependencias por nombre (no por dependency-type) porque
+    # Dependabot rechaza dos grupos que compartan la misma clave y aquí hacen
+    # falta dos bloques: producción y desarrollo.
+    groups:
+      produccion:
+        applies-to: version-updates
+        patterns:
+          - "@astrojs/react"
+          - "@astrojs/tailwind"
+          - "@fontsource/*"
+          - astro
+          - canvas-confetti
+          - clsx
+          - lucide-react
+          - react
+          - react-dom
+          - tailwind-merge
+          - tailwindcss
+          - zod
+        update-types:
+          - minor
+          - patch
+      desarrollo:
+        applies-to: version-updates
+        patterns:
+          - "@astrojs/check"
+          - "@axe-core/playwright"
+          - "@eslint/js"
+          - "@playwright/test"
+          - "@testing-library/*"
+          - "@types/*"
+          - "@vitest/*"
+          - eslint
+          - eslint-plugin-*
+          - jsdom
+          - typescript
+          - typescript-eslint
+          - vitest
+        update-types:
+          - minor
+          - patch
+
+  # --------------------------------------------------------------------------
+  # Acciones de GitHub usadas en .github/workflows (checkout, setup-node, ...).
+  # --------------------------------------------------------------------------
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/La_Paz
+    open-pull-requests-limit: 5
+    labels:
+      - dependencias
+    commit-message:
+      prefix: "chore(ci)"
+      include: scope
+    groups:
+      acciones:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
