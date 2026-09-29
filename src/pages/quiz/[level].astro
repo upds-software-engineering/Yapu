@@ -1,25 +1,72 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Navigation from '../../components/Navigation';
-import QuizRunner from '../../components/QuizRunner';
-import { SEED_NIVELES } from '../../data/seed-levels';
+import { BannerConexion, Navegacion } from '@ui/components/layout';
+import { Evaluacion } from '@ui/components/evaluacion';
+import { ruta } from '@ui/lib/ruta';
+// Import de build: `cargarSemilla` valida y construye el catálogo SÓLO en el servidor, mientras
+// Astro genera las rutas estáticas. Es un import permitido en el frontmatter de `src/pages/**`
+// (nunca dentro de `src/ui/**`, que no puede tocar `@infrastructure/**`).
+import { cargarSemilla } from '@infrastructure/catalog';
 
+/**
+ * ADR-004: las 10 evaluaciones se generan desde el catálogo real, no desde una lista a mano.
+ * Sólo los niveles 1..10 forman el curso A1.
+ */
 export function getStaticPaths() {
-  return SEED_NIVELES.map((nivel) => ({
-    params: { level: nivel.id_nivel.toString() },
-    props: { nivel }
-  }));
+  return cargarSemilla()
+    .niveles.filter((nivel) => nivel.numero >= 1 && nivel.numero <= 10)
+    .map((nivel) => ({ params: { level: String(nivel.numero) } }));
 }
 
-const { level } = Astro.params;
-const levelNumber = parseInt(level || '1', 10);
-const nivel = SEED_NIVELES.find(n => n.id_nivel === levelNumber);
+const numero = Number.parseInt(Astro.params.level ?? '', 10);
+const nivel = cargarSemilla().niveles.find((candidato) => candidato.numero === numero);
+const esNivelValido =
+  Number.isInteger(numero) && numero >= 1 && numero <= 10 && nivel !== undefined;
+
+const tituloQuechua = nivel?.tituloQuechua ?? '';
+const tituloEspanol = nivel?.tituloEspanol ?? '';
 ---
 
-<Layout title={`Evaluación IA Nivel ${levelNumber}: ${nivel?.titulo_quechua} — YAPU`}>
-  <Navigation client:load currentPath="/" />
-  
-  <main class="min-h-screen py-4">
-    <QuizRunner client:only="react" levelId={levelNumber} />
-  </main>
+<Layout
+  titulo={esNivelValido
+    ? `Evaluación del nivel ${numero}: ${tituloQuechua} — YAPU`
+    : 'Nivel no válido — YAPU'}
+  rutaActual="/"
+>
+  <BannerConexion client:load />
+  <Navegacion client:load rutaActual="/" />
+
+  {
+    esNivelValido ? (
+      <section class="mx-auto flex w-full max-w-3xl flex-col gap-2 px-4 py-6">
+        {/* RF-005: el `<h1>` de la pantalla vive en la página porque la evaluación se monta
+            únicamente en el cliente (`client:only`). */}
+        <h1 class="font-display text-title font-bold text-sand">
+          {`Nivel ${numero}: ${tituloQuechua}`}
+        </h1>
+        <p class="text-body text-slate-400">
+          {tituloEspanol.length > 0 ? `Evaluación — ${tituloEspanol}` : 'Evaluación del nivel'}
+        </p>
+
+        <Evaluacion client:only="react" nivelId={numero} />
+      </section>
+    ) : (
+      <section
+        data-pantalla="nivel-no-valido"
+        class="mx-auto flex w-full max-w-lg flex-col items-center gap-3 px-4 py-10 text-center"
+      >
+        <h1 class="font-display text-title font-bold text-sand">Nivel no válido</h1>
+        <p class="text-body text-slate-400">
+          {`"${Astro.params.level ?? ''}" no es un nivel del curso. Los niveles disponibles van del 1 al 10.`}
+        </p>
+        <a
+          href={ruta('/')}
+          data-cta="primario"
+          class="inline-flex min-h-tactil min-w-tactil items-center justify-center rounded-xl bg-andina-terracotta px-4 py-2 text-body font-semibold text-white shadow-lg shadow-andina-terracotta/25 transition-colors duration-200 hover:bg-andina-terracotta-hover active:bg-andina-terracotta-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold md:min-h-tactil-escritorio md:min-w-tactil-escritorio"
+        >
+          Ver el mapa de niveles
+        </a>
+      </section>
+    )
+  }
 </Layout>

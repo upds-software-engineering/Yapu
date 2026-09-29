@@ -1,0 +1,109 @@
+name: Deploy a GitHub Pages
+
+# ============================================================================
+# YAPU — Publicación de la PWA en GitHub Pages.
+#
+# REQUISITO MANUAL (una sola vez): en Settings → Pages → Source debe estar
+# seleccionado «GitHub Actions». Mientras el humano no habilite esa opción, este
+# workflow puede ejecutarse pero la publicación no se activa y `deploy-pages`
+# fallará porque el sitio de Pages no está inicializado.
+#
+# Se dispara de dos formas:
+#  1) automáticamente cuando el workflow «CI» termina con éxito en la rama main
+#     (workflow_run): sólo se publica lo que ya pasó todas las puertas de calidad;
+#  2) manualmente (workflow_dispatch), para republicar sin esperar a un push.
+#
+# El despliegue no reutiliza el artefacto `dist` del CI: recompila desde el
+# commit exacto que se va a publicar, garantizando que el sitio servido
+# corresponde a ese SHA.
+# ============================================================================
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+# Publicación en Pages con OIDC: contents de sólo lectura, pages de escritura y
+# id-token para que deploy-pages pueda autenticarse sin secretos.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un único despliegue simultáneo: no se cancela el que esté en curso.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Compilar y publicar en Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # En workflow_run se fija el SHA que superó el CI; en manual se usa la ref
+      # por defecto del repositorio (main). Es deliberado que sólo se publique lo
+      # que ya compiló el CI: la condición de rama (main) impide que un PR de un
+      # fork llegue hasta aquí, y este workflow no usa ningún secreto salvo el
+      # GITHUB_TOKEN estándar.
+      - name: Descargar el código fuente
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.ref }}
+
+      - name: Configurar Node.js desde .nvmrc
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci --legacy-peer-deps
+
+      - name: Compilar el sitio estático
+        run: npm run build
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Subir el artefacto de Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Desplegar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      # Humo post-despliegue: la portada bajo /Yapu/ y una ruta dinámica
+      # (quiz/1) deben responder 2xx. --retry-all-errors absorbe la ventana de
+      # propagación de la CDN de Pages.
+      - name: Smoke test post-despliegue
+        run: |
+          base="${{ steps.deployment.outputs.page_url }}"
+          case "$base" in
+            */) ;;
+            *) base="$base/" ;;
+          esac
+          fallo=0
+          for ruta in "" "quiz/1/"; do
+            url="${base}${ruta}"
+            echo "Verificando ${url}"
+            if curl -fsS --retry 5 --retry-delay 5 --retry-all-errors -o /dev/null "$url"; then
+              echo "OK · ${url}"
+            else
+              echo "::error::El smoke test falló para ${url}"
+              fallo=1
+            fi
+          done
+          if [ "$fallo" -ne 0 ]; then
+            echo "::error::El despliegue no sirve todas las rutas esperadas."
+            exit 1
+          fi
+          echo "Smoke test superado: portada y quiz/1/ responden correctamente."

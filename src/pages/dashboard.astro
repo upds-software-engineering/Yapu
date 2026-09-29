@@ -1,13 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Navigation from '../components/Navigation';
-import DashboardComponent from '../components/Dashboard';
+import { BannerConexion, Navegacion } from '@ui/components/layout';
+import { Tablero } from '@ui/components/tablero';
 ---
 
-<Layout title="Mi Progreso y Estadísticas — YAPU">
-  <Navigation client:load currentPath="/dashboard" />
-  
-  <main class="min-h-screen py-4">
-    <DashboardComponent client:load />
-  </main>
+<Layout
+  titulo="Mi progreso — YAPU"
+  descripcion="Estadísticas de avance, experiencia, racha y palabras aprendidas del estudiante."
+  rutaActual="/dashboard"
+>
+  <BannerConexion client:load />
+  <Navegacion client:load rutaActual="/dashboard" />
+
+  <!-- El `<h1>` de la pantalla (el nombre del estudiante) lo aporta `Tablero`. -->
+  <Tablero client:load />
 </Layout>

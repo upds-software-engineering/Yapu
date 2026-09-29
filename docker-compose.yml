@@ -1,4 +1,13 @@
-version: '3.8'
+# YAPU — Servicios auxiliares OPCIONALES
+#
+# IMPORTANTE: la aplicación YAPU (Astro + React, salida estática) NO usa este archivo.
+# La persistencia de esta iteración es local (localStorage detrás de puertos/repositorios,
+# ver Docs/arquitectura/ADR-002) y la sincronización con la nube es un adaptador no-op.
+# Estos contenedores se conservan únicamente como referencia de la arquitectura de datos
+# prevista (ERD del Bloque 2 del SRS) para futuras iteraciones.
+#
+# Uso opcional:  docker compose up -d
+# El campo `version:` se eliminó porque está obsoleto en Compose V2.
 
 services:
   # Base de Datos Relacional PostgreSQL (Puerto 9532)

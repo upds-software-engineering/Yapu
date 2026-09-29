@@ -4,6 +4,9 @@ dist/
 node_modules/
 .system_generated/
 
+# Cache local de npm y artefactos de auditoría (regla 1 de la misión: nada fuera del workspace)
+.cache/
+
 # Environment files
 .env
 .env.local
@@ -17,6 +20,8 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Testing reports and artifacts
+# Testing reports and artifacts (efímeros: se regeneran con npm run test:coverage / test:e2e)
+reports/
 playwright-report/
 test-results/
+.vitest/
