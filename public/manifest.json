@@ -3,27 +3,42 @@
   "name": "YAPU — Plataforma de Aprendizaje de Quechua",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "/Yapu/favicon.svg",
       "type": "image/svg+xml",
-      "sizes": "any"
+      "sizes": "any",
+      "purpose": "any"
     },
     {
-      "src": "/icons/icon-192.png",
+      "src": "/Yapu/icons/icon-192.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/Yapu/icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/Yapu/icons/icon-512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/Yapu/icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
-  "start_url": "/",
+  "start_url": "/Yapu/",
+  "scope": "/Yapu/",
+  "id": "/Yapu/",
   "background_color": "#0B0F19",
   "theme_color": "#B94700",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "description": "Aprende quechua desde cero con evaluaciones adaptativas de IA determinista, tarjetas interactivas y funcionamiento offline."
+  "description": "Aprende quechua desde cero con evaluaciones generadas por IA determinista, tarjetas interactivas y funcionamiento sin conexión."
 }

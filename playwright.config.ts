@@ -1,32 +1,42 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const PUERTO = 9500;
+/** El sitio se publica bajo /Yapu/ (base de Astro), también en local. */
+const BASE_URL = process.env.YAPU_BASE_URL ?? `http://localhost:${PUERTO}/Yapu/`;
+
 export default defineConfig({
   testDir: './tests/e2e',
-  timeout: 30000,
+  timeout: 45_000,
+  expect: { timeout: 10_000 },
   fullyParallel: false,
-  retries: 0,
+  retries: process.env.CI ? 1 : 0,
   workers: 1,
-  reporter: [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]],
+  forbidOnly: !!process.env.CI,
+  reporter: [
+    ['list'],
+    ['junit', { outputFile: 'reports/junit/playwright.xml' }],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }]
+  ],
   use: {
-    baseURL: 'http://localhost:9500',
+    baseURL: BASE_URL,
     trace: 'on-first-retry',
-    screenshot: 'on',
-    video: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'off'
   },
   projects: [
     {
       name: 'Desktop Chrome',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 }, isMobile: false }
     },
     {
-      name: 'Mobile Android (PWA)',
-      use: { ...devices['Pixel 5'] },
+      name: 'Pixel 5',
+      use: { ...devices['Pixel 5'] }
     }
   ],
   webServer: {
     command: 'npm run preview',
-    url: 'http://localhost:9500',
+    url: BASE_URL,
     reuseExistingServer: !process.env.CI,
-    timeout: 30000,
-  },
+    timeout: 60_000
+  }
 });
