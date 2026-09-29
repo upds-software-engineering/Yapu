@@ -13,7 +13,14 @@
       "@infrastructure/*": ["src/infrastructure/*"],
       "@ui/*": ["src/ui/*"]
     },
-    "types": ["vitest/globals", "@testing-library/jest-dom"]
+    /*
+     * `types` SUSTITUYE la inclusión automática de paquetes de tipos, así que hay que declarar
+     * explícitamente todo lo que el proyecto necesita: Node (scripts y pruebas de infraestructura),
+     * los tipos de cliente de Vite (`import.meta.env.BASE_URL`) y Astro, más los de las pruebas.
+     * Sin `node` y `vite/client`, un checkout limpio (como el del CI) falla al comprobar tipos
+     * porque `.astro/types.d.ts` está en .gitignore y no existe hasta generar el proyecto.
+     */
+    "types": ["node", "vite/client", "astro/client", "vitest/globals", "@testing-library/jest-dom"]
   },
   "include": [".astro/types.d.ts", "src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"],
   "exclude": ["dist", "node_modules", "reports", ".cache"]
