@@ -4,8 +4,8 @@ import type {
   VocabularioEstudiante,
   OracionBase,
   RetoComunitario
-} from '../../types/domain';
-import { SEED_VOCABULARIO, SEED_ORACIONES_BASE } from '../../data/seed-levels';
+} from '../../types/domain.ts';
+import { SEED_VOCABULARIO, SEED_ORACIONES_BASE } from '../../data/seed-levels.ts';
 
 const STORAGE_KEYS = {
   PROFILE: 'yapu_student_profile',
