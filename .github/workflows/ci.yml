@@ -46,7 +46,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Descargar el código fuente
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Configurar Node.js desde .nvmrc
         uses: actions/setup-node@v4
@@ -75,7 +75,7 @@ jobs:
     timeout-minutes: 25
     steps:
       - name: Descargar el código fuente
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Configurar Node.js desde .nvmrc
         uses: actions/setup-node@v4
@@ -117,7 +117,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Descargar el código fuente
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Configurar Node.js desde .nvmrc
         uses: actions/setup-node@v4
@@ -159,7 +159,7 @@ jobs:
       YAPU_BASE_URL: http://localhost:9500/Yapu/
     steps:
       - name: Descargar el código fuente
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Configurar Node.js desde .nvmrc
         uses: actions/setup-node@v4
@@ -237,7 +237,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Descargar el código fuente
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Configurar Node.js desde .nvmrc
         uses: actions/setup-node@v4
