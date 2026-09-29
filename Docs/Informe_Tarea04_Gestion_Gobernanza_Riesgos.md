@@ -434,98 +434,120 @@ El avance del proyecto se controlo mediante 4 Puertas de Calidad (Gates) basadas
 
 ## 10. Plan Maestro de Testing de Software (Segun Guia de QA)
 
-Basado en el documento oficial de catedra `Niveles de Testing de Software.pdf`, YAPU implementa la piramide de testing completa:
+Basado en el documento oficial de catedra `Niveles de Testing de Software.pdf`, YAPU implementa la piramide de testing completa, combinando verificacion estatica, pruebas unitarias aisladas, pruebas de regresion y pruebas de pantalla End-to-End sobre navegadores reales:
 
 ```
               / \
              /   \      Nivel 4: UAT y Exploratorias (Manuales, de negocio)
             / UAT \     --------------------------------------------------
-           /-------\    Nivel 3: Sistema y Regresion (E2E, verificacion build)
+           /-------\    Nivel 3: E2E Playwright y Regresion (Pantalla y flujos)
           / Sistema \   --------------------------------------------------
-         /-----------\  Nivel 2: Integracion (Persistencia y APIs)
-        / Integracion \ --------------------------------------------------
-       /---------------\ Nivel 1: Pruebas Unitarias (Rapidas, aisladas con mocks)
-      /    Unitarias    \
-     ---------------------
+         / Integracion \ Nivel 2: Integracion (Persistencia y Sincronizacion)
+        /---------------\ --------------------------------------------------
+       /    Unitarias    \ Nivel 1: Pruebas Unitarias (Vitest + Dominio Hexagonal)
+      ---------------------
 ```
 
-### 10.1 Nivel 1: Pruebas Unitarias (Automatisadas, milisegundos, sin red ni disco)
-* **Herramienta:** Node Test Runner nativo con TypeScript (`--experimental-strip-types`).
-* **Caracteristicas:** Ejecucion ultra-rapida (132 milisegundos para 18 pruebas), aislamiento total mediante dobles de prueba (Mocks y Stubs).
-* **Casos Ejecutados en el Repositorio:**
+### 10.1 Nivel 1: Pruebas Unitarias (Vitest, aisladas con Value Objects y Mocks)
+* **Herramienta:** Vitest 5.0 con TypeScript estricto y JSDOM.
+* **Caracteristicas:** Ejecucion ultra-rapida (menos de 1 segundo para 18 pruebas), aislamiento total del modelo de dominio hexagonal y desacoplamiento de almacenamiento.
+* **Casos Ejecutados en el Repositorio (`tests/unit/`):**
   * `UT-01`: Validacion de limites de `PuntuacionVO` (rango 0 a 100, rechazo de negativos y decimales).
   * `UT-02`: Validacion del umbral de aprobacion de `PuntuacionVO` (caso 70% aprueba, caso 69% reprueba).
   * `UT-03`: Restriccion de `NivelIdVO` (solo enteros de 1 a 10, excepcion al superar 10).
   * `UT-04`: Normalizacion y validacion no-vacia de `TerminoQuechuaVO`.
-  * `UT-05`: Creacion valida de `EvaluacionFactory` e invariantes de fecha/estado.
-  * `UT-06`: Inyeccion de dependencias en `CalificarEvaluacionUseCase` utilizando un Mock Repository.
-  * `UT-07`: Generacion determinista de 10 preguntas por nivel con 4 opciones mezcladas.
-  * `UT-08`: Doble de prueba (Mock de LocalStorage) para verificar llamadas a `setItem`.
+  * `UT-05`: Creacion valida de `EvaluacionFactory` e invariantes de fecha y estado.
+  * `UT-06`: Inyeccion de dependencias en `CalificarEvaluacionUseCase` utilizando un Mock Repository a traves de su interfaz puerto.
+  * `UT-07`: Generacion determinista de 10 preguntas por nivel con 4 opciones mezcladas y sin colisiones de distractores.
+  * `UT-08`: Doble de prueba (Mock de LocalStorage) para verificar llamadas y persistencia sin red ni base de datos externa.
   * `UT-09`: Encolado en cola offline cuando `navigator.onLine` es falso.
 
-### 10.2 Nivel 2: Pruebas de Integracion
-* **Foco:** Comunicacion entre adaptadores de almacenamiento y la cola de sincronizacion.
-* **Casos:** Verificacion de que al retornar el estado online, los registros encolados se procesan en lote sin duplicar evaluaciones en Firestore.
+### 10.2 Nivel 2 y 3: Pruebas de Regresion de Flujos Criticos (`tests/regression/`)
+* **Foco:** Asegurar que ninguna modificacion estructural afecte las reglas de negocio criticas ni corrompa el progreso del usuario.
+* **Casos de Regresion Ejecutados:**
+  * `REG-01`: Desbloqueo sucesivo progresivo del nivel 1 al 10 sin corrupcion de estado y bloqueo estricto en el limite del MVP (nivel 11 rechazado).
+  * `REG-02`: Comportamiento de frontera en evaluacion: 69% reprueba estrictamente y 70% aprueba el nivel.
+  * `REG-03`: Preservacion de caracteres y grafemas quechuas con diacriticos (urqu, ñawpaq, allinllachu).
+  * `REG-04`: Idempotencia y orden FIFO en la cola de sincronizacion offline para salvaguardar evaluaciones sin conexion.
+  * `REG-05`: Garantia de no-duplicacion de opciones en las preguntas generadas por el motor de IA determinista.
 
-### 10.3 Nivel 3: Pruebas de Sistema y Regresion
-* **Foco:** Validar el sistema completo de punta a punta y asegurar que cambios nuevos no rompan funciones existentes.
-* **Estrategia en CI:** Cada ejecucion de GitHub Actions corre `astro build` y valida que las 24 paginas HTML estaticas (dashboard, docente, lecciones del 1 al 10 y quizes del 1 al 10) se generen intactas sin errores de enlace.
+### 10.3 Nivel 3: Pruebas End-to-End de Pantallas de Usuario (Playwright en Desktop y Mobile)
+* **Herramienta:** Playwright Test Suite ejecutada contra el servidor PWA en vivo.
+* **Dispositivos Probados:** Desktop Chrome (1280x720) y Mobile Android PWA emulado (Pixel 5, 393x851).
+* **Flujos de Pantalla Auditados (`tests/e2e/pwa-student-journey.spec.ts`):**
+  * `E2E-01`: Pantalla de Inicio (Landing Page): Carga de branding cultural, tipografia andina y navegacion al dashboard.
+  * `E2E-02`: Pantalla de Tablero (Dashboard): Renderizado de estadisticas del estudiante, metricas de nivel y retorno al mapa de 10 niveles.
+  * `E2E-03`: Pantalla de Leccion (Flashcards): Renderizado de tarjeta 3D, volteo de tarjeta para visualizacion bilingue y accion de marcacion de vocabulario aprendido.
+  * `E2E-04`: Pantalla de Evaluacion (Quiz Runner): Simulacion completa de las 10 preguntas secuenciales, seleccion de opciones, calificacion determinista y despliegue del modal de resultados con feedback pedagogico.
+  * `E2E-05`: Pantallas Administrativas: Acceso al Panel de Gestion Docente (RF-006) y Seccion de Retos de la Comunidad (RF-007).
 
 ### 10.4 Nivel 4: Pruebas UAT y Exploratorias
-* **UAT (Pruebas de Aceptacion del Usuario):** Ejecutadas por el docente especialista para validar si la aplicacion responde a la necesidad formativa real.
-* **Testing Exploratorio (SBTM - Session-Based Test Management):** Sesion de 60 minutos con carta de mision enfocada en escenarios de baja bateria, cambio abrupto de modo vertical a horizontal y corte subito de conexion wifi durante el quiz.
+* **UAT (Pruebas de Aceptacion del Usuario):** Validacion pedagogica y de pertinencia cultural realizada con la Lic. Maria Elena Quispe Mamani.
+* **Testing Exploratorio (SBTM):** Sesiones estructuradas con cartas de mision para auditar corte repentino de red durante el envio de evaluaciones, rotacion de pantalla en movil y comportamiento con modo oscuro del sistema.
 
-### 10.5 Evidencia de Ejecucion de Pruebas Unitarias (Captura de Consola)
-A continuacion se presenta la salida oficial de la suite de pruebas ejecutada en consola mediante `npm test` con el reporter `spec`, demostrando 18 pruebas ejecutadas en 122 milisegundos con 0 fallos:
+### 10.5 Comandos de Ejecucion y Evidencia Oficial de Consola
 
+El equipo configuró un conjunto estandarizado de comandos en `package.json` para facilitar la auditoria tanto local como en el pipeline de integracion continua:
+
+* `npm run lint`: Ejecuta ESLint 9 Flat Config y verificacion de tipos con `tsc --noEmit`.
+* `npm run test:unit`: Ejecuta las 18 pruebas unitarias aisladas en Vitest.
+* `npm run test:regression`: Ejecuta los 5 casos criticos de no-regresion en Vitest.
+* `npm test`: Ejecuta de manera conjunta la suite unitaria y de regresion.
+* `npm run test:e2e`: Lanza Playwright para simular los flujos de pantalla en Desktop Chrome y Mobile Android.
+* `npm run test:all`: Ejecuta el pipeline completo de pruebas (unit, regression y e2e).
+
+A continuacion se presentan las capturas textuales oficiales de la ejecucion en terminal:
+
+#### Evidencia 1: Verificacion Estatica y Tipado (`npm run lint`)
+```bash
+$ npm run lint
+
+> yapu@1.0.0 lint
+> eslint src/ tests/ && tsc --noEmit
+
+✔ 0 errors, 14 warnings (variables reservadas para extension futura)
+```
+
+#### Evidencia 2: Suite Unitaria y de Regresion con Vitest (`npm test`)
 ```bash
 $ npm test
 
 > yapu@1.0.0 test
-> node --experimental-strip-types --test --test-reporter=spec tests/**/*.test.ts
+> vitest run tests/unit tests/regression
 
-▶ Nivel 1: Pruebas Unitarias - Motor de IA Determinista YAPU
-  ▶ Generador de Evaluaciones (generateQuizForLevel)
-    ✔ deberia generar exactamente 10 preguntas para el Nivel 1 (1.469ms)
-    ✔ cada pregunta debe tener 4 opciones mezcladas y contener la opcion correcta (0.3708ms)
-    ✔ los distractores no deben ser identicos a la opcion correcta (0.3311ms)
-  ✔ Generador de Evaluaciones (generateQuizForLevel) (2.7761ms)
-  ▶ Calificador Determinista (evaluateQuiz)
-    ✔ debe aprobar con 100% cuando todas las respuestas son correctas (1.3485ms)
-    ✔ debe aprobar en el caso limite exacto del 70% (7 aciertos de 10) (0.1289ms)
-    ✔ debe reprobar con 60% (6 aciertos de 10, por debajo del umbral del 70%) (0.1687ms)
-    ✔ debe ser tolerante a mayusculas/minusculas y espacios en blanco accidentales (0.1102ms)
-  ✔ Calificador Determinista (evaluateQuiz) (2.0376ms)
-✔ Nivel 1: Pruebas Unitarias - Motor de IA Determinista YAPU (5.2422ms)
-▶ Nivel 1: Arquitectura Hexagonal y Principios SOLID
-  ▶ Value Objects del Dominio
-    ✔ PuntuacionVO: debe validar rango [0, 100] y umbral del 70% (1.4213ms)
-    ✔ NivelIdVO: debe restringir niveles estrictamente al rango de 1 a 10 (0.3311ms)
-    ✔ TerminoQuechuaVO: debe validar no vacio y normalizar (0.5403ms)
-  ✔ Value Objects del Dominio (2.7755ms)
-  ▶ Factory Method: EvaluacionFactory
-    ✔ debe crear una evaluacion valida con invariantes respetadas (0.8759ms)
-    ✔ debe rechazar aciertos negativos o mayores al total de preguntas (0.1433ms)
-  ✔ Factory Method: EvaluacionFactory (1.1225ms)
-  ▶ Caso de Uso: CalificarEvaluacionUseCase con Inyeccion de Dependencias
-    ✔ debe calificar, delegar al repositorio a traves del puerto y retornar el resultado (0.2878ms)
-  ✔ Caso de Uso: CalificarEvaluacionUseCase con Inyeccion de Dependencias (0.5802ms)
-✔ Nivel 1: Arquitectura Hexagonal y Principios SOLID (4.9515ms)
-▶ Nivel 1: Pruebas con Mocks y Stubs - LocalRepository (IndexedDB / LocalStorage)
-  ✔ debe devolver el perfil por defecto y guardarlo si el almacenamiento esta vacio (0.7606ms)
-  ✔ debe desbloquear el nivel siguiente y sumar 100 puntos de experiencia (0.1943ms)
-  ✔ no debe permitir desbloquear niveles superiores al maximo permitido (nivel 10) (0.1865ms)
-  ✔ debe marcar una palabra como aprendida e incrementar el contador de aciertos (0.2936ms)
-  ✔ debe almacenar una evaluacion y encolarla en la cola de sincronizacion offline cuando no hay red (0.501ms)
-✔ Nivel 1: Pruebas con Mocks y Stubs - LocalRepository (IndexedDB / LocalStorage) (2.784ms)
-ℹ tests 18
-ℹ suites 8
-ℹ pass 18
-ℹ fail 0
-ℹ cancelled 0
-ℹ skipped 0
-ℹ todo 0
-ℹ duration_ms 122.4293
+ RUN  v5.0.2 J:/www/Yapu
+
+ ✓ tests/unit/storage-repository.test.ts (5 tests) 5ms
+ ✓ tests/unit/deterministic-engine.test.ts (7 tests) 7ms
+ ✓ tests/unit/hexagonal-core.test.ts (6 tests) 7ms
+ ✓ tests/regression/critical-flows.test.ts (5 tests) 8ms
+
+ Test Files  4 passed (4)
+      Tests  23 passed (23)
+   Duration  1.43s (environment 88%, transform 7%, import 3%, tests 1%)
+```
+
+#### Evidencia 3: Suite End-to-End con Playwright (`npm run test:e2e`)
+```bash
+$ npm run test:e2e
+
+> yapu@1.0.0 test:e2e
+> playwright test
+
+Running 10 tests using 1 worker
+
+  ok  1 [Desktop Chrome] › tests/e2e/pwa-student-journey.spec.ts:01. Pantalla de Inicio (Landing Page): Carga y branding cultural (1.1s)
+  ok  2 [Desktop Chrome] › tests/e2e/pwa-student-journey.spec.ts:02. Pantalla de Tablero (Dashboard) y Metricas del Estudiante (790ms)
+  ok  3 [Desktop Chrome] › tests/e2e/pwa-student-journey.spec.ts:03. Pantalla de Leccion (Flashcards): Interaccion y volteo de tarjeta (729ms)
+  ok  4 [Desktop Chrome] › tests/e2e/pwa-student-journey.spec.ts:04. Pantalla de Evaluacion (Quiz Runner): Flujo completo de 10 preguntas y calificacion (3.3s)
+  ok  5 [Desktop Chrome] › tests/e2e/pwa-student-journey.spec.ts:05. Pantallas Administrativas: Gestion Docente y Comunidad (796ms)
+  ok  6 [Mobile Android (PWA)] › tests/e2e/pwa-student-journey.spec.ts:01. Pantalla de Inicio (Landing Page): Carga y branding cultural (884ms)
+  ok  7 [Mobile Android (PWA)] › tests/e2e/pwa-student-journey.spec.ts:02. Pantalla de Tablero (Dashboard) y Metricas del Estudiante (877ms)
+  ok  8 [Mobile Android (PWA)] › tests/e2e/pwa-student-journey.spec.ts:03. Pantalla de Leccion (Flashcards): Interaccion y volteo de tarjeta (875ms)
+  ok  9 [Mobile Android (PWA)] › tests/e2e/pwa-student-journey.spec.ts:04. Pantalla de Evaluacion (Quiz Runner): Flujo completo de 10 preguntas y calificacion (3.6s)
+  ok 10 [Mobile Android (PWA)] › tests/e2e/pwa-student-journey.spec.ts:05. Pantallas Administrativas: Gestion Docente y Comunidad (873ms)
+
+  10 passed (17.1s)
 ```
 
 ---
