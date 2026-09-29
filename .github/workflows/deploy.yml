@@ -53,7 +53,7 @@ jobs:
       # fork llegue hasta aquí, y este workflow no usa ningún secreto salvo el
       # GITHUB_TOKEN estándar.
       - name: Descargar el código fuente
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.ref }}
 
