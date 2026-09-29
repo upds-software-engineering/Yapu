@@ -24,7 +24,17 @@ const PROHIBIDAS = {
   ui: ['domain']
 };
 
-/** Patrones de entorno prohibidos por capa (RN-17, A5, RNF-005). */
+/** Elimina comentarios y literales de plantilla para no marcar como violación lo que sólo se documenta. */
+export function sinComentarios(codigo) {
+  return codigo
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/(^|[^:])\/\/[^\n]*/g, '$1 ');
+}
+/**
+ * Patrones de entorno prohibidos por capa (RN-17, A5, RNF-005).
+ * Se evalúan sobre el código SIN comentarios: citar `Math.random` en un comentario explicativo
+ * no es una violación.
+ */
 const ENTORNO_PROHIBIDO = {
   domain: ['Math.random', 'Date.now', 'window.', 'localStorage', 'navigator.', 'crypto.'],
   application: ['Math.random', 'localStorage', 'window.'],
@@ -62,8 +72,9 @@ export function detectarViolaciones(archivos) {
       }
     }
 
+    const soloCodigo = sinComentarios(codigo);
     for (const patron of ENTORNO_PROHIBIDO[capa]) {
-      if (codigo.includes(patron)) {
+      if (soloCodigo.includes(patron)) {
         violaciones.push(`${ruta}: la capa "${capa}" no puede usar "${patron}"`);
       }
     }
@@ -76,7 +87,7 @@ export function detectarViolaciones(archivos) {
         const apuntaAInfra =
           especificador.startsWith('@infrastructure/') || /(^|\/)infrastructure\//.test(especificador);
         if (!apuntaAInfra) continue;
-        const esContainer = /(^|\/)infrastructure\/container(\.ts)?$/.test(especificador);
+        const esContainer = /(^|\/)(@)?infrastructure\/container(\.ts)?$/.test(especificador);
         if (!esContainer) {
           violaciones.push(`${ruta}: la UI sólo puede importar @infrastructure/container`);
         } else if (!enHooks) {

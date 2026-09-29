@@ -35,6 +35,11 @@ function capaDe(rutaRelativa: string): string | null {
   return Object.prototype.hasOwnProperty.call(PROHIBIDAS, capa) ? capa : null;
 }
 
+/** Elimina comentarios para no marcar como violación lo que sólo se documenta. */
+function sinComentarios(codigo: string): string {
+  return codigo.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1 ');
+}
+
 function detectar(archivos: Array<{ ruta: string; codigo: string }>): string[] {
   const violaciones: string[] = [];
   for (const { ruta, codigo } of archivos) {
@@ -51,8 +56,9 @@ function detectar(archivos: Array<{ ruta: string; codigo: string }>): string[] {
         }
       }
     }
+    const soloCodigo = sinComentarios(codigo);
     for (const patron of ENTORNO_PROHIBIDO[capa] ?? []) {
-      if (codigo.includes(patron)) violaciones.push(`${ruta} → ${patron}`);
+      if (soloCodigo.includes(patron)) violaciones.push(`${ruta} → ${patron}`);
     }
 
     // La UI sólo puede tocar el composition root, y únicamente desde `ui/hooks`.
@@ -63,7 +69,7 @@ function detectar(archivos: Array<{ ruta: string; codigo: string }>): string[] {
         const apuntaAInfra =
           especificador.startsWith('@infrastructure/') || /(^|\/)infrastructure\//.test(especificador);
         if (!apuntaAInfra) continue;
-        const esContainer = /(^|\/)infrastructure\/container(\.ts)?$/.test(especificador);
+        const esContainer = /(^|\/)(@)?infrastructure\/container(\.ts)?$/.test(especificador);
         if (!esContainer) violaciones.push(`${ruta} → ${especificador} (sólo container)`);
         else if (!enHooks) violaciones.push(`${ruta} → ${especificador} (sólo desde ui/hooks)`);
       }

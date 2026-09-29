@@ -1,5 +1,6 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import astro from 'eslint-plugin-astro';
 import reactHooks from 'eslint-plugin-react-hooks';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 
@@ -88,8 +89,11 @@ const SINTAXIS_PROHIBIDA_DOMINIO = [
     message: 'El dominio recibe la fecha por parámetro (FechaDia) en lugar de usar Date.now (RN-17).'
   },
   {
-    selector: 'NewExpression[callee.name=/^Date$/]',
-    message: 'El dominio no construye fechas: recibe FechaDia desde un Reloj inyectado.'
+    // Sólo se prohíbe `new Date()` SIN argumentos: eso lee el reloj del sistema. Construir un
+    // `Date` a partir de un texto ya recibido (por ejemplo un ISO persistido) no es una lectura
+    // implícita del tiempo y sí es legítimo en el dominio.
+    selector: "NewExpression[callee.name='Date'][arguments.length=0]",
+    message: 'El dominio no lee el reloj: recibe FechaDia desde un Reloj inyectado.'
   },
   {
     selector: "Identifier[name='window']",
@@ -129,8 +133,24 @@ export default tseslint.config(
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  ...astro.configs.recommended,
   {
-    files: ['**/*.{ts,tsx,js,mjs,astro}'],
+    files: ['**/*.astro'],
+    languageOptions: {
+      parserOptions: {
+        // El frontmatter de un `.astro` es TypeScript: se analiza con el parser de typescript-eslint.
+        parser: tseslint.parser
+      }
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
+      ]
+    }
+  },
+  {
+    files: ['**/*.{ts,tsx,js,mjs}'],
     languageOptions: {
       ecmaVersion: 2023,
       sourceType: 'module'

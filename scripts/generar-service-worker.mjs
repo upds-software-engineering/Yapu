@@ -110,6 +110,20 @@ self.addEventListener('activate', (evento) => {
   );
 });
 
+async function buscarEnCache(cache, peticion) {
+  /*
+   * ignoreVary es IMPRESCINDIBLE: el servidor de assets responde con cabeceras Vary (por ejemplo
+   * Accept-Encoding) y, sin ignorarlas, un modulo cargado con import() dinamico —cuyas cabeceras
+   * difieren de las del precache— NO casa con la copia guardada y la aplicacion se queda sin
+   * hidratar cuando no hay red. El segundo intento compara solo por ruta, como red de seguridad
+   * ante variantes de URL (barra final, cadena de consulta).
+   */
+  const opciones = { ignoreSearch: true, ignoreVary: true };
+  const directa = await cache.match(peticion, opciones);
+  if (directa) return directa;
+  return (await cache.match(new URL(peticion.url).pathname, opciones)) ?? null;
+}
+
 async function redPrimero(peticion) {
   const cache = await caches.open(CACHE_NAME);
   try {
@@ -119,13 +133,13 @@ async function redPrimero(peticion) {
     }
     return respuesta;
   } catch {
-    const enCache = await cache.match(peticion, { ignoreSearch: true });
+    const enCache = await buscarEnCache(cache, peticion);
     if (enCache) return enCache;
     // Respaldos: la misma ruta con/sin barra final y, en último término, la portada.
     const url = new URL(peticion.url);
     const alternativas = [url.pathname.replace(/\\/$/, ''), \`\${url.pathname}/\`, \`\${BASE}/\`];
     for (const alternativa of alternativas) {
-      const respaldo = await cache.match(alternativa, { ignoreSearch: true });
+      const respaldo = await cache.match(alternativa, { ignoreSearch: true, ignoreVary: true });
       if (respaldo) return respaldo;
     }
     return new Response('Sin conexión y sin copia local de esta página.', {
@@ -137,7 +151,7 @@ async function redPrimero(peticion) {
 
 async function cachePrimero(peticion) {
   const cache = await caches.open(CACHE_NAME);
-  const enCache = await cache.match(peticion, { ignoreSearch: true });
+  const enCache = await buscarEnCache(cache, peticion);
   if (enCache) return enCache;
   const respuesta = await fetch(peticion);
   if (respuesta && respuesta.ok && new URL(peticion.url).origin === self.location.origin) {
