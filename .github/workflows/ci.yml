@@ -171,7 +171,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Descargar el artefacto dist
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist
@@ -251,14 +251,14 @@ jobs:
       # merge-multiple recompone reports/junit/ con Vitest + Playwright, que es
       # exactamente lo que lee `npm run reports:trazabilidad`.
       - name: Descargar JUnit de Vitest
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cobertura-y-junit
           path: reports
           merge-multiple: true
 
       - name: Descargar JUnit de Playwright
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: junit-playwright
           path: reports
