@@ -1,13 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Navigation from '../components/Navigation';
-import CommunitySection from '../components/CommunitySection';
+import { BannerConexion, Navegacion } from '@ui/components/layout';
+import { Comunidad } from '@ui/components/comunidad';
 ---
 
-<Layout title="Comunidad y Retos — YAPU">
-  <Navigation client:load currentPath="/community" />
-  
-  <main class="min-h-screen py-4">
-    <CommunitySection client:load />
-  </main>
+<Layout
+  titulo="Comunidad y retos lingüísticos — YAPU"
+  descripcion="Retos de quechua propuestos por la comunidad y validados por docentes."
+  rutaActual="/community"
+>
+  <BannerConexion client:load />
+  <Navegacion client:load rutaActual="/community" />
+
+  <!-- El `<h1>` («Retos de la Comunidad») lo aporta el propio componente. -->
+  <Comunidad client:load />
 </Layout>

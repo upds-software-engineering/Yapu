@@ -1,14 +1,27 @@
 ---
 import '../styles/global.css';
+// Fuentes auto-hospedadas (ADR-004): sin conexiones previas ni descargas a CDNs externos,
+// para que la PWA funcione sin conexión y no dependa de terceros.
+import '@fontsource/plus-jakarta-sans/400.css';
+import '@fontsource/plus-jakarta-sans/500.css';
+import '@fontsource/plus-jakarta-sans/600.css';
+import '@fontsource/plus-jakarta-sans/700.css';
+import '@fontsource/plus-jakarta-sans/800.css';
+import '@fontsource/space-grotesk/500.css';
+import '@fontsource/space-grotesk/700.css';
+import { ruta } from '../ui/lib/ruta';
 
 interface Props {
-  title?: string;
-  description?: string;
+  titulo?: string;
+  descripcion?: string;
+  /** Ruta lógica actual; las páginas pueden pasarla para que la navegación resalte el destino. */
+  rutaActual?: string;
 }
 
 const {
-  title = 'YAPU — Plataforma de Aprendizaje de Quechua',
-  description = 'Aprende quechua desde cero con evaluaciones de IA determinista, tarjetas interactivas y funcionamiento offline.'
+  titulo = 'YAPU — Plataforma de Aprendizaje de Quechua',
+  descripcion = 'Aprende quechua desde cero con evaluaciones de IA determinista, tarjetas interactivas y funcionamiento offline.',
+  rutaActual = Astro.url.pathname
 } = Astro.props;
 ---
 
@@ -16,56 +29,51 @@ const {
 <html lang="es" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="manifest" href="/manifest.json" />
+    <!--
+      WCAG 1.4.4 (Redimensionar texto): el zoom NO se limita ni se desactiva; sólo se pide el
+      ancho del dispositivo, la escala inicial 1 y cubrir el área segura del notch.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href={ruta('/favicon.svg')} />
+    <link rel="manifest" href={ruta('/manifest.json')} />
     <meta name="theme-color" content="#B94700" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="YAPU" />
     <meta name="application-name" content="YAPU" />
-    <meta name="description" content={description} />
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
-    
-    <title>{title}</title>
+    <meta name="description" content={descripcion} />
+
+    <title>{titulo}</title>
   </head>
-  <body class="bg-[#0B0F19] text-slate-100 min-h-screen font-sans antialiased selection:bg-andina-gold selection:text-black pb-20 md:pb-0">
-    <!-- Banner de Estado de Red / Offline (RF-009) -->
-    <div id="offline-banner" class="hidden bg-amber-600 text-white text-xs font-semibold py-1.5 px-4 text-center sticky top-0 z-50 shadow-md">
-      📡 Modo Sin Conexión activo — Puedes seguir estudiando y practicando normalmente con la IA local.
-    </div>
+  <body
+    class="min-h-screen bg-andina-night font-sans text-slate-100 antialiased selection:bg-andina-gold selection:text-black"
+    data-ruta-actual={rutaActual}
+  >
+    <!-- El aviso de modo sin conexión lo aporta <BannerConexion /> de src/ui/components/layout
+         (RF-009/RN-15); aquí sólo queda el registro del Service Worker. -->
+    <main id="contenido" class="pb-[calc(6rem_+_env(safe-area-inset-bottom))] md:pb-0">
+      <slot />
+    </main>
 
-    <slot />
-
-    <!-- Script de PWA y Detección Offline -->
-    <script is:inline>
+    <!--
+      Registro del Service Worker (RF-009).
+      Script de módulo procesado por Astro/Vite (no `is:inline`): así `import.meta.env.BASE_URL`
+      se sustituye en el build y la ruta del SW respeta el despliegue bajo `/Yapu/`.
+    -->
+    <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch((err) => {
-            console.log('SW registration error:', err);
+          // `import.meta.env.BASE_URL` puede venir con o sin barra final según el build, así que se
+          // normaliza aquí: registrar `/Yapusw.js` (sin barra) daría un 404 silencioso y dejaría la
+          // aplicación sin modo offline.
+          const base = import.meta.env.BASE_URL;
+          const prefijo = base.endsWith('/') ? base : `${base}/`;
+          navigator.serviceWorker.register(`${prefijo}sw.js`).catch(() => {
+            // Sin Service Worker la aplicación sigue siendo usable; el modo offline se degrada.
           });
         });
       }
-
-      function updateOnlineStatus() {
-        const banner = document.getElementById('offline-banner');
-        if (banner) {
-          if (!navigator.onLine) {
-            banner.classList.remove('hidden');
-          } else {
-            banner.classList.add('hidden');
-          }
-        }
-      }
-
-      window.addEventListener('online', updateOnlineStatus);
-      window.addEventListener('offline', updateOnlineStatus);
-      updateOnlineStatus();
     </script>
   </body>
 </html>

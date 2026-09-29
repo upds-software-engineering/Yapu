@@ -13,7 +13,7 @@ export const baseUrl = BASE;
 
 /** Convierte una ruta lógica (`/quiz/1`) en su URL real (`/Yapu/quiz/1`). */
 export function ruta(destino: string): string {
-  if (!destino || destino === '/') return `${BASE}/` || '/';
+  if (!destino || destino === '/') return `${BASE}/`;
   const limpio = destino.startsWith('/') ? destino : `/${destino}`;
   return `${BASE}${limpio}`;
 }

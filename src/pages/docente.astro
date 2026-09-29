@@ -1,13 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Navigation from '../components/Navigation';
-import DocentePanel from '../components/DocentePanel';
+import { BannerConexion, Navegacion } from '@ui/components/layout';
+import { PanelDocente } from '@ui/components/docente';
 ---
 
-<Layout title="Portal Docente y Gestión de Contenidos — YAPU">
-  <Navigation client:load currentPath="/docente" />
-  
-  <main class="min-h-screen py-4">
-    <DocentePanel client:load />
-  </main>
+<Layout
+  titulo="Portal docente — YAPU"
+  descripcion="Gestión del corpus de oraciones, moderación de retos y exportación de contenidos."
+  rutaActual="/docente"
+>
+  <BannerConexion client:load />
+  <Navegacion client:load rutaActual="/docente" />
+
+  <!--
+    `PanelDocente` decide por sí mismo si la sesión puede entrar (RF-002): sin rol docente pinta su
+    guardia, así que el `<h1>` de la pantalla siempre existe.
+  -->
+  <PanelDocente client:load />
 </Layout>

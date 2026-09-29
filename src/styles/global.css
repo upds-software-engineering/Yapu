@@ -2,7 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  /*
+   * Foco visible global (WCAG 2.4.7 / 2.4.11): el contorno nunca se elimina y siempre usa el
+   * dorado andino sobre el fondo oscuro. Los componentes pueden afinarlo con utilidades
+   * `focus-visible:*`, que ganan por vivir en la capa de utilidades.
+   */
+  :focus-visible {
+    outline: 2px solid theme(colors.andina.gold.DEFAULT);
+    outline-offset: 2px;
+  }
+
+  /*
+   * Accesibilidad (WCAG 2.3.3): cuando el sistema pide reducir el movimiento se apagan las
+   * animaciones, las transiciones y el desplazamiento suave en todo el documento. Es la red de
+   * seguridad CSS del hook `usePreferenciaReducida` (que además evita disparar el confeti).
+   */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
 @layer utilities {
+  /* Utilidades 3D de la flashcard (RF-004). */
   .perspective-1000 {
     perspective: 1000px;
   }
@@ -15,6 +44,16 @@
   .rotate-y-180 {
     transform: rotateY(180deg);
   }
+
+  /* Deja libre la franja del gesto inferior / notch en móviles (Fitts: CTA alcanzable con el pulgar). */
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* El resaltado azul del toque en móvil rompe la estética andina: se desactiva. */
+html {
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Scrollbar personalizada con temática andina */
@@ -23,12 +62,12 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0B0F19;
+  background: #0b0f19;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: #1e293b;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #B94700;
+  background: #b94700;
 }
