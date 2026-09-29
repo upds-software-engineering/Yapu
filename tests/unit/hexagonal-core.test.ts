@@ -1,5 +1,4 @@
-import test, { describe, it } from 'node:test';
-import assert from 'node:assert/strict';
+import { describe, it, expect } from 'vitest';
 import { PuntuacionVO } from '../../src/core/domain/value-objects/PuntuacionVO.ts';
 import { NivelIdVO } from '../../src/core/domain/value-objects/NivelIdVO.ts';
 import { TerminoQuechuaVO } from '../../src/core/domain/value-objects/TerminoQuechuaVO.ts';
@@ -39,34 +38,34 @@ describe('Nivel 1: Arquitectura Hexagonal y Principios SOLID', () => {
       const p69 = PuntuacionVO.desde(69);
 
       // 3. Assert
-      assert.equal(p70.esAprobatorio(), true, '70 debe ser aprobatorio');
-      assert.equal(p100.esAprobatorio(), true, '100 debe ser aprobatorio');
-      assert.equal(p69.esAprobatorio(), false, '69 debe ser reprobatorio');
+      expect(p70.esAprobatorio()).toBe(true);
+      expect(p100.esAprobatorio()).toBe(true);
+      expect(p69.esAprobatorio()).toBe(false);
 
       // Casos Invalidos deben lanzar error mediante Zod
-      assert.throws(() => PuntuacionVO.desde(-1), /Puntuacion invalida/);
-      assert.throws(() => PuntuacionVO.desde(101), /Puntuacion invalida/);
-      assert.throws(() => PuntuacionVO.desde(85.5), /Puntuacion invalida/);
+      expect(() => PuntuacionVO.desde(-1)).toThrow(/Puntuacion invalida/);
+      expect(() => PuntuacionVO.desde(101)).toThrow(/Puntuacion invalida/);
+      expect(() => PuntuacionVO.desde(85.5)).toThrow(/Puntuacion invalida/);
     });
 
     it('NivelIdVO: debe restringir niveles estrictamente al rango de 1 a 10', () => {
       const nivel1 = NivelIdVO.desde(1);
-      assert.equal(nivel1.valor, 1);
-      assert.equal(nivel1.siguiente().valor, 2);
+      expect(nivel1.valor).toBe(1);
+      expect(nivel1.siguiente().valor).toBe(2);
 
       const nivel10 = NivelIdVO.desde(10);
-      assert.equal(nivel10.tieneSiguiente(), false);
-      assert.throws(() => nivel10.siguiente(), /No existe nivel superior/);
+      expect(nivel10.tieneSiguiente()).toBe(false);
+      expect(() => nivel10.siguiente()).toThrow(/No existe nivel superior/);
 
-      assert.throws(() => NivelIdVO.desde(0), /Nivel invalido/);
-      assert.throws(() => NivelIdVO.desde(11), /Nivel invalido/);
+      expect(() => NivelIdVO.desde(0)).toThrow(/Nivel invalido/);
+      expect(() => NivelIdVO.desde(11)).toThrow(/Nivel invalido/);
     });
 
     it('TerminoQuechuaVO: debe validar no vacio y normalizar', () => {
       const termino = TerminoQuechuaVO.desde('  Allianmi  ');
-      assert.equal(termino.texto, 'Allianmi');
-      assert.equal(termino.coincideCon('allianmi'), true);
-      assert.throws(() => TerminoQuechuaVO.desde('   '), /no puede estar vacio/);
+      expect(termino.texto).toBe('Allianmi');
+      expect(termino.coincideCon('allianmi')).toBe(true);
+      expect(() => TerminoQuechuaVO.desde('   ')).toThrow(/no puede estar vacio/);
     });
   });
 
@@ -84,17 +83,16 @@ describe('Nivel 1: Arquitectura Hexagonal y Principios SOLID', () => {
       const evalCreada = EvaluacionFactory.crear(params);
 
       // 3. Assert
-      assert.equal(evalCreada.puntuacion_obtenida, 80);
-      assert.equal(evalCreada.estado_aprobacion, 'aprobado');
-      assert.equal(evalCreada.sincronizado_nube, false);
-      assert.ok(evalCreada.id_evaluacion.startsWith('eval_lvl1_'));
+      expect(evalCreada.puntuacion_obtenida).toBe(80);
+      expect(evalCreada.estado_aprobacion).toBe('aprobado');
+      expect(evalCreada.sincronizado_nube).toBe(false);
+      expect(evalCreada.id_evaluacion.startsWith('eval_lvl1_')).toBe(true);
     });
 
     it('debe rechazar aciertos negativos o mayores al total de preguntas', () => {
-      assert.throws(
-        () => EvaluacionFactory.crear({ estudianteId: 'u1', nivelId: 1, totalAciertos: 12, totalPreguntas: 10 }),
-        /debe estar entre 0 y el total/
-      );
+      expect(() =>
+        EvaluacionFactory.crear({ estudianteId: 'u1', nivelId: 1, totalAciertos: 12, totalPreguntas: 10 })
+      ).toThrow(/debe estar entre 0 y el total/);
     });
   });
 
@@ -127,11 +125,11 @@ describe('Nivel 1: Arquitectura Hexagonal y Principios SOLID', () => {
       const resultado = await useCase.ejecutar(dto);
 
       // 3. Assert
-      assert.equal(resultado.aprobado, true);
-      assert.equal(resultado.evaluacion.puntuacion_obtenida, 100);
+      expect(resultado.aprobado).toBe(true);
+      expect(resultado.evaluacion.puntuacion_obtenida).toBe(100);
       // Verificamos que el repositorio recibio la entidad guardada (Mock Verification)
-      assert.equal(mockRepo.guardadas.length, 1);
-      assert.equal(mockRepo.guardadas[0].id_estudiante, 'estudiante_emmanuel');
+      expect(mockRepo.guardadas.length).toBe(1);
+      expect(mockRepo.guardadas[0].id_estudiante).toBe('estudiante_emmanuel');
     });
   });
 

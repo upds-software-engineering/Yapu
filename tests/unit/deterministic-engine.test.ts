@@ -1,5 +1,4 @@
-import test, { describe, it } from 'node:test';
-import assert from 'node:assert/strict';
+import { describe, it, expect } from 'vitest';
 import {
   generateQuizForLevel,
   evaluateQuiz,
@@ -19,7 +18,7 @@ describe('Nivel 1: Pruebas Unitarias - Motor de IA Determinista YAPU', () => {
       const preguntas = generateQuizForLevel(nivelId, cantidadEsperada);
 
       // 3. Assert
-      assert.equal(preguntas.length, cantidadEsperada, 'La cantidad de preguntas debe ser 10');
+      expect(preguntas.length).toBe(cantidadEsperada);
     });
 
     it('cada pregunta debe tener 4 opciones mezcladas y contener la opcion correcta', () => {
@@ -31,14 +30,11 @@ describe('Nivel 1: Pruebas Unitarias - Motor de IA Determinista YAPU', () => {
 
       // 3. Assert
       for (const p of preguntas) {
-        assert.ok(p.id_pregunta, 'Debe poseer un id_pregunta valido');
-        assert.ok(p.enunciado_pregunta.length > 0, 'El enunciado no puede estar vacio');
-        assert.ok(p.opcion_correcta.length > 0, 'La opcion correcta debe estar definida');
-        assert.equal(p.opciones_mezcladas.length, 4, 'Debe contener exactamente 4 opciones de respuesta');
-        assert.ok(
-          p.opciones_mezcladas.includes(p.opcion_correcta),
-          `Las opciones mezcladas deben incluir la respuesta correcta (${p.opcion_correcta})`
-        );
+        expect(p.id_pregunta).toBeTruthy();
+        expect(p.enunciado_pregunta.length).toBeGreaterThan(0);
+        expect(p.opcion_correcta.length).toBeGreaterThan(0);
+        expect(p.opciones_mezcladas.length).toBe(4);
+        expect(p.opciones_mezcladas).toContain(p.opcion_correcta);
       }
     });
 
@@ -51,9 +47,9 @@ describe('Nivel 1: Pruebas Unitarias - Motor de IA Determinista YAPU', () => {
 
       // 3. Assert
       for (const p of preguntas) {
-        assert.notEqual(p.distractor_1, p.opcion_correcta, 'Distractor 1 debe ser diferente a la correcta');
-        assert.notEqual(p.distractor_2, p.opcion_correcta, 'Distractor 2 debe ser diferente a la correcta');
-        assert.notEqual(p.distractor_3, p.opcion_correcta, 'Distractor 3 debe ser diferente a la correcta');
+        expect(p.distractor_1).not.toBe(p.opcion_correcta);
+        expect(p.distractor_2).not.toBe(p.opcion_correcta);
+        expect(p.distractor_3).not.toBe(p.opcion_correcta);
       }
     });
   });
@@ -196,10 +192,10 @@ describe('Nivel 1: Pruebas Unitarias - Motor de IA Determinista YAPU', () => {
       );
 
       // 3. Assert
-      assert.equal(resultado.evaluacion.puntuacion_obtenida, 100);
-      assert.equal(resultado.evaluacion.total_aciertos, 10);
-      assert.equal(resultado.aprobado, true);
-      assert.equal(resultado.evaluacion.estado_aprobacion, 'aprobado');
+      expect(resultado.evaluacion.puntuacion_obtenida).toBe(100);
+      expect(resultado.evaluacion.total_aciertos).toBe(10);
+      expect(resultado.aprobado).toBe(true);
+      expect(resultado.evaluacion.estado_aprobacion).toBe('aprobado');
     });
 
     it('debe aprobar en el caso limite exacto del 70% (7 aciertos de 10)', () => {
@@ -221,10 +217,10 @@ describe('Nivel 1: Pruebas Unitarias - Motor de IA Determinista YAPU', () => {
       const resultado = evaluateQuiz('estudiante_02', 1, mockPreguntas, respuestasUsuario);
 
       // 3. Assert
-      assert.equal(resultado.evaluacion.puntuacion_obtenida, 70);
-      assert.equal(resultado.evaluacion.total_aciertos, 7);
-      assert.equal(resultado.aprobado, true, '70% debe aprobar segun regla de negocio RF-003');
-      assert.equal(resultado.evaluacion.estado_aprobacion, 'aprobado');
+      expect(resultado.evaluacion.puntuacion_obtenida).toBe(70);
+      expect(resultado.evaluacion.total_aciertos).toBe(7);
+      expect(resultado.aprobado).toBe(true);
+      expect(resultado.evaluacion.estado_aprobacion).toBe('aprobado');
     });
 
     it('debe reprobar con 60% (6 aciertos de 10, por debajo del umbral del 70%)', () => {
@@ -246,10 +242,10 @@ describe('Nivel 1: Pruebas Unitarias - Motor de IA Determinista YAPU', () => {
       const resultado = evaluateQuiz('estudiante_03', 1, mockPreguntas, respuestasUsuario);
 
       // 3. Assert
-      assert.equal(resultado.evaluacion.puntuacion_obtenida, 60);
-      assert.equal(resultado.evaluacion.total_aciertos, 6);
-      assert.equal(resultado.aprobado, false, '60% debe reprobar segun regla de negocio RF-003');
-      assert.equal(resultado.evaluacion.estado_aprobacion, 'reprobado');
+      expect(resultado.evaluacion.puntuacion_obtenida).toBe(60);
+      expect(resultado.evaluacion.total_aciertos).toBe(6);
+      expect(resultado.aprobado).toBe(false);
+      expect(resultado.evaluacion.estado_aprobacion).toBe('reprobado');
     });
 
     it('debe ser tolerante a mayusculas/minusculas y espacios en blanco accidentales', () => {
@@ -271,8 +267,8 @@ describe('Nivel 1: Pruebas Unitarias - Motor de IA Determinista YAPU', () => {
       const resultado = evaluateQuiz('estudiante_04', 1, mockPreguntas, respuestasUsuario);
 
       // 3. Assert
-      assert.equal(resultado.evaluacion.puntuacion_obtenida, 100);
-      assert.equal(resultado.aprobado, true);
+      expect(resultado.evaluacion.puntuacion_obtenida).toBe(100);
+      expect(resultado.aprobado).toBe(true);
     });
   });
 
