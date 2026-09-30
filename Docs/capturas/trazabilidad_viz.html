@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { background: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; padding: 24px; margin: 0; }
+  .card { background: #1e293b; border-radius: 12px; border: 1px solid #334155; padding: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
+  .title { font-size: 20px; font-weight: bold; color: #38bdf8; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 12px; }
+  .badge-green { background: #065f46; color: #34d399; padding: 4px 12px; border-radius: 9999px; font-size: 13px; font-weight: bold; }
+  .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 16px 0; }
+  .stat-box { background: #0f172a; padding: 14px; border-radius: 8px; border: 1px solid #334155; text-align: center; }
+  .stat-val { font-size: 24px; font-weight: bold; color: #10b981; }
+  .stat-lbl { font-size: 12px; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+  th { background: #0f172a; color: #94a3b8; text-align: left; padding: 10px 12px; border-bottom: 2px solid #334155; font-weight: 600; }
+  td { padding: 10px 12px; border-bottom: 1px solid #334155; color: #e2e8f0; }
+  tr:hover { background: #334155; }
+  .badge-tag { background: #1e3a8a; color: #93c5fd; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 11px; }
+  .status-pill { background: #064e3b; color: #6ee7b7; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="title">
+    <span>Matriz de Trazabilidad Automatizada: Requisitos &harr; Suites de Pruebas</span>
+    <span class="badge-green">&check; 44/44 Requisitos Cubiertos (100.0%)</span>
+  </div>
+  
+  <div class="grid-stats">
+    <div class="stat-box">
+      <div class="stat-val">44</div>
+      <div class="stat-lbl">Requisitos Catálogo</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">630</div>
+      <div class="stat-lbl">Pruebas Analizadas</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">42</div>
+      <div class="stat-lbl">Suites Verificadas</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" style="color: #38bdf8;">0 / 0</div>
+      <div class="stat-lbl">Fallos / Omitidas</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 15%;">Código Requisito</th>
+        <th style="width: 20%;">Familia</th>
+        <th style="width: 40%;">Descripción del Requisito</th>
+        <th style="width: 15%;">Suites Asignadas</th>
+        <th style="width: 10%;">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge-tag">RF-001 / RF-002</span></td>
+        <td>Funcional (Acceso)</td>
+        <td>Registro, inicio de sesión y gestión de roles estudiante/docente</td>
+        <td>tests/unit/application/sesion.test.ts</td>
+        <td><span class="status-pill">&check; Aprobado</span></td>
+      </tr>
+      <tr>
+        <td><span class="badge-tag">RF-003</span></td>
+        <td>Funcional (Progresión)</td>
+        <td>Mapa de niveles andino, bloqueo/desbloqueo y 3 tramos pedagógicos</td>
+        <td>tests/component/mapa-niveles.test.tsx</td>
+        <td><span class="status-pill">&check; Aprobado</span></td>
+      </tr>
+      <tr>
+        <td><span class="badge-tag">RF-004</span></td>
+        <td>Funcional (Pedagogía)</td>
+        <td>Lecciones con flashcards culturales, audio y soporte offline</td>
+        <td>tests/e2e/flujos/estudiante-completo.spec.ts</td>
+        <td><span class="status-pill">&check; Aprobado</span></td>
+      </tr>
+      <tr>
+        <td><span class="badge-tag">RF-005</span></td>
+        <td>Funcional (Motor IA)</td>
+        <td>Evaluación determinista (10 preguntas, Fisher-Yates, umbral 70%)</td>
+        <td>tests/unit/domain/evaluacion/*.test.ts</td>
+        <td><span class="status-pill">&check; Aprobado</span></td>
+      </tr>
+      <tr>
+        <td><span class="badge-tag">RF-006 / RF-007</span></td>
+        <td>Funcional (Curaduría)</td>
+        <td>Oraciones base y retos comunitarios con moderación de 4 ojos</td>
+        <td>tests/unit/domain/contenido/*.test.ts</td>
+        <td><span class="status-pill">&check; Aprobado</span></td>
+      </tr>
+      <tr>
+        <td><span class="badge-tag">RNF-002</span></td>
+        <td>No Funcional (A11y)</td>
+        <td>Accesibilidad total WCAG 2.1 AA en todas las vistas críticas</td>
+        <td>tests/e2e/a11y/paginas.spec.ts (axe-core)</td>
+        <td><span class="status-pill">&check; Aprobado</span></td>
+      </tr>
+      <tr>
+        <td><span class="badge-tag">RS-002 / RS-003</span></td>
+        <td>Sostenibilidad</td>
+        <td>Eficiencia energética en móviles modestos y preservación cultural</td>
+        <td>tests/unit/arquitectura/sostenibilidad.test.ts</td>
+        <td><span class="status-pill">&check; Aprobado</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

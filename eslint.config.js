@@ -129,11 +129,9 @@ export default tseslint.config(
       'playwright-report/**',
       'test-results/**',
       'public/**',
-      // Documentación y material académico: no es código de la aplicación y mezcla HTML, Python y
-      // activos generados (PDF/DOCX/PPTX) que no deben analizarse con las reglas del proyecto.
+      // Documentación técnica en Markdown (Docs/) y configuraciones de agentes (.agents/)
       'Docs/**',
       '.agents/**',
-      'presentacion_ai_dlc_inception.html',
       'scripts/**/*.py'
     ]
   },

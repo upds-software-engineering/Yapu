@@ -37,7 +37,7 @@
 
 **Enlaces:**
 
-[Documentación de arquitectura](Docs/arquitectura/diagrama-de-capas.md) · [SRS del Bloque 2](Docs/SRS_YAPU_Bloque2.md) · [Mapa de diagramas UML/ERD](Docs/mapa_de_diagramas.md) · [Álbum de modelos del Bloque 3](Docs/Album_Modelos_Bloque3_YAPU.md)
+[Documentación de arquitectura](Docs/arquitectura/diagrama-de-capas.md) · [Especificación de Requisitos (SRS)](Docs/SRS.md) · [Diseño de Software y Modelos (SDD)](Docs/SDD.md)
 
 ---
 
@@ -88,8 +88,9 @@ Yapu/
 │   └── deploy.yml                     Publicación en GitHub Pages + smoke test
 ├── Docs/
 │   ├── arquitectura/                  ADR-001…004, diagrama de capas, checklist UX
-│   ├── testing/                       Matriz de trazabilidad (artefacto generado)
-│   └── …                              SRS, actas, álbum de modelos, presentaciones
+│   ├── testing/                       Plan de pruebas y matriz de trazabilidad
+│   ├── SRS.md                         Especificación formal de requisitos (SRS IEEE 830)
+│   └── SDD.md                         Descripción de diseño de software (SDD IEEE 1016)
 ├── public/
 │   ├── manifest.json                  Manifiesto PWA bajo /Yapu/
 │   ├── favicon.svg · icons/           Iconografía PWA (192 px y 512 px)

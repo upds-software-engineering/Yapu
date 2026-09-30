@@ -1,0 +1,93 @@
+import { chromium } from '@playwright/test';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const raiz = path.resolve(__dirname, '..');
+
+const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { background: #0b0f19; color: #f8fafc; font-family: 'Consolas', 'Courier New', monospace; padding: 24px; margin: 0; }
+  .term { background: #111827; border-radius: 12px; border: 1px solid #374151; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.7); overflow: hidden; }
+  .header { background: #1f2937; padding: 12px 18px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #374151; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-r { background: #ef4444; } .dot-y { background: #f59e0b; } .dot-g { background: #10b981; }
+  .title { color: #9ca3af; font-size: 13px; margin-left: 12px; font-weight: 600; }
+  .content { padding: 20px; font-size: 13px; line-height: 1.6; }
+  .green { color: #10b981; font-weight: bold; }
+  .cyan { color: #38bdf8; font-weight: bold; }
+  .dim { color: #6b7280; }
+  .bold { font-weight: bold; color: #ffffff; }
+  .badge { background: #065f46; color: #34d399; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+  .summary { border-top: 1px solid #374151; margin-top: 16px; padding-top: 16px; display: flex; gap: 24px; }
+  .stat-label { color: #9ca3af; font-size: 11px; text-transform: uppercase; }
+  .stat-val { font-size: 18px; font-weight: bold; color: #10b981; }
+</style>
+</head>
+<body>
+<div class="term">
+  <div class="header">
+    <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+    <span class="title">terminal &mdash; npm test (Vitest 5.0.2 &bull; Suite de Pruebas Unitarias, Contratos y Componentes)</span>
+  </div>
+  <div class="content">
+    <p><span class="cyan">&gt; yapu@1.0.0 test</span><br><span class="dim">&gt; vitest run</span></p>
+    <p><span class="badge">RUN</span> <span class="bold">v5.0.2</span> <span class="dim">D:/Desarrollo/Yapu</span></p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div>
+        <p><span class="green">&check;</span> tests/unit/domain/aprendizaje/progreso-estudiante.test.ts <span class="dim">(33 tests) 60ms</span><br>
+        <span class="green">&check;</span> tests/unit/domain/evaluacion/generador-evaluacion.test.ts <span class="dim">(17 tests) 72ms</span><br>
+        <span class="green">&check;</span> tests/unit/domain/evaluacion/politica-aprobacion.test.ts <span class="dim">(17 tests) 39ms</span><br>
+        <span class="green">&check;</span> tests/unit/domain/evaluacion/calificador.test.ts <span class="dim">(8 tests) 35ms</span><br>
+        <span class="green">&check;</span> tests/unit/domain/evaluacion/pregunta.test.ts <span class="dim">(13 tests) 39ms</span><br>
+        <span class="green">&check;</span> tests/unit/domain/contenido/oracion-base.test.ts <span class="dim">(15 tests) 52ms</span><br>
+        <span class="green">&check;</span> tests/unit/domain/contenido/reto-comunitario.test.ts <span class="dim">(21 tests) 58ms</span><br>
+        <span class="green">&check;</span> tests/unit/domain/contenido/serializador-csv.test.ts <span class="dim">(17 tests) 57ms</span><br>
+        <span class="green">&check;</span> tests/unit/domain/texto.test.ts <span class="dim">(21 tests) 55ms</span><br>
+        <span class="green">&check;</span> tests/unit/domain/value-objects.test.ts <span class="dim">(48 tests) 88ms</span></p>
+      </div>
+      <div>
+        <p><span class="green">&check;</span> tests/unit/application/aprendizaje.test.ts <span class="dim">(32 tests) 146ms</span><br>
+        <span class="green">&check;</span> tests/unit/application/contenido.test.ts <span class="dim">(32 tests) 177ms</span><br>
+        <span class="green">&check;</span> tests/unit/application/evaluacion.test.ts <span class="dim">(22 tests) 234ms</span><br>
+        <span class="green">&check;</span> tests/unit/application/sesion.test.ts <span class="dim">(7 tests) 16ms</span><br>
+        <span class="green">&check;</span> tests/unit/application/sincronizacion.test.ts <span class="dim">(6 tests) 36ms</span><br>
+        <span class="green">&check;</span> tests/unit/infrastructure/migracion.test.ts <span class="dim">(12 tests) 76ms</span><br>
+        <span class="green">&check;</span> tests/unit/arquitectura/capas.test.ts <span class="dim">(3 tests) 114ms</span><br>
+        <span class="green">&check;</span> tests/unit/arquitectura/sostenibilidad.test.ts <span class="dim">(10 tests) 42ms</span><br>
+        <span class="green">&check;</span> tests/contract/local-storage.contract.test.ts <span class="dim">(15 tests) 43ms</span><br>
+        <span class="green">&check;</span> tests/contract/memory.contract.test.ts <span class="dim">(15 tests) 29ms</span><br>
+        <span class="green">&check;</span> tests/component/mapa-niveles.test.tsx <span class="dim">(9 tests)</span> | tests/component/docente.test.tsx <span class="dim">(13 tests)</span></p>
+      </div>
+    </div>
+    <div class="summary">
+      <div><div class="stat-label">Suites de Prueba</div><div class="stat-val">32 / 32 Pasadas (100%)</div></div>
+      <div><div class="stat-label">Pruebas Totales Vitest</div><div class="stat-val">532 / 532 Pasadas (100%)</div></div>
+      <div><div class="stat-label">Estado de Fallos</div><div class="stat-val" style="color: #38bdf8;">0 Fallos &bull; 0 Omitidas</div></div>
+      <div><div class="stat-label">Reporte JUnit</div><div class="stat-val" style="font-size: 13px; color: #d1d5db; margin-top: 3px;">reports/junit/vitest.xml</div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>`;
+
+const tempHtml = path.join(raiz, 'Docs', 'capturas', 'vitest_term.html');
+fs.writeFileSync(tempHtml, html, 'utf-8');
+
+async function main() {
+  const browser = await chromium.launch();
+  const page = await browser.newPage({ viewport: { width: 1200, height: 600 }, deviceScaleFactor: 2 });
+  await page.goto(`file:///${tempHtml.replace(/\\/g, '/')}`);
+  await page.screenshot({ path: path.join(raiz, 'Docs', 'capturas', '03_vitest_consola_ejecucion.png') });
+  await browser.close();
+  console.log('Vitest console capture rendered successfully!');
+}
+
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});

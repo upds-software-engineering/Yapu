@@ -1,6 +1,6 @@
 # Matriz de trazabilidad requisitos ↔ pruebas — YAPU
 
-**Fecha de generación:** 2026-09-29 14:23  
+**Fecha de generación:** 2026-09-29 19:43  
 **Artefacto AUTOGENERADO**: no editar a mano. Se regenera con `npm run reports:trazabilidad` (o `node scripts/generar-matriz-trazabilidad.mjs`) a partir de los reportes JUnit de `reports/junit/*.xml`.
 
 ## Resumen
