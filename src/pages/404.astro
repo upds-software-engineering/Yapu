@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { BannerConexion, Navegacion, PantallaNoEncontrada } from '@ui/components/layout';
+---
+
+<!--
+  GitHub Pages sirve `dist/404.html` para cualquier ruta inexistente bajo `/Yapu/`.
+  La pantalla es HTML estático (sin `client:*`): se ve aunque falle la carga de JavaScript.
+-->
+<Layout
+  titulo="Página no encontrada — YAPU"
+  descripcion="La dirección que abriste no existe en YAPU. Vuelve al mapa de niveles para seguir aprendiendo."
+>
+  <BannerConexion client:load />
+  <!-- Ningún destino del menú queda activo: la persona no está en ninguna sección. -->
+  <Navegacion client:load rutaActual="/404" />
+
+  <PantallaNoEncontrada />
+</Layout>
