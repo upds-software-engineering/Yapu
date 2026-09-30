@@ -251,7 +251,12 @@ export async function prepararHistorial(
 export function rutaConBase(rutaLogica: string): string {
   const limpia = rutaLogica.startsWith('/') ? rutaLogica : `/${rutaLogica}`;
   if (limpia === '/') return `${BASE}/`;
-  return `${BASE}${limpia}`;
+  // Misma regla que `ruta()`: las páginas terminan en barra (evita el 301 de GitHub Pages).
+  const corte = limpia.search(/[?#]/);
+  const camino = corte === -1 ? limpia : limpia.slice(0, corte);
+  const resto = corte === -1 ? '' : limpia.slice(corte);
+  const esArchivo = (camino.split('/').pop() ?? '').includes('.');
+  return `${BASE}${camino.endsWith('/') || esArchivo ? camino : `${camino}/`}${resto}`;
 }
 
 /** Navega a una ruta LÓGICA (`/`, `/dashboard`, `/lesson/1`, …), siempre bajo `base` (ADR-004). */

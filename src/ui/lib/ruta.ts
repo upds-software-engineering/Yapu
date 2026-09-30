@@ -11,11 +11,23 @@ const BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
 /** Prefijo de despliegue, sin barra final (`''` en local si base es `/`). */
 export const baseUrl = BASE;
 
-/** Convierte una ruta lógica (`/quiz/1`) en su URL real (`/Yapu/quiz/1`). */
+/**
+ * Convierte una ruta lógica (`/quiz/1`) en su URL real (`/Yapu/quiz/1/`).
+ *
+ * Las páginas terminan SIEMPRE en barra: el build genera `quiz/1/index.html` y GitHub Pages
+ * responde a `/Yapu/quiz/1` con un 301 hacia `/Yapu/quiz/1/`, lo que suma un viaje de red a cada
+ * navegación (RS-002: redes lentas). Los archivos (`/manifest.json`, `/favicon.svg`) no llevan
+ * barra, y la consulta o el ancla se conservan detrás de ella (`/lesson/1/?palabras=…`).
+ */
 export function ruta(destino: string): string {
   if (!destino || destino === '/') return `${BASE}/`;
   const limpio = destino.startsWith('/') ? destino : `/${destino}`;
-  return `${BASE}${limpio}`;
+  const corte = limpio.search(/[?#]/);
+  const camino = corte === -1 ? limpio : limpio.slice(0, corte);
+  const resto = corte === -1 ? '' : limpio.slice(corte);
+  const esArchivo = (camino.split('/').pop() ?? '').includes('.');
+  const conBarra = camino.endsWith('/') || esArchivo ? camino : `${camino}/`;
+  return `${BASE}${conBarra}${resto}`;
 }
 
 /** ¿La ruta actual corresponde a este destino? (para resaltar la navegación) */
