@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { AutenticacionError, ValidacionError } from '@domain/errores';
 import {
   AlmacenTokensLocal,
@@ -185,6 +185,62 @@ describe('[RF-001] Casos de uso de autenticación', () => {
       expect(resultado).toBeNull();
       expect(await tokens.leer()).toBeNull();
     });
+
+    it('[RF-001] si verificarAcceso detecta firma inválida o token manipulado, descarta la sesión', async () => {
+      const { iniciarSesion, validarSesion, servidor, tokens, sesion } = crearEntornoAuth();
+      await iniciarSesion.ejecutar({ usuario: 'docente', contrasena: 'yapu2026' });
+
+      vi.spyOn(servidor, 'verificarAcceso').mockRejectedValueOnce(
+        new AutenticacionError('Firma manipulada', 'TOKEN_INVALIDO')
+      );
+
+      const resultado = await validarSesion.ejecutar();
+      expect(resultado).toBeNull();
+      expect(await tokens.leer()).toBeNull();
+      expect((await sesion.obtener()).rol).toBe('estudiante');
+    });
+
+    it('[RF-001] si verificarAcceso lanza TOKEN_EXPIRADO antes del margen local, procede al refresco', async () => {
+      const { iniciarSesion, validarSesion, servidor } = crearEntornoAuth();
+      await iniciarSesion.ejecutar({ usuario: 'docente', contrasena: 'yapu2026' });
+
+      const verificarOriginal = servidor.verificarAcceso.bind(servidor);
+      let primeraLlamada = true;
+      vi.spyOn(servidor, 'verificarAcceso').mockImplementation(async (token) => {
+        if (primeraLlamada) {
+          primeraLlamada = false;
+          throw new AutenticacionError('Token expirado en servidor', 'TOKEN_EXPIRADO');
+        }
+        return verificarOriginal(token);
+      });
+
+      const resultado = await validarSesion.ejecutar();
+      expect(resultado).not.toBeNull();
+      expect(resultado?.refrescado).toBe(true);
+    });
+
+    it('[RF-001] propaga errores no controlados lanzados por verificarAcceso', async () => {
+      const { iniciarSesion, validarSesion, servidor } = crearEntornoAuth();
+      await iniciarSesion.ejecutar({ usuario: 'docente', contrasena: 'yapu2026' });
+
+      vi.spyOn(servidor, 'verificarAcceso').mockRejectedValueOnce(
+        new Error('Fallo de almacenamiento remoto')
+      );
+
+      await expect(validarSesion.ejecutar()).rejects.toThrow('Fallo de almacenamiento remoto');
+    });
+
+    it('[RF-001] propaga errores no controlados lanzados por refrescar', async () => {
+      const { iniciarSesion, validarSesion, servidor, reloj } = crearEntornoAuth();
+      await iniciarSesion.ejecutar({ usuario: 'docente', contrasena: 'yapu2026' });
+      reloj.avanzarSegundos(115);
+
+      vi.spyOn(servidor, 'refrescar').mockRejectedValueOnce(
+        new Error('Fallo crítico del servicio de tokens')
+      );
+
+      await expect(validarSesion.ejecutar()).rejects.toThrow('Fallo crítico del servicio de tokens');
+    });
   });
 
   describe('CerrarSesionUseCase', () => {
@@ -206,6 +262,41 @@ describe('[RF-001] Casos de uso de autenticación', () => {
       const perfil = await sesion.obtener();
       expect(perfil.rol).toBe('estudiante');
       expect(perfil.nombre).toContain('Estudiante');
+    });
+
+    it('[RF-001] cerrar sesión sin tokens guardados resetea a invitado sin llamar al servidor', async () => {
+      const { cerrarSesion, servidor, sesion } = crearEntornoAuth();
+      const cerrarSpy = vi.spyOn(servidor, 'cerrarSesion');
+
+      await cerrarSesion.ejecutar();
+
+      expect(cerrarSpy).not.toHaveBeenCalled();
+      const perfil = await sesion.obtener();
+      expect(perfil.rol).toBe('estudiante');
+    });
+
+    it('[RF-001] ignora errores de autenticación si el token ya expiró o fue revocado en servidor', async () => {
+      const { iniciarSesion, cerrarSesion, servidor, tokens, sesion } = crearEntornoAuth();
+      await iniciarSesion.ejecutar({ usuario: 'docente', contrasena: 'yapu2026' });
+
+      vi.spyOn(servidor, 'cerrarSesion').mockRejectedValueOnce(
+        new AutenticacionError('Token ya expirado', 'TOKEN_EXPIRADO')
+      );
+
+      await expect(cerrarSesion.ejecutar()).resolves.toBeUndefined();
+      expect(await tokens.leer()).toBeNull();
+      expect((await sesion.obtener()).rol).toBe('estudiante');
+    });
+
+    it('[RF-001] propaga errores inesperados del servidor al intentar cerrar sesión', async () => {
+      const { iniciarSesion, cerrarSesion, servidor } = crearEntornoAuth();
+      await iniciarSesion.ejecutar({ usuario: 'docente', contrasena: 'yapu2026' });
+
+      vi.spyOn(servidor, 'cerrarSesion').mockRejectedValueOnce(
+        new Error('Fallo de red al revocar token')
+      );
+
+      await expect(cerrarSesion.ejecutar()).rejects.toThrow('Fallo de red al revocar token');
     });
   });
 });

@@ -437,6 +437,18 @@ describe('[RF-006] Oraciones base del docente', () => {
         'oracion-primera'
       ]);
     });
+
+    it('[RF-006] devuelve cadena vacía si la palabra clave de una oración no está en el catálogo', async () => {
+      const oraciones = new OracionMemoriaRepository([unaOracion({ id: 'oracion-huerfana' })]);
+      const caso = new ListarOracionesUseCase(
+        catalogo([]),
+        oraciones,
+        sesionFalsa({ rol: 'docente', usuarioId: DOCENTE })
+      );
+
+      const listado = await caso.ejecutar();
+      expect(listado[0]?.palabraClaveTermino).toBe('');
+    });
   });
 });
 
@@ -516,6 +528,21 @@ describe('[RS-004] Exportación CSV', () => {
       tipoMime: 'text/csv;charset=utf-8'
     });
   });
+
+  it('[RS-004] maneja oraciones cuya palabra clave no se encuentra en el catalogo', async () => {
+    const descargar = vi.fn();
+    const exportador: ExportadorArchivoPort = { descargar };
+    const caso = new ExportarCorpusCsvUseCase(
+      catalogo([]),
+      new OracionMemoriaRepository([unaOracion({ id: 'oracion-sin-palabra' })]),
+      exportador
+    );
+
+    const resultado = await caso.ejecutar();
+    const contenido = String(descargar.mock.calls[0]?.[1] ?? '');
+    expect(resultado.filas).toBe(1);
+    expect(contenido).toContain('oracion-sin-palabra');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -524,6 +551,18 @@ describe('[RS-004] Exportación CSV', () => {
 
 describe('[RF-007] Retos comunitarios', () => {
   describe('ProponerRetoUseCase', () => {
+    it('[RN-13] un estudiante sin progreso previo no puede proponer retos comunitarios', async () => {
+      const retos = new RetoMemoriaRepository();
+      const caso = new ProponerRetoUseCase(
+        retos,
+        new ProgresoMemoriaRepository(),
+        sesionFalsa({ rol: 'estudiante', usuarioId: 'nuevo-estudiante' }),
+        new RelojFijo(),
+        new GeneradorIdSecuencial('reto')
+      );
+
+      await expect(caso.ejecutar(entradaReto())).rejects.toBeInstanceOf(PermisoDenegadoError);
+    });
     it('[RN-13] una o un estudiante de nivel 6 no puede proponer retos', async () => {
       // Dado un estudiante que aún no alcanza el nivel 7
       const { caso } = await casoProponer({

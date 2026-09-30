@@ -54,9 +54,18 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      # Cache de node_modules para evitar reinstalaciones repetitivas en cada job.
+      - name: Cache de dependencias
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+
       # .npmrc fija legacy-peer-deps=true: se declara explícitamente en el
       # comando para que la instalación sea determinista aunque cambie el lock.
       - name: Instalar dependencias
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci --legacy-peer-deps
 
       - name: Lint, tipos y chequeo de Astro
@@ -83,7 +92,15 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      - name: Cache de dependencias
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+
       - name: Instalar dependencias
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci --legacy-peer-deps
 
       - name: Ejecutar la suite con cobertura
@@ -125,7 +142,15 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      - name: Cache de dependencias
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+
       - name: Instalar dependencias
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci --legacy-peer-deps
 
       - name: Compilar el sitio estático
@@ -150,7 +175,7 @@ jobs:
   # --------------------------------------------------------------------------
   e2e:
     name: E2E (flujos + a11y + ux)
-    needs: [build, test]
+    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
@@ -167,7 +192,15 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      - name: Cache de dependencias
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+
       - name: Instalar dependencias
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci --legacy-peer-deps
 
       - name: Descargar el artefacto dist
@@ -245,13 +278,22 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      - name: Cache de dependencias
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+
       - name: Instalar dependencias
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci --legacy-peer-deps
 
       # merge-multiple recompone reports/junit/ con Vitest + Playwright, que es
       # exactamente lo que lee `npm run reports:trazabilidad`.
       - name: Descargar JUnit de Vitest
         uses: actions/download-artifact@v8
+        continue-on-error: true
         with:
           name: cobertura-y-junit
           path: reports
@@ -259,6 +301,7 @@ jobs:
 
       - name: Descargar JUnit de Playwright
         uses: actions/download-artifact@v8
+        continue-on-error: true
         with:
           name: junit-playwright
           path: reports
