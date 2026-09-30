@@ -68,7 +68,7 @@ export function Flashcard({
       className={cn(
         // Fitts (BLOQUEANTE): objetivo táctil de 44×44 px como mínimo.
         'perspective-1000 block w-full min-h-tactil min-w-tactil cursor-pointer select-none rounded-3xl text-left',
-        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte',
         ALTO_TARJETA,
         className
       )}
@@ -96,13 +96,13 @@ export function Flashcard({
           className={cn(
             CARA,
             CARA_3D,
-            'justify-between border-2 border-andina-night-border bg-gradient-to-br from-andina-night-card to-andina-night',
+            'justify-between border-2 border-linea bg-gradient-to-br from-superficie to-fondo',
             volteada && CARA_APAGADA
           )}
         >
           <div className="flex items-center justify-between gap-2">
             <Insignia tono="marca">{palabra.etiquetaCategoria}</Insignia>
-            <span className="flex items-center gap-1 text-caption text-slate-400">
+            <span className="flex items-center gap-1 text-caption text-tinta-tenue">
               <PlayCircle aria-hidden="true" className="h-4 w-4" />
               {pista}
             </span>
@@ -129,18 +129,18 @@ export function Flashcard({
           </div>
 
           <div className="flex flex-col items-center gap-1 text-center">
-            <p className="text-display font-display font-extrabold tracking-tight text-sand">
+            <p className="text-display font-display font-extrabold tracking-tight text-tinta">
               {palabra.termino}
             </p>
             {palabra.pronunciacion.length > 0 && (
-              <p className="text-body text-andina-gold">
+              <p className="text-body text-acento">
                 Pronunciación: [{palabra.pronunciacion}]
               </p>
             )}
           </div>
 
           {palabra.contextoCultural.length > 0 && (
-            <p className="rounded-xl border border-andina-night-border bg-andina-night/60 px-3 py-2 text-center text-caption text-slate-400">
+            <p className="rounded-xl border border-linea bg-fondo/60 px-3 py-2 text-center text-caption text-tinta-tenue">
               {palabra.contextoCultural}
             </p>
           )}
@@ -152,31 +152,31 @@ export function Flashcard({
           aria-hidden={!volteada}
           className={cn(
             CARA,
-            'justify-between border-2 border-andina-aguayo/60 bg-gradient-to-br from-andina-night-muted to-andina-night',
+            'justify-between border-2 border-info/60 bg-gradient-to-br from-superficie-alta to-fondo',
             conGiro ? cn(CARA_3D, 'rotate-y-180') : undefined,
             !volteada && CARA_APAGADA
           )}
         >
           <div className="flex items-center justify-between gap-2">
             <Insignia tono="exito">Significado en español</Insignia>
-            <span className="text-caption text-slate-400">{pista}</span>
+            <span className="text-caption text-tinta-tenue">{pista}</span>
           </div>
 
           <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
-            <p className="text-title font-display font-extrabold tracking-tight text-andina-aguayo-sky">
+            <p className="text-title font-display font-extrabold tracking-tight text-info">
               {palabra.traduccion}
             </p>
             {palabra.ejemploUso !== undefined && palabra.ejemploUso.length > 0 && (
-              <div className="w-full rounded-xl border border-andina-night-border bg-andina-night/70 p-3 text-left">
-                <span className="block text-caption font-semibold uppercase tracking-widest text-slate-500">
+              <div className="w-full rounded-xl border border-linea bg-fondo/70 p-3 text-left">
+                <span className="block text-caption font-semibold uppercase tracking-widest text-tinta-tenue">
                   Ejemplo en oración
                 </span>
-                <p className="mt-1 text-body italic text-slate-200">{palabra.ejemploUso}</p>
+                <p className="mt-1 text-body italic text-tinta">{palabra.ejemploUso}</p>
               </div>
             )}
           </div>
 
-          <p className="text-center text-caption text-slate-400">{palabra.termino}</p>
+          <p className="text-center text-caption text-tinta-tenue">{palabra.termino}</p>
         </div>
       </div>
     </button>

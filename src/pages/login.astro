@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { BannerConexion, Navegacion } from '@ui/components/layout';
+import { PantallaLogin } from '@ui/components/auth';
+---
+
+<Layout
+  titulo="Iniciar sesión — YAPU"
+  descripcion="Inicio de sesión con token de acceso JWT y token de refresco con rotación."
+  rutaActual="/login"
+>
+  <BannerConexion client:load />
+  <Navegacion client:load rutaActual="/login" />
+
+  <!-- RF-001: el `<h1>` («Iniciar sesión» o «Tu sesión») lo aporta `PantallaLogin`. -->
+  <PantallaLogin client:load />
+</Layout>

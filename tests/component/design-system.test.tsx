@@ -292,7 +292,7 @@ describe('[UX-ESTETICA] Design system', () => {
 
     // Entonces la tarjeta es interactiva y accesible y la pastilla usa el token de caption
     expect(tarjeta.className).toContain('rounded-2xl');
-    expect(tarjeta.className).toContain('bg-andina-night-card');
+    expect(tarjeta.className).toContain('bg-superficie');
     expect(tarjeta).toHaveAttribute('tabindex', '0');
     expect(tarjeta).toHaveAttribute('aria-label', 'Nivel 1');
     expect(pastilla.className).toContain('text-caption');

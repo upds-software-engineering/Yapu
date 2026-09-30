@@ -17,7 +17,8 @@ const MENSAJES_POR_CODIGO: Record<string, string> = {
   VALIDACION: 'Revisa los datos: hay algo que no cumple las reglas. Corrígelo e inténtalo otra vez.',
   NO_ENCONTRADO: 'No encontramos lo que buscabas. Vuelve al inicio e inténtalo otra vez.',
   CONFLICTO_ESTADO:
-    'El contenido cambió mientras trabajabas. Actualiza la pantalla e inténtalo otra vez.'
+    'El contenido cambió mientras trabajabas. Actualiza la pantalla e inténtalo otra vez.',
+  NO_AUTENTICADO: 'Tu sesión no es válida o ya venció. Inicia sesión de nuevo.'
 };
 
 /** Respaldo para cualquier error sin código conocido. */

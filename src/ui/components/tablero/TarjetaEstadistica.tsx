@@ -44,9 +44,9 @@ export function TarjetaEstadistica({
   return (
     <div data-estadistica={tipo} className="h-full">
       <Tarjeta className={cn('flex h-full flex-col gap-2', className)}>
-        <p className="text-caption font-semibold tracking-wide text-slate-400 uppercase">{etiqueta}</p>
-        <p className="font-display text-title font-bold text-sand">{valor}</p>
-        {detalle !== undefined && <p className="text-caption text-slate-400">{detalle}</p>}
+        <p className="text-caption font-semibold tracking-wide text-tinta-tenue uppercase">{etiqueta}</p>
+        <p className="font-display text-title font-bold text-tinta">{valor}</p>
+        {detalle !== undefined && <p className="text-caption text-tinta-tenue">{detalle}</p>}
         {children !== undefined && <div className="mt-auto pt-1">{children}</div>}
       </Tarjeta>
     </div>

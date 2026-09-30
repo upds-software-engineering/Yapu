@@ -84,7 +84,7 @@ export function SelectorRol({ alCambiarRol, className }: PropsSelectorRol) {
       data-rol={rol}
       className={cn('flex flex-col items-start gap-1', className)}
     >
-      <label htmlFor={ID_SELECTOR} className="text-caption font-semibold text-slate-400">
+      <label htmlFor={ID_SELECTOR} className="text-caption font-semibold text-tinta-tenue">
         Rol de la sesión (simulado)
       </label>
 
@@ -94,10 +94,10 @@ export function SelectorRol({ alCambiarRol, className }: PropsSelectorRol) {
         disabled={cambiando}
         onChange={(evento) => void cambiar(evento)}
         className={cn(
-          'min-h-tactil min-w-tactil rounded-lg border border-andina-night-border bg-andina-night-card px-2',
-          'text-caption font-semibold text-sand transition-colors duration-200',
+          'min-h-tactil min-w-tactil rounded-lg border border-linea bg-superficie px-2',
+          'text-caption font-semibold text-tinta transition-colors duration-200',
           'disabled:cursor-not-allowed disabled:opacity-60',
-          'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold'
+          'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte'
         )}
       >
         {OPCIONES.map((opcion) => (
@@ -107,12 +107,12 @@ export function SelectorRol({ alCambiarRol, className }: PropsSelectorRol) {
         ))}
       </select>
 
-      <p className="max-w-[16rem] text-caption text-slate-400">
+      <p className="max-w-[16rem] text-caption text-tinta-tenue">
         Rol simulado (ADR-003): sirve para probar la vista de docente sin autenticación real.
       </p>
 
       {error !== null && (
-        <p role="alert" className="text-caption font-semibold text-amber-300">
+        <p role="alert" className="text-caption font-semibold text-alerta">
           {error}
         </p>
       )}

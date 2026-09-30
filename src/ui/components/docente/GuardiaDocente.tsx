@@ -1,87 +1,86 @@
-import { useState } from 'react';
-import type { SesionDto } from '@application/dto/contenido';
-import { Boton, MensajeError, Tarjeta } from '@ui/design-system';
+import { GraduationCap, LogIn } from 'lucide-react';
+import { Tarjeta } from '@ui/design-system';
 import { ruta } from '@ui/lib/ruta';
 
 export interface PropsGuardiaDocente {
-  /** RF-001: sesión actual; se usa para explicar en español con qué rol se llegó aquí. */
-  sesion: SesionDto | null;
   /**
-   * RF-001 / ADR-003: ejecuta `CambiarRolUseCase`. Devuelve la sesión nueva o `null` cuando el
-   * cambio falló; en ese caso `error` ya trae el mensaje en español.
+   * RF-001: nombre de la sesión autenticada que llegó sin rol docente, o `null` si se navega como
+   * invitado. Sólo se usa para explicar en español por qué no se puede entrar.
    */
-  alCambiarRol: () => Promise<SesionDto | null>;
-  /** Error del caso de uso, ya traducido a español, o `null` mientras no haya fallo. */
-  error?: string | null;
+  nombreSesion: string | null;
+  /** Acción de conveniencia para cambiar de rol inmediatamente (pruebas / demo rápida). */
+  alCambiarRolDocente?: () => void | Promise<void>;
 }
 
-/** CTA primario escrito a mano: el design system todavía no expone un `EnlaceBoton`. */
-const CLASES_ENLACE_SECUNDARIO = [
+const CLASES_ENLACE = [
   'inline-flex min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-xl px-4 py-2',
-  'text-body font-semibold',
-  'border border-andina-night-border bg-andina-night-card text-slate-100',
-  'transition-colors duration-200 hover:bg-andina-night-muted/40 active:bg-andina-night-muted/60',
+  'text-body font-semibold transition-colors duration-200',
   'md:min-h-tactil-escritorio md:min-w-tactil-escritorio',
-  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold'
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte'
 ].join(' ');
 
 /**
- * RF-001 / ADR-003 — guardia de rol del panel docente.
+ * RF-001 / RF-002 — guardia del panel docente.
  *
- * Se pinta ÚNICAMENTE cuando la sesión activa no es docente: el panel completo queda fuera del
- * árbol (no basta con ocultarlo), así que ningún caso de uso de RF-006/RF-007 llega a ejecutarse.
+ * El panel exige un rol docente. Sin él, el panel no se monta (ningún caso de uso de RF-006/RF-007
+ * llega a ejecutarse) y se ofrece iniciar sesión como docente, con vuelta automática a `/docente`.
  *
- * Hick: una sola acción primaria —`Cambiar a rol docente`— y una salida secundaria hacia el mapa,
- * para que la pantalla no sea un callejón sin salida (Apogeo-Final).
+ * Hick: una sola acción primaria —iniciar sesión— y salidas secundarias (Apogeo-Final).
  */
-export function GuardiaDocente({ sesion, alCambiarRol, error }: PropsGuardiaDocente) {
-  const [cambiando, setCambiando] = useState(false);
-
-  const nombre = sesion?.nombre?.trim() ?? '';
-  const etiquetaRol = sesion === null ? 'invitada o invitado' : sesion.rol;
-
-  async function cambiar(): Promise<void> {
-    setCambiando(true);
-    try {
-      await alCambiarRol();
-    } finally {
-      setCambiando(false);
-    }
-  }
-
+export function GuardiaDocente({ nombreSesion, alCambiarRolDocente }: PropsGuardiaDocente) {
   return (
     <section
       data-pantalla="docente"
       data-guardia="rol"
-      className="mx-auto flex w-full max-w-xl flex-col gap-4"
+      className="mx-auto flex w-full max-w-xl flex-col gap-6 px-4 py-10 sm:py-16 sm:px-6"
     >
-      <Tarjeta className="flex flex-col items-center gap-3 text-center">
-        <h1 className="text-display font-display font-bold text-sand">Panel docente</h1>
-        <p className="text-body text-slate-300">
-          Esta pantalla es sólo para docentes: aquí se registran las oraciones base del corpus y se
-          moderan los retos de la comunidad (RF-006 y RF-007).
-        </p>
-        <p className="text-body text-slate-400">
-          {nombre.length > 0
-            ? `Tu sesión actual es de ${etiquetaRol} y se llama ${nombre}.`
-            : `Tu sesión actual no tiene el rol docente (rol: ${etiquetaRol}).`}{' '}
-          Cambia a rol docente para entrar; puedes volver cuando quieras.
-        </p>
+      <Tarjeta className="flex flex-col items-center gap-5 p-6 text-center sm:p-8">
+        <span
+          aria-hidden="true"
+          className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primario/15 text-acento"
+        >
+          <GraduationCap className="h-7 w-7" />
+        </span>
 
-        {error !== null && error !== undefined && <MensajeError mensaje={error} />}
+        <div className="flex flex-col gap-2">
+          <h1 className="text-display font-display font-bold text-tinta">Panel docente</h1>
+          <p className="max-w-md text-body text-tinta-suave">
+            Esta pantalla es sólo para docentes: aquí se registran las oraciones base del corpus y se
+            moderan los retos de la comunidad (RF-006 y RF-007).
+          </p>
+          <p className="text-body text-tinta-tenue">
+            {nombreSesion !== null
+              ? `Iniciaste sesión como ${nombreSesion}, que no tiene rol docente.`
+              : 'No has iniciado sesión.'}{' '}
+            Entra con una cuenta docente para continuar.
+          </p>
+        </div>
 
-        <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-          {/* Hick: el ÚNICO `data-cta="primario"` de la guardia es el cambio de rol. */}
-          <Boton
-            esCtaPrimario
-            variante="primario"
-            cargando={cambiando}
-            disabled={cambiando}
-            onClick={() => void cambiar()}
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
+          {/* Hick: el ÚNICO `data-cta="primario"` de la guardia es iniciar sesión. */}
+          <a
+            href={`${ruta('/login')}?siguiente=/docente`}
+            data-cta="primario"
+            className={`${CLASES_ENLACE} bg-primario text-white shadow-lg shadow-primario/25 hover:bg-primario-hover active:bg-primario-activo`}
           >
-            Cambiar a rol docente
-          </Boton>
-          <a href={ruta('/')} className={CLASES_ENLACE_SECUNDARIO}>
+            <LogIn aria-hidden="true" className="h-4 w-4" />
+            Iniciar sesión como docente
+          </a>
+
+          {alCambiarRolDocente && (
+            <button
+              type="button"
+              onClick={() => void alCambiarRolDocente()}
+              className={`${CLASES_ENLACE} border border-linea bg-superficie text-tinta hover:bg-superficie-alta`}
+            >
+              Cambiar a rol docente
+            </button>
+          )}
+
+          <a
+            href={ruta('/')}
+            className={`${CLASES_ENLACE} border border-linea bg-superficie text-tinta hover:bg-superficie-alta`}
+          >
             Volver al mapa
           </a>
         </div>
@@ -91,3 +90,4 @@ export function GuardiaDocente({ sesion, alCambiarRol, error }: PropsGuardiaDoce
 }
 
 export default GuardiaDocente;
+

@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
 import { CambiarRolUseCase } from '@application/use-cases/CambiarRolUseCase';
+import { CerrarSesionUseCase } from '@application/use-cases/CerrarSesionUseCase';
+import { IniciarSesionUseCase } from '@application/use-cases/IniciarSesionUseCase';
+import { ValidarSesionUseCase } from '@application/use-cases/ValidarSesionUseCase';
 import { CalificarEvaluacionUseCase } from '@application/use-cases/CalificarEvaluacionUseCase';
 import { ExportarCorpusCsvUseCase } from '@application/use-cases/ExportarCorpusCsvUseCase';
 import { GenerarEvaluacionUseCase } from '@application/use-cases/GenerarEvaluacionUseCase';
@@ -39,6 +42,10 @@ export interface Servicios {
   listarRetos: ListarRetosUseCase;
   obtenerSesion: ObtenerSesionUseCase;
   cambiarRol: CambiarRolUseCase;
+  /** RF-001: autenticación con token de acceso y token de refresco. */
+  iniciarSesion: IniciarSesionUseCase;
+  validarSesion: ValidarSesionUseCase;
+  cerrarSesion: CerrarSesionUseCase;
 }
 
 export function crearServicios(contenedor: AdaptadoresContenedor): Servicios {
@@ -100,7 +107,21 @@ export function crearServicios(contenedor: AdaptadoresContenedor): Servicios {
     moderarReto: new ModerarRetoUseCase(contenedor.retos, contenedor.sesion, contenedor.reloj),
     listarRetos: new ListarRetosUseCase(contenedor.retos, contenedor.progreso, contenedor.sesion),
     obtenerSesion: new ObtenerSesionUseCase(contenedor.sesion),
-    cambiarRol: new CambiarRolUseCase(contenedor.sesion)
+    cambiarRol: new CambiarRolUseCase(contenedor.sesion),
+    iniciarSesion: new IniciarSesionUseCase(contenedor.autenticacion, contenedor.tokens, contenedor.sesion),
+    validarSesion: new ValidarSesionUseCase(
+      contenedor.autenticacion,
+      contenedor.tokens,
+      contenedor.sesion,
+      contenedor.reloj,
+      contenedor.generadorId
+    ),
+    cerrarSesion: new CerrarSesionUseCase(
+      contenedor.autenticacion,
+      contenedor.tokens,
+      contenedor.sesion,
+      contenedor.generadorId
+    )
   };
 }
 

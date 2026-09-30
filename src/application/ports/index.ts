@@ -16,3 +16,10 @@ export type { SincronizacionRemotaPort } from './SincronizacionRemotaPort';
 export type { ConectividadPort } from './ConectividadPort';
 export type { ExportadorArchivoPort } from './ExportadorArchivoPort';
 export type { BorradorEvaluacion, BorradorEvaluacionPort } from './BorradorEvaluacionPort';
+export type {
+  AutenticacionPort,
+  AlmacenTokensPort,
+  ParTokens,
+  ReclamosToken,
+  TipoToken
+} from './AutenticacionPort';

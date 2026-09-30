@@ -43,25 +43,25 @@ function LineaDetalle({ linea, posicion }: { linea: DetalleRespuestaDto; posicio
   return (
     <li className="flex items-start gap-3 p-4">
       {linea.esCorrecta ? (
-        <CheckCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-emerald-400" />
+        <CheckCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-exito" />
       ) : (
-        <XCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-red-400" />
+        <XCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-peligro" />
       )}
 
       <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <p className="text-caption text-slate-400">
+        <p className="text-caption text-tinta-tenue">
           {`${posicion + 1}. ${etiquetaDeTipo(linea.tipo)}`}
         </p>
 
-        <p className="text-body whitespace-pre-line text-slate-100">{linea.enunciado}</p>
+        <p className="text-body whitespace-pre-line text-tinta">{linea.enunciado}</p>
 
-        <p className="text-body text-slate-300">{`Marcaste: ${linea.respuestaMarcada}`}</p>
+        <p className="text-body text-tinta-suave">{`Marcaste: ${linea.respuestaMarcada}`}</p>
 
         {!linea.esCorrecta && (
-          <p className="text-body text-emerald-300">{`Respuesta correcta: ${linea.opcionCorrecta}`}</p>
+          <p className="text-body text-exito">{`Respuesta correcta: ${linea.opcionCorrecta}`}</p>
         )}
 
-        <p className="text-body text-slate-400">{linea.explicacion}</p>
+        <p className="text-body text-tinta-tenue">{linea.explicacion}</p>
       </div>
     </li>
   );
@@ -72,8 +72,8 @@ function PalabraFallada({ palabra }: { palabra: PalabraDto }) {
   return (
     <li>
       <Tarjeta className="flex items-center justify-between gap-3">
-        <span className="text-body font-semibold text-slate-100">{palabra.termino}</span>
-        <span className="text-body text-slate-300">{palabra.traduccion}</span>
+        <span className="text-body font-semibold text-tinta">{palabra.termino}</span>
+        <span className="text-body text-tinta-suave">{palabra.traduccion}</span>
       </Tarjeta>
     </li>
   );
@@ -97,25 +97,25 @@ export function Resultado({ resultado, onReintentar }: PropsResultado) {
       <Tarjeta
         className={
           aprobado
-            ? 'flex flex-col items-center gap-3 border-andina-gold/60 text-center'
-            : 'flex flex-col items-center gap-3 border-red-900/60 text-center'
+            ? 'flex flex-col items-center gap-3 border-acento/60 text-center'
+            : 'flex flex-col items-center gap-3 border-peligro/40 text-center'
         }
       >
         <Insignia tono={aprobado ? 'exito' : 'alerta'}>
           {aprobado ? '¡Kusikuy! Aprobaste' : 'Sigue practicando'}
         </Insignia>
 
-        <p className="text-display font-bold text-white">{`${resultado.puntuacion}%`}</p>
+        <p className="text-display font-bold text-tinta">{`${resultado.puntuacion}%`}</p>
 
-        <p className="text-body text-slate-300">
+        <p className="text-body text-tinta-suave">
           {`${resultado.aciertos} de ${resultado.totalPreguntas} respuestas correctas`}
         </p>
 
-        <p className="text-body text-slate-200">{resultado.mensaje}</p>
+        <p className="text-body text-tinta">{resultado.mensaje}</p>
 
         <div className="flex flex-wrap items-center justify-center gap-2">
           <Insignia tono="marca">{`+${resultado.xpGanado} XP`}</Insignia>
-          <span className="text-caption text-slate-400">XP ganado en esta evaluación</span>
+          <span className="text-caption text-tinta-tenue">XP ganado en esta evaluación</span>
 
           {aprobado && resultado.cursoCompletado && (
             <Insignia tono="exito">¡Curso completado!</Insignia>
@@ -156,11 +156,11 @@ export function Resultado({ resultado, onReintentar }: PropsResultado) {
       )}
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-caption font-semibold uppercase tracking-wide text-slate-400">
+        <h2 className="text-caption font-semibold uppercase tracking-wide text-tinta-tenue">
           {`Retroalimentación pedagógica (${resultado.detalle.length} preguntas)`}
         </h2>
 
-        <ul className="max-h-96 divide-y divide-slate-800 overflow-y-auto rounded-2xl border border-slate-800 bg-andina-night-card/60">
+        <ul className="max-h-96 divide-y divide-linea overflow-y-auto rounded-2xl border border-linea bg-superficie/60">
           {resultado.detalle.map((linea, posicion) => (
             <LineaDetalle key={linea.preguntaId} linea={linea} posicion={posicion} />
           ))}
@@ -169,7 +169,7 @@ export function Resultado({ resultado, onReintentar }: PropsResultado) {
 
       {falladas.length > 0 && (
         <section className="flex flex-col gap-2">
-          <h2 className="text-caption font-semibold uppercase tracking-wide text-slate-400">
+          <h2 className="text-caption font-semibold uppercase tracking-wide text-tinta-tenue">
             {`Palabras para repasar (${falladas.length})`}
           </h2>
 

@@ -22,9 +22,9 @@ export function EstadoCarga({ mensaje = 'Cargando…', className }: PropsEstadoC
     >
       <span
         aria-hidden="true"
-        className="h-8 w-8 animate-spin rounded-full border-2 border-andina-night-border border-t-andina-gold"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-linea border-t-acento"
       />
-      <p className="text-body text-slate-400">{mensaje}</p>
+      <p className="text-body text-tinta-tenue">{mensaje}</p>
     </div>
   );
 }
@@ -52,9 +52,9 @@ export function MensajeError({
   return (
     <div
       role="alert"
-      className={cn('rounded-2xl border border-red-800/60 bg-red-950/40 p-4 sm:p-5', className)}
+      className={cn('rounded-2xl border border-peligro/40 bg-peligro/10 p-4 sm:p-5', className)}
     >
-      <p className="text-body text-red-200">{mensaje}</p>
+      <p className="text-body text-peligro">{mensaje}</p>
       {onReintentar && (
         <Boton variante="secundario" tamano="compacto" className="mt-3" onClick={onReintentar}>
           {textoReintentar}
@@ -77,12 +77,12 @@ export function EstadoVacio({ titulo, descripcion, children, className }: PropsE
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-800 bg-andina-night-card/60 p-6 text-center',
+        'flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-linea bg-superficie/60 p-6 text-center',
         className
       )}
     >
-      <p className="text-title font-semibold text-slate-100">{titulo}</p>
-      {descripcion && <p className="text-body text-slate-400">{descripcion}</p>}
+      <p className="text-title font-semibold text-tinta">{titulo}</p>
+      {descripcion && <p className="text-body text-tinta-tenue">{descripcion}</p>}
       {children && <div className="mt-2">{children}</div>}
     </div>
   );

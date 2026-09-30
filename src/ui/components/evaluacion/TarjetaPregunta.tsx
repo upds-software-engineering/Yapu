@@ -44,7 +44,7 @@ export function TarjetaPregunta({
         <Insignia tono="marca">{pregunta.etiquetaTipo}</Insignia>
         <h2
           id={idEnunciado}
-          className="text-title font-semibold whitespace-pre-line text-slate-100"
+          className="text-title font-semibold whitespace-pre-line text-tinta"
         >
           {pregunta.enunciado}
         </h2>
@@ -64,17 +64,17 @@ export function TarjetaPregunta({
                 className={cn(
                   'flex w-full min-h-tactil min-w-tactil items-center gap-3 rounded-2xl border px-4 py-3',
                   'text-left text-body transition-colors',
-                  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold',
+                  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte',
                   marcada
-                    ? 'border-andina-gold bg-andina-gold font-semibold text-slate-950'
-                    : 'border-andina-night-border bg-andina-night-card text-slate-200 hover:border-andina-terracotta/60'
+                    ? 'border-acento bg-acento font-semibold text-fondo'
+                    : 'border-linea bg-superficie text-tinta hover:border-primario/60'
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={cn(
                     'flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-caption font-bold',
-                    marcada ? 'bg-slate-950 text-andina-gold' : 'bg-andina-night-muted/60 text-slate-300'
+                    marcada ? 'bg-fondo text-acento' : 'bg-superficie-alta text-tinta-suave'
                   )}
                 >
                   {letraDeOpcion(posicion)}

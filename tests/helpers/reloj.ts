@@ -28,6 +28,12 @@ export class RelojFijo implements Reloj {
     return this.ahora();
   }
 
+  /** Desplaza el reloj `segundos` segundos (caducidad de tokens, RF-001). */
+  avanzarSegundos(segundos: number): Date {
+    this.actual = new Date(this.actual.getTime() + segundos * 1000);
+    return this.ahora();
+  }
+
   establecer(iso: string | Date): Date {
     this.actual = typeof iso === 'string' ? new Date(iso) : new Date(iso.getTime());
     return this.ahora();

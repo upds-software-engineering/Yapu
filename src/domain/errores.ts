@@ -11,7 +11,8 @@ export type CodigoError =
   | 'PERMISO_DENEGADO'
   | 'VALIDACION'
   | 'NO_ENCONTRADO'
-  | 'CONFLICTO_ESTADO';
+  | 'CONFLICTO_ESTADO'
+  | 'NO_AUTENTICADO';
 
 export class ErrorDominio extends Error {
   readonly codigo: CodigoError;
@@ -81,6 +82,33 @@ export class NoEncontradoError extends ErrorDominio {
 export class ConflictoEstadoError extends ErrorDominio {
   constructor(mensaje: string) {
     super(mensaje, 'CONFLICTO_ESTADO');
+  }
+}
+
+/**
+ * RF-001 — motivo concreto por el que una credencial o un token no autentica.
+ *
+ * - `CREDENCIALES_INVALIDAS`: usuario o contraseña incorrectos.
+ * - `TOKEN_INVALIDO`: formato roto, firma manipulada o tipo equivocado (acceso ↔ refresco).
+ * - `TOKEN_EXPIRADO`: la firma es válida pero `exp` ya pasó (el de acceso se renueva con el de refresco).
+ * - `TOKEN_REUTILIZADO`: un token de refresco YA usado vuelve a presentarse (posible robo): se revoca
+ *   toda su familia.
+ * - `SESION_REVOCADA`: la familia del token se cerró (cierre de sesión o reutilización detectada).
+ */
+export type MotivoAutenticacion =
+  | 'CREDENCIALES_INVALIDAS'
+  | 'TOKEN_INVALIDO'
+  | 'TOKEN_EXPIRADO'
+  | 'TOKEN_REUTILIZADO'
+  | 'SESION_REVOCADA';
+
+/** RF-001: fallo de autenticación con su motivo tipado. */
+export class AutenticacionError extends ErrorDominio {
+  readonly motivo: MotivoAutenticacion;
+
+  constructor(mensaje: string, motivo: MotivoAutenticacion) {
+    super(mensaje, 'NO_AUTENTICADO');
+    this.motivo = motivo;
   }
 }
 

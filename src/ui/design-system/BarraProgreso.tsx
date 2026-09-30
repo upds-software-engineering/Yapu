@@ -31,12 +31,12 @@ export function BarraProgreso({ valor, max = 100, etiqueta, className }: PropsBa
       aria-valuemax={maximo}
       aria-valuetext={`${porcentaje} %`}
       className={cn(
-        'h-2 w-full overflow-hidden rounded-full border border-andina-night-border bg-andina-night-muted/40',
+        'h-2 w-full overflow-hidden rounded-full border border-linea bg-superficie-alta',
         className
       )}
     >
       <div
-        className="h-full rounded-full bg-gradient-to-r from-andina-terracotta to-andina-gold transition-[width] duration-500"
+        className="h-full rounded-full bg-gradient-to-r from-primario to-acento transition-[width] duration-500"
         style={{ width: `${porcentaje}%` }}
       />
     </div>

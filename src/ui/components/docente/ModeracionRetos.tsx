@@ -91,7 +91,7 @@ export function ModeracionRetos({ retos, alModerar, error }: PropsModeracionReto
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-body text-amber-200">
+      <p className="text-body text-alerta">
         Cada reto necesita DOS aprobaciones de docentes distintos para publicarse. Un solo rechazo
         cierra la moderación (RN-13).
       </p>
@@ -112,23 +112,23 @@ export function ModeracionRetos({ retos, alModerar, error }: PropsModeracionReto
               <Tarjeta className="flex h-full flex-col justify-between gap-3">
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-body font-semibold text-sand">
+                    <p className="text-body font-semibold text-tinta">
                       Propuesta de {reto.nombreAutor}
                     </p>
                     <Insignia tono={estado.tono}>{estado.texto}</Insignia>
                   </div>
 
-                  <p className="text-body font-semibold text-andina-gold">{reto.textoQuechua}</p>
-                  <p className="text-body text-slate-300">
+                  <p className="text-body font-semibold text-acento">{reto.textoQuechua}</p>
+                  <p className="text-body text-tinta-suave">
                     Traducción propuesta: {reto.traduccionSugerida}
                   </p>
-                  <p className="text-caption text-slate-400">
+                  <p className="text-caption text-tinta-tenue">
                     Nivel sugerido: {reto.nivelSugerido}
                     {reto.pistaCultural.length > 0 ? ` · Pista cultural: ${reto.pistaCultural}` : ''}
                   </p>
 
                   <div className="flex flex-col gap-1">
-                    <p className="text-caption text-slate-300">
+                    <p className="text-caption text-tinta-suave">
                       {reto.aprobaciones} de {reto.aprobacionesRequeridas} aprobaciones de docentes
                     </p>
                     <BarraProgreso
@@ -138,7 +138,7 @@ export function ModeracionRetos({ retos, alModerar, error }: PropsModeracionReto
                     />
                   </div>
 
-                  <p className="text-caption text-slate-400">
+                  <p className="text-caption text-tinta-tenue">
                     {reto.moderaciones.length === 0
                       ? 'Todavía no hay votos registrados en la bitácora.'
                       : `Bitácora: ${reto.moderaciones
@@ -147,7 +147,7 @@ export function ModeracionRetos({ retos, alModerar, error }: PropsModeracionReto
                   </p>
 
                   {motivo !== null && (
-                    <p data-motivo-sin-moderar className="text-body text-amber-200">
+                    <p data-motivo-sin-moderar className="text-body text-alerta">
                       {motivo}
                     </p>
                   )}

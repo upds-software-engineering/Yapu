@@ -46,11 +46,11 @@ export function CierreLeccion({
     <section data-pantalla="cierre-leccion" className="flex w-full flex-col gap-4">
       <Tarjeta className="flex flex-col items-center gap-3 text-center">
         <Insignia tono="exito">Lección completada</Insignia>
-        <h2 className="text-title font-display font-bold text-sand">{titulo}</h2>
-        <p className="text-body text-slate-300">
+        <h2 className="text-title font-display font-bold text-tinta">{titulo}</h2>
+        <p className="text-body text-tinta-suave">
           Aprendiste {aprendidas} de {total} palabras
         </p>
-        <p className="text-body text-slate-400">{animo}</p>
+        <p className="text-body text-tinta-tenue">{animo}</p>
 
         {(xpGanado > 0 || rachaDias > 0) && (
           <div className="flex flex-wrap items-center justify-center gap-2">
@@ -80,7 +80,7 @@ export function CierreLeccion({
         <a
           href={rutaEvaluacion(nivelId)}
           data-cta="primario"
-          className="inline-flex w-full min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-xl px-4 py-2 text-body font-semibold text-white transition-colors duration-200 bg-andina-terracotta shadow-lg shadow-andina-terracotta/25 hover:bg-andina-terracotta-hover active:bg-andina-terracotta-dark md:min-h-tactil-escritorio md:min-w-tactil-escritorio focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold"
+          className="inline-flex w-full min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-xl px-4 py-2 text-body font-semibold text-white transition-colors duration-200 bg-primario shadow-lg shadow-primario/25 hover:bg-primario-hover active:bg-primario-activo md:min-h-tactil-escritorio md:min-w-tactil-escritorio focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte"
         >
           Ir a la evaluación
         </a>

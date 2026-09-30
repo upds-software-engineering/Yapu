@@ -60,18 +60,18 @@ function mensajeDeFallo(fallo: unknown): string {
 const CLASES_CTA = [
   'inline-flex min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-xl px-4 py-2',
   'text-body font-semibold text-white transition-colors duration-200',
-  'bg-andina-terracotta shadow-lg shadow-andina-terracotta/25',
-  'hover:bg-andina-terracotta-hover active:bg-andina-terracotta-dark',
+  'bg-primario shadow-lg shadow-primario/25',
+  'hover:bg-primario-hover active:bg-primario-activo',
   'md:min-h-tactil-escritorio md:min-w-tactil-escritorio',
-  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold'
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte'
 ].join(' ');
 
-/** Botón de marcado escrito a mano porque necesita un color propio (`emerald`/`slate`). */
+/** Botón de marcado escrito a mano porque necesita un color propio (`exito-solido`/`superficie`). */
 const CLASES_MARCADO = [
   'inline-flex min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-xl px-4 py-2',
   'text-body font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50',
   'md:min-h-tactil-escritorio md:min-w-tactil-escritorio',
-  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold'
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte'
 ].join(' ');
 
 /** RN-01: todo lo que puede pasar al pedir una lección. */
@@ -151,11 +151,11 @@ export function Leccion({ nivelId, palabrasFalladas }: PropsLeccion) {
       >
         <Tarjeta className="flex flex-col items-center gap-3 text-center">
           <Insignia tono="alerta">Nivel bloqueado</Insignia>
-          <h1 className="text-title font-display font-bold text-sand">
+          <h1 className="text-title font-display font-bold text-tinta">
             Todavía no puedes entrar aquí
           </h1>
-          <p className="text-body text-slate-300">{estado.mensaje}</p>
-          <p className="text-body text-slate-400">
+          <p className="text-body text-tinta-suave">{estado.mensaje}</p>
+          <p className="text-body text-tinta-tenue">
             Sigue practicando tu nivel actual: este se abrirá solo cuando lo apruebes.
           </p>
           <a href={estado.destino} data-cta="primario" className={CLASES_CTA}>
@@ -359,7 +359,7 @@ export function ContenidoLeccion({ leccion }: PropsContenidoLeccion) {
       <div className="flex items-center justify-between gap-3">
         <a
           href={ruta('/')}
-          className="inline-flex min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-xl px-4 py-2 text-body text-slate-400 underline-offset-4 hover:text-sand hover:underline md:min-h-tactil-escritorio md:min-w-tactil-escritorio"
+          className="inline-flex min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-xl px-4 py-2 text-body text-tinta-tenue underline-offset-4 hover:text-tinta hover:underline md:min-h-tactil-escritorio md:min-w-tactil-escritorio"
         >
           Volver al mapa
         </a>
@@ -367,17 +367,17 @@ export function ContenidoLeccion({ leccion }: PropsContenidoLeccion) {
       </div>
 
       <header className="flex flex-col gap-1">
-        <h1 className="text-title font-display font-bold text-sand">
+        <h1 className="text-title font-display font-bold text-tinta">
           {leccion.tituloQuechua || `Nivel ${leccion.nivelId}`}
         </h1>
-        <p className="text-body text-slate-400">{leccion.tituloEspanol}</p>
+        <p className="text-body text-tinta-tenue">{leccion.tituloEspanol}</p>
       </header>
 
       <div className="flex items-center justify-between gap-3">
-        <p className="text-body text-slate-300">
+        <p className="text-body text-tinta-suave">
           Tarjeta {indice + 1} de {total}
         </p>
-        <p className="flex items-center gap-2 text-body text-slate-300" role="status" aria-live="polite">
+        <p className="flex items-center gap-2 text-body text-tinta-suave" role="status" aria-live="polite">
           Aprendidas <Insignia tono="exito">{`${aprendidas}/${total}`}</Insignia>
         </p>
       </div>
@@ -403,7 +403,7 @@ export function ContenidoLeccion({ leccion }: PropsContenidoLeccion) {
           data-accion="repasar"
           disabled={marcando}
           onClick={() => void marcar('repasar')}
-          className={`${CLASES_MARCADO} border border-andina-night-border bg-andina-night-card text-slate-100 hover:bg-andina-night-muted/40 active:bg-andina-night-muted/60`}
+          className={`${CLASES_MARCADO} border border-linea bg-superficie text-tinta hover:bg-superficie-alta active:bg-superficie-alta`}
         >
           Necesito repasar
         </button>
@@ -412,7 +412,7 @@ export function ContenidoLeccion({ leccion }: PropsContenidoLeccion) {
           data-accion="aprender"
           disabled={marcando}
           onClick={() => void marcar('aprendido')}
-          className={`${CLASES_MARCADO} border border-emerald-700/60 bg-emerald-600/80 text-white hover:bg-emerald-600 active:bg-emerald-700`}
+          className={`${CLASES_MARCADO} border border-exito/40 bg-exito-solido text-white hover:bg-exito-solido-hover active:bg-exito-solido-hover`}
         >
           ¡Ya me la sé!
         </button>
@@ -452,7 +452,7 @@ export function ContenidoLeccion({ leccion }: PropsContenidoLeccion) {
 
       {yaAprendidas && (
         <Tarjeta className="text-center">
-          <p className="text-body text-slate-300">
+          <p className="text-body text-tinta-suave">
             Ya marcaste palabras en este nivel. Cuando termines de repasar, mide lo aprendido.
           </p>
         </Tarjeta>

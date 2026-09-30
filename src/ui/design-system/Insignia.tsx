@@ -11,11 +11,11 @@ export interface PropsInsignia {
 }
 
 const TONOS: Record<TonoInsignia, string> = {
-  neutro: 'border-slate-700 bg-slate-800/60 text-slate-300',
-  exito: 'border-emerald-700/60 bg-emerald-500/10 text-emerald-300',
-  alerta: 'border-amber-700/60 bg-amber-500/10 text-amber-300',
-  error: 'border-red-800/60 bg-red-500/10 text-red-300',
-  marca: 'border-andina-terracotta/40 bg-andina-terracotta/20 text-andina-gold'
+  neutro: 'border-linea-fuerte bg-superficie-alta text-tinta-suave',
+  exito: 'border-exito/40 bg-exito/10 text-exito',
+  alerta: 'border-alerta/40 bg-alerta/10 text-alerta',
+  error: 'border-peligro/40 bg-peligro/10 text-peligro',
+  marca: 'border-primario/40 bg-primario/20 text-acento'
 };
 
 /**

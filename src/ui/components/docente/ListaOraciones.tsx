@@ -81,7 +81,7 @@ export function ListaOraciones({ oraciones, titulosPorNivel }: PropsListaOracion
             data-grupo-nivel={grupo.nivelId}
             className="flex flex-col gap-3"
           >
-            <h3 className="text-title font-display font-bold text-sand">
+            <h3 className="text-title font-display font-bold text-tinta">
               Nivel {grupo.nivelId}
               {titulo.length > 0 ? `: ${titulo}` : ''} ({grupo.oraciones.length})
             </h3>
@@ -98,11 +98,11 @@ export function ListaOraciones({ oraciones, titulosPorNivel }: PropsListaOracion
                       </Insignia>
                     </div>
 
-                    <p className="text-body font-semibold text-sand">{oracion.textoQuechua}</p>
-                    <p className="text-body text-slate-300 italic">{oracion.traduccionEspanol}</p>
+                    <p className="text-body font-semibold text-tinta">{oracion.textoQuechua}</p>
+                    <p className="text-body text-tinta-suave italic">{oracion.traduccionEspanol}</p>
 
                     {oracion.contextoCultural.length > 0 && (
-                      <p className="text-caption text-slate-400">
+                      <p className="text-caption text-tinta-tenue">
                         Contexto cultural: {oracion.contextoCultural}
                       </p>
                     )}

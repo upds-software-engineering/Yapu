@@ -50,19 +50,19 @@ export function TarjetaReto({ reto, className }: PropsTarjetaReto) {
     <Tarjeta className={className}>
       <article data-reto={reto.id} data-estado-reto={reto.estado} className="flex flex-col gap-3">
         <header className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-caption text-slate-400">
-            Aporte de <span className="font-semibold text-slate-200">{reto.nombreAutor}</span>
+          <p className="text-caption text-tinta-tenue">
+            Aporte de <span className="font-semibold text-tinta">{reto.nombreAutor}</span>
           </p>
           <Insignia tono={TONOS[reto.estado]}>{ETIQUETAS[reto.estado]}</Insignia>
         </header>
 
         <div className="flex flex-col gap-1">
-          <p className="text-title font-display font-bold text-andina-gold">{reto.textoQuechua}</p>
-          <p className="text-body text-slate-200">Traducción: {reto.traduccionSugerida}</p>
+          <p className="text-title font-display font-bold text-acento">{reto.textoQuechua}</p>
+          <p className="text-body text-tinta">Traducción: {reto.traduccionSugerida}</p>
         </div>
 
         {reto.pistaCultural.length > 0 && (
-          <p className="rounded-xl border border-andina-night-border bg-andina-night/60 px-3 py-2 text-body italic text-slate-300">
+          <p className="rounded-xl border border-linea bg-fondo/60 px-3 py-2 text-body italic text-tinta-suave">
             {reto.pistaCultural}
           </p>
         )}
@@ -73,7 +73,7 @@ export function TarjetaReto({ reto, className }: PropsTarjetaReto) {
         </div>
 
         <div className="flex flex-col gap-1">
-          <p className="text-body text-slate-300">
+          <p className="text-body text-tinta-suave">
             {aprobaciones} de {requeridas} aprobaciones de docentes
           </p>
           <BarraProgreso
@@ -85,14 +85,14 @@ export function TarjetaReto({ reto, className }: PropsTarjetaReto) {
 
         {reto.moderaciones.length > 0 && (
           <div className="flex flex-col gap-1">
-            <p className="text-caption font-semibold uppercase tracking-widest text-slate-500">
+            <p className="text-caption font-semibold uppercase tracking-widest text-tinta-tenue">
               Moderaciones registradas
             </p>
             <ul className="flex flex-col gap-1">
               {reto.moderaciones.map((moderacion) => (
                 <li
                   key={`${moderacion.docenteId}-${moderacion.fecha}`}
-                  className="text-caption text-slate-400"
+                  className="text-caption text-tinta-tenue"
                 >
                   Docente {moderacion.docenteId}: {ETIQUETAS_DECISION[moderacion.decision]} el{' '}
                   {moderacion.fecha}

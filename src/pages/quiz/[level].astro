@@ -41,10 +41,10 @@ const tituloEspanol = nivel?.tituloEspanol ?? '';
       <section class="mx-auto flex w-full max-w-3xl flex-col gap-2 px-4 py-6">
         {/* RF-005: el `<h1>` de la pantalla vive en la página porque la evaluación se monta
             únicamente en el cliente (`client:only`). */}
-        <h1 class="font-display text-title font-bold text-sand">
+        <h1 class="font-display text-title font-bold text-tinta">
           {`Nivel ${numero}: ${tituloQuechua}`}
         </h1>
-        <p class="text-body text-slate-400">
+        <p class="text-body text-tinta-tenue">
           {tituloEspanol.length > 0 ? `Evaluación — ${tituloEspanol}` : 'Evaluación del nivel'}
         </p>
 
@@ -55,14 +55,14 @@ const tituloEspanol = nivel?.tituloEspanol ?? '';
         data-pantalla="nivel-no-valido"
         class="mx-auto flex w-full max-w-lg flex-col items-center gap-3 px-4 py-10 text-center"
       >
-        <h1 class="font-display text-title font-bold text-sand">Nivel no válido</h1>
-        <p class="text-body text-slate-400">
+        <h1 class="font-display text-title font-bold text-tinta">Nivel no válido</h1>
+        <p class="text-body text-tinta-tenue">
           {`"${Astro.params.level ?? ''}" no es un nivel del curso. Los niveles disponibles van del 1 al 10.`}
         </p>
         <a
           href={ruta('/')}
           data-cta="primario"
-          class="inline-flex min-h-tactil min-w-tactil items-center justify-center rounded-xl bg-andina-terracotta px-4 py-2 text-body font-semibold text-white shadow-lg shadow-andina-terracotta/25 transition-colors duration-200 hover:bg-andina-terracotta-hover active:bg-andina-terracotta-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold md:min-h-tactil-escritorio md:min-w-tactil-escritorio"
+          class="inline-flex min-h-tactil min-w-tactil items-center justify-center rounded-xl bg-primario px-4 py-2 text-body font-semibold text-white shadow-lg shadow-primario/25 transition-colors duration-200 hover:bg-primario-hover active:bg-primario-activo focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte md:min-h-tactil-escritorio md:min-w-tactil-escritorio"
         >
           Ver el mapa de niveles
         </a>

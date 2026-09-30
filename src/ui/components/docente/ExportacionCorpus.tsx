@@ -39,17 +39,17 @@ export function ExportacionCorpus({ alExportar, oracionesDisponibles }: PropsExp
 
   return (
     <Tarjeta className="flex flex-col gap-4">
-      <h2 className="text-title font-display font-bold text-sand">
+      <h2 className="text-title font-display font-bold text-tinta">
         Datos abiertos: corpus quechua en CSV (RS-004)
       </h2>
 
-      <p className="text-body text-slate-300">
+      <p className="text-body text-tinta-suave">
         El requisito de sostenibilidad RS-004 pide que el corpus lingüístico sea un dato abierto y
         transparente. Este botón descarga todas las oraciones base con su nivel, su palabra clave,
         su categoría gramatical y su contexto cultural, sin ningún dato personal del estudiantado.
       </p>
 
-      <ul className="flex flex-col gap-1 text-body text-slate-400">
+      <ul className="flex flex-col gap-1 text-body text-tinta-tenue">
         <li>· Sigue el estándar RFC 4180 (comas y comillas escapadas, fin de línea CRLF).</li>
         <li>
           · Neutraliza las fórmulas de hoja de cálculo (RN-14): ningún texto puede empezar con
@@ -58,7 +58,7 @@ export function ExportacionCorpus({ alExportar, oracionesDisponibles }: PropsExp
         <li>· Incluye BOM UTF-8 para que Excel abra el quechua con sus tildes y apóstrofos.</li>
       </ul>
 
-      <p className="text-body text-slate-300">
+      <p className="text-body text-tinta-suave">
         Oraciones listas para exportar ahora mismo: {oracionesDisponibles}.
       </p>
 
@@ -66,10 +66,10 @@ export function ExportacionCorpus({ alExportar, oracionesDisponibles }: PropsExp
 
       {exportacion !== null && (
         <div role="status" aria-live="polite" className="flex flex-col gap-1">
-          <p className="text-body font-semibold text-emerald-300">
+          <p className="text-body font-semibold text-exito">
             Archivo preparado: {exportacion.nombreArchivo}
           </p>
-          <p className="text-body text-slate-300">
+          <p className="text-body text-tinta-suave">
             Se exportaron {exportacion.filas} filas (más la cabecera de columnas).
           </p>
         </div>

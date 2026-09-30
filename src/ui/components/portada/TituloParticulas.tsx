@@ -10,13 +10,13 @@ export interface PropsTituloParticulas {
 const TEXTO = 'YAPU';
 
 /** Paleta andina del proyecto (misma que el resto del design system). */
-const COLORES = ['#F59E0B', '#B94700', '#0D9488', '#38BDF8', '#FCD34D'] as const;
+const COLORES = ['#FBBF24', '#E05A00', '#2DD4BF', '#38BDF8', '#FCD34D'] as const;
 
 /** Semilla fija: el mismo texto produce siempre el mismo enjambre (render estable, sin parpadeo). */
 const SEMILLA = 20250915;
 
 /** RNF-006: techo de partículas para que la animación no dependa del tamaño de la pantalla. */
-const MAX_PARTICULAS = 2400;
+const MAX_PARTICULAS = 4200;
 
 /** Separación, en px, entre muestras del texto (menor = más partículas y más coste). */
 const PASO_MUESTREO = 3;
@@ -128,12 +128,22 @@ export function TituloParticulas({ className }: PropsTituloParticulas) {
       const contextoMedidor = medidor.getContext('2d');
       if (!contextoMedidor) return false;
 
-      const tamanoFuente = Math.min(alto * 0.6, (ancho * 0.72) / TEXTO.length);
-      contextoMedidor.font = `700 ${tamanoFuente}px "Space Grotesk", system-ui, sans-serif`;
+      // El tamaño sale del ancho REAL del texto: las letras ocupan ~84 % del ancho disponible (y
+      // como mucho ~78 % del alto), en lugar de una fracción fija que las dejaba pequeñas.
+      const fuente = (tamano: number) => `700 ${tamano}px "Space Grotesk", system-ui, sans-serif`;
+      contextoMedidor.font = fuente(100);
+      const anchoA100 = contextoMedidor.measureText(TEXTO).width || 100 * TEXTO.length * 0.6;
+      const tamanoFuente = Math.min((100 * ancho * 0.84) / anchoA100, alto * 0.78);
+      contextoMedidor.font = fuente(tamanoFuente);
       contextoMedidor.textAlign = 'center';
       contextoMedidor.textBaseline = 'middle';
       contextoMedidor.fillStyle = '#ffffff';
       contextoMedidor.fillText(TEXTO, ancho / 2, alto / 2);
+      // Trazo extra: engrosa las letras para que el título se lea en negrita aun hecho de partículas.
+      contextoMedidor.strokeStyle = '#ffffff';
+      contextoMedidor.lineJoin = 'round';
+      contextoMedidor.lineWidth = Math.max(1.5, tamanoFuente * 0.03);
+      contextoMedidor.strokeText(TEXTO, ancho / 2, alto / 2);
 
       const pixeles = contextoMedidor.getImageData(0, 0, ancho, alto).data;
       const azar = crearGenerador(SEMILLA);
@@ -158,9 +168,9 @@ export function TituloParticulas({ className }: PropsTituloParticulas) {
             origenY: y,
             vx: 0,
             vy: 0,
-            tamano: grosor > 0.82 ? 2.4 : 1.4,
+            tamano: grosor > 0.75 ? 2.6 : 1.9,
             color: COLORES[Math.floor(tono * COLORES.length)] ?? COLORES[0],
-            alfa: 0.55 + transparencia * 0.45,
+            alfa: 0.75 + transparencia * 0.25,
             fase: (desplazamientoX + desplazamientoY) * Math.PI * 2
           });
         }
@@ -269,7 +279,7 @@ export function TituloParticulas({ className }: PropsTituloParticulas) {
 
       <h1
         className={cn(
-          'font-display text-display font-bold tracking-tight text-white',
+          'font-display text-display font-bold tracking-tight text-tinta',
           // Sólo se oculta el texto real cuando ya hay partículas dibujadas en su lugar.
           pintado && 'sr-only'
         )}

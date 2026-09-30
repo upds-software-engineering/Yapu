@@ -45,7 +45,7 @@ export function BannerConexion() {
       data-banner="conexion"
       role="status"
       aria-live="polite"
-      className="flex w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 border-b border-amber-500/40 bg-amber-600 px-4 py-2 text-center text-caption font-semibold text-white"
+      className="flex w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 border-b border-alerta/40 bg-alerta-solido px-4 py-2 text-center text-caption font-semibold text-white"
     >
       <WifiOff aria-hidden="true" className="h-4 w-4 shrink-0" />
       <p>Sin conexión: puedes seguir estudiando y tus avances se guardan en este dispositivo.</p>

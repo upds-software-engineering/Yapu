@@ -13,6 +13,7 @@ import {
   type Almacen
 } from '@infrastructure/persistence/local-storage';
 import { SincronizacionNoopAdapter } from '@infrastructure/sync';
+import { AlmacenTokensLocal, ServidorIdentidadSimulado } from '@infrastructure/auth';
 import {
   AleatorioMulberry32,
   ConectividadNavegador,
@@ -22,6 +23,8 @@ import {
   SesionLocalAdapter
 } from '@infrastructure/system';
 import type {
+  AlmacenTokensPort,
+  AutenticacionPort,
   BorradorEvaluacionPort,
   CatalogoRepository,
   ConectividadPort,
@@ -53,6 +56,10 @@ export interface AdaptadoresContenedor {
   generadorId: GeneradorIdPort;
   conectividad: ConectividadPort;
   sesion: SesionPort;
+  /** RF-001: servidor de identidad (tokens de acceso y refresco). */
+  autenticacion: AutenticacionPort;
+  /** RF-001: par de tokens del cliente. */
+  tokens: AlmacenTokensPort;
   exportador: ExportadorArchivoPort;
   sincronizacion: SincronizacionRemotaPort;
   progreso: ProgresoRepository;
@@ -94,6 +101,12 @@ export function crearAdaptadores(
   const aleatorio = new AleatorioMulberry32();
   const conectividad = new ConectividadNavegador();
   const sesion = new SesionLocalAdapter(generadorId);
+  const autenticacion = new ServidorIdentidadSimulado({
+    reloj,
+    generadorId,
+    almacen: persistente ?? undefined
+  });
+  const tokens = new AlmacenTokensLocal(persistente);
   const exportador = new DescargaCsvAdapter();
   const sincronizacion = new SincronizacionNoopAdapter();
 
@@ -128,6 +141,8 @@ export function crearAdaptadores(
     generadorId,
     conectividad,
     sesion,
+    autenticacion,
+    tokens,
     exportador,
     sincronizacion,
     progreso,

@@ -13,8 +13,8 @@ export interface PropsTarjeta {
 /**
  * Contenedor base de contenido (métricas, tarjetas de nivel, bloques de resultado).
  *
- * Estética-Usabilidad: superficie y borde únicos (`rounded-2xl`, `border-slate-800`,
- * `bg-andina-night-card`) para que todas las pantallas compartan la misma jerarquía visual.
+ * Estética-Usabilidad: superficie y borde únicos (`rounded-2xl`, `border-linea`,
+ * `bg-superficie`) para que todas las pantallas compartan la misma jerarquía visual.
  */
 export function Tarjeta({ children, className, interactiva = false, etiqueta }: PropsTarjeta) {
   return (
@@ -26,9 +26,9 @@ export function Tarjeta({ children, className, interactiva = false, etiqueta }: 
       // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- contenedor focusable deliberado
       tabIndex={interactiva ? 0 : undefined}
       className={cn(
-        'rounded-2xl border border-slate-800 bg-andina-night-card p-4 sm:p-5',
+        'rounded-2xl border border-linea bg-superficie p-4 sm:p-5',
         interactiva &&
-          'cursor-pointer transition-colors hover:border-andina-terracotta/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold',
+          'cursor-pointer transition-colors hover:border-primario/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte',
         className
       )}
     >

@@ -124,10 +124,10 @@ export function Comunidad() {
   const puedeProponer = permiso?.puedeProponer ?? false;
 
   return (
-    <section data-pantalla="comunidad" className="flex w-full flex-col gap-6">
+    <section data-pantalla="comunidad" className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-6 sm:px-6">
       <header className="flex flex-col gap-1">
-        <h1 className="text-display font-display font-bold text-sand">Retos de la Comunidad</h1>
-        <p className="text-body text-slate-400">
+        <h1 className="text-display font-display font-bold text-tinta">Retos de la Comunidad</h1>
+        <p className="text-body text-tinta-tenue">
           Aprende con retos creados por otras y otros estudiantes y validados por docentes.
         </p>
       </header>
@@ -153,10 +153,10 @@ export function Comunidad() {
         <>
           {puedeProponer ? (
             <Tarjeta className="flex flex-col gap-3">
-              <h2 className="text-title font-display font-bold text-sand">
+              <h2 className="text-title font-display font-bold text-tinta">
                 Publicar un Reto Lingüístico
               </h2>
-              <p className="text-body text-slate-400">{permiso.motivo}</p>
+              <p className="text-body text-tinta-tenue">{permiso.motivo}</p>
 
               {formularioAbierto && (
                 <div ref={referenciaFormulario} className="flex flex-col gap-3">
@@ -179,12 +179,12 @@ export function Comunidad() {
              * el aviso se marca en este envoltorio y no en el componente.
              */
             <div data-aviso="nivel-insuficiente">
-              <Tarjeta className="flex flex-col gap-2 border-amber-700/60 bg-amber-500/10">
-                <h2 className="text-title font-display font-bold text-amber-200">
+              <Tarjeta className="flex flex-col gap-2 border-alerta/40 bg-alerta/10">
+                <h2 className="text-title font-display font-bold text-alerta">
                   Aún no puedes proponer retos
                 </h2>
-                <p className="text-body text-amber-100">{permiso.motivo}</p>
-                <p className="text-body text-amber-200">
+                <p className="text-body text-alerta">{permiso.motivo}</p>
+                <p className="text-body text-alerta">
                   Se requiere el nivel {permiso.nivelRequerido} y tú estás en el nivel{' '}
                   {permiso.nivelActual}. Sigue avanzando: cada nivel aprobado te acerca a proponer
                   tus propios retos.
@@ -219,7 +219,7 @@ export function Comunidad() {
           <a
             href={ruta('/')}
             data-cta="primario"
-            className="inline-flex min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-xl bg-andina-terracotta px-4 py-2 text-body font-semibold text-white shadow-lg shadow-andina-terracotta/25 transition-colors duration-200 hover:bg-andina-terracotta-hover active:bg-andina-terracotta-dark md:min-h-tactil-escritorio md:min-w-tactil-escritorio focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold"
+            className="inline-flex min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-xl bg-primario px-4 py-2 text-body font-semibold text-white shadow-lg shadow-primario/25 transition-colors duration-200 hover:bg-primario-hover active:bg-primario-activo md:min-h-tactil-escritorio md:min-w-tactil-escritorio focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte"
           >
             Seguir aprendiendo
           </a>
@@ -257,7 +257,7 @@ function ListaRetos({ retos, limites, alVerMas }: PropsListaRetos) {
             <h2
               className={cn(
                 'text-title font-display font-bold',
-                grupo.clave === 'aprobado' ? 'text-sand' : 'text-amber-200'
+                grupo.clave === 'aprobado' ? 'text-tinta' : 'text-alerta'
               )}
             >
               {grupo.titulo} ({grupo.retos.length})

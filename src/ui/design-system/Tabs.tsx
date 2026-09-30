@@ -80,7 +80,7 @@ export function Tabs({ pestanas, idInicial }: PropsTabs) {
       */}
       <div
         role="tablist"
-        className="flex gap-2 overflow-x-auto border-b border-andina-night-border pb-1"
+        className="flex gap-2 overflow-x-auto border-b border-linea pb-1"
       >
         {pestanas.map((pestana, indice) => {
           const esActiva = pestana.id === pestanaActiva.id;
@@ -101,10 +101,10 @@ export function Tabs({ pestanas, idInicial }: PropsTabs) {
               className={cn(
                 'inline-flex min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-t-xl px-4 py-2 text-body font-semibold',
                 'transition-colors duration-200',
-                'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold',
+                'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte',
                 esActiva
-                  ? 'border-b-2 border-andina-gold bg-andina-terracotta/15 text-andina-gold'
-                  : 'border-b-2 border-transparent text-slate-400 hover:text-slate-100'
+                  ? 'border-b-2 border-acento bg-primario/15 text-acento'
+                  : 'border-b-2 border-transparent text-tinta-tenue hover:text-tinta'
               )}
             >
               {pestana.etiqueta}
@@ -118,7 +118,7 @@ export function Tabs({ pestanas, idInicial }: PropsTabs) {
         id={`panel-${pestanaActiva.id}`}
         aria-labelledby={`tab-${pestanaActiva.id}`}
         tabIndex={0}
-        className="pt-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold"
+        className="pt-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte"
       >
         {pestanaActiva.contenido}
       </div>

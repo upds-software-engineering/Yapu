@@ -18,12 +18,12 @@ export interface PropsBoton extends React.ButtonHTMLAttributes<HTMLButtonElement
 
 const VARIANTES: Record<VarianteBoton, string> = {
   primario:
-    'bg-andina-terracotta text-white shadow-lg shadow-andina-terracotta/25 hover:bg-andina-terracotta-hover active:bg-andina-terracotta-dark',
+    'bg-primario text-white shadow-lg shadow-primario/25 hover:bg-primario-hover active:bg-primario-activo',
   secundario:
-    'border border-andina-night-border bg-andina-night-card text-slate-100 hover:bg-andina-night-muted/40 active:bg-andina-night-muted/60',
+    'border border-linea bg-superficie text-tinta hover:bg-superficie-alta active:bg-superficie-alta',
   terciario:
-    'border border-transparent bg-transparent text-andina-gold hover:bg-andina-terracotta/10 active:bg-andina-terracotta/20',
-  peligro: 'bg-red-700 text-white hover:bg-red-600 active:bg-red-800'
+    'border border-transparent bg-transparent text-acento hover:bg-primario/10 active:bg-primario/20',
+  peligro: 'bg-peligro-solido text-white hover:bg-peligro-solido-hover active:bg-peligro-solido-activo'
 };
 
 const TAMANOS: Record<TamanoBoton, string> = {
@@ -67,7 +67,7 @@ export function Boton({
         'inline-flex min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-xl font-semibold',
         'md:min-h-tactil-escritorio md:min-w-tactil-escritorio',
         'transition-colors duration-200',
-        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte',
         'disabled:cursor-not-allowed disabled:opacity-50',
         VARIANTES[variante],
         TAMANOS[tamano],

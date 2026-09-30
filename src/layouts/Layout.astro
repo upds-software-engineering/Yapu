@@ -23,10 +23,13 @@ const {
   descripcion = 'Aprende quechua desde cero con evaluaciones de IA determinista, tarjetas interactivas y funcionamiento offline.',
   rutaActual = Astro.url.pathname
 } = Astro.props;
+
+/** El Service Worker sólo existe en el build; en desarrollo se limpia (ver el final del `<body>`). */
+const esDesarrollo = import.meta.env.DEV;
 ---
 
 <!doctype html>
-<html lang="es" class="dark">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <!--
@@ -37,6 +40,8 @@ const {
     <link rel="icon" type="image/svg+xml" href={ruta('/favicon.svg')} />
     <link rel="manifest" href={ruta('/manifest.json')} />
     <meta name="theme-color" content="#B94700" />
+    <!-- Tema único oscuro: el navegador pinta sus controles nativos en oscuro desde el primer byte. -->
+    <meta name="color-scheme" content="dark" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -47,7 +52,7 @@ const {
     <title>{titulo}</title>
   </head>
   <body
-    class="min-h-screen bg-andina-night font-sans text-slate-100 antialiased selection:bg-andina-gold selection:text-black"
+    class="min-h-screen bg-fondo font-sans text-tinta antialiased selection:bg-acento selection:text-fondo"
     data-ruta-actual={rutaActual}
   >
     <!-- El aviso de modo sin conexión lo aporta <BannerConexion /> de src/ui/components/layout
@@ -57,12 +62,38 @@ const {
     </main>
 
     <!--
-      Registro del Service Worker (RF-009).
+      Desarrollo: NO hay Service Worker. `npm run preview` y los E2E usan el MISMO origen
+      (localhost:9500), así que el SW del build queda registrado y, con su estrategia cache-first,
+      sirve copias viejas de `@vite/client` (con un token de HMR caducado: el WebSocket falla) y de
+      los módulos CSS (colores rotos). Este script va en línea para que ningún SW pueda servirlo desde
+      caché: desregistra el SW, borra sus cachés y recarga una sola vez.
+    -->
+    {
+      esDesarrollo && (
+        <script is:inline>
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(async (registros) => {
+              if (registros.length === 0) return;
+              await Promise.all(registros.map((registro) => registro.unregister()));
+              if ('caches' in window) {
+                const claves = await caches.keys();
+                await Promise.all(claves.map((clave) => caches.delete(clave)));
+              }
+              if (navigator.serviceWorker.controller) window.location.reload();
+            });
+          }
+        </script>
+      )
+    }
+
+    <!--
+      Registro del Service Worker (RF-009), SÓLO en el build: en desarrollo `sw.js` no existe (lo
+      genera `scripts/generar-service-worker.mjs` tras `astro build`) y registrarlo daría un 404.
       Script de módulo procesado por Astro/Vite (no `is:inline`): así `import.meta.env.BASE_URL`
       se sustituye en el build y la ruta del SW respeta el despliegue bajo `/Yapu/`.
     -->
     <script>
-      if ('serviceWorker' in navigator) {
+      if (import.meta.env.PROD && 'serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           // `import.meta.env.BASE_URL` puede venir con o sin barra final según el build, así que se
           // normaliza aquí: registrar `/Yapusw.js` (sin barra) daría un 404 silencioso y dejaría la

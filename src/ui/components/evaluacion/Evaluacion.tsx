@@ -214,19 +214,19 @@ export function Evaluacion({ nivelId }: PropsEvaluacion) {
         <div className="flex items-center justify-between gap-3">
           <a
             href={ruta('/')}
-            className="inline-flex min-h-tactil min-w-tactil items-center justify-center gap-1 rounded-2xl border border-andina-night-border bg-andina-night-card px-3 text-caption font-semibold text-slate-300 transition-colors hover:bg-andina-night-muted/40"
+            className="inline-flex min-h-tactil min-w-tactil items-center justify-center gap-1 rounded-2xl border border-linea bg-superficie px-3 text-caption font-semibold text-tinta-suave transition-colors hover:bg-superficie-alta"
           >
             <ArrowLeft aria-hidden="true" className="h-4 w-4" />
             Salir
           </a>
 
-          <p className="text-caption font-semibold uppercase tracking-wide text-andina-gold">
+          <p className="text-caption font-semibold uppercase tracking-wide text-acento">
             {`Pregunta ${indice + 1} de ${total}`}
           </p>
         </div>
 
         <div className="flex items-center justify-between gap-3">
-          <p className="text-caption text-slate-400">{evaluacion.tituloNivel}</p>
+          <p className="text-caption text-tinta-tenue">{evaluacion.tituloNivel}</p>
           <Insignia tono="alerta">{`${evaluacion.umbralAprobacion}% para aprobar`}</Insignia>
         </div>
       </header>

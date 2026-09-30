@@ -22,6 +22,7 @@ export type {
   ModeracionDto,
   RetoDto,
   SesionDto,
+  SesionAutenticadaDto,
   PermisoRetoDto,
   ListaRetosDto,
   ExportacionCorpusDto

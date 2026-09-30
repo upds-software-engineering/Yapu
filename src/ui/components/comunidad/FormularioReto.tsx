@@ -154,7 +154,7 @@ export function FormularioReto({
       className={className}
     >
       <fieldset className="flex flex-col gap-4">
-        <legend className="mb-2 text-title font-display font-bold text-sand">
+        <legend className="mb-2 text-title font-display font-bold text-tinta">
           Proponer un reto
         </legend>
 
@@ -163,7 +163,7 @@ export function FormularioReto({
           porque el formulario desactiva la validación nativa con `noValidate`.
         */}
         <label className="flex flex-col gap-1">
-          <span className="text-body font-semibold text-slate-200">
+          <span className="text-body font-semibold text-tinta">
             Oración o frase en quechua (obligatorio)
           </span>
           <input
@@ -175,12 +175,12 @@ export function FormularioReto({
             aria-required="true"
             aria-invalid={aviso !== null ? true : undefined}
             placeholder="Ej.: Munaspaqa tukuy imata yachankiman."
-            className="w-full min-h-tactil min-w-tactil rounded-xl border border-andina-night-border bg-andina-night px-3 py-2 text-body text-slate-100 placeholder:text-slate-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold"
+            className="w-full min-h-tactil min-w-tactil rounded-xl border border-linea-fuerte bg-fondo px-3 py-2 text-body text-tinta placeholder:text-tinta-tenue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte"
           />
         </label>
 
         <label className="flex flex-col gap-1">
-          <span className="text-body font-semibold text-slate-200">
+          <span className="text-body font-semibold text-tinta">
             Traducción sugerida al español (obligatorio)
           </span>
           <input
@@ -191,12 +191,12 @@ export function FormularioReto({
             aria-required="true"
             aria-invalid={aviso !== null ? true : undefined}
             placeholder="Ej.: Si quieres, puedes aprenderlo todo."
-            className="w-full min-h-tactil min-w-tactil rounded-xl border border-andina-night-border bg-andina-night px-3 py-2 text-body text-slate-100 placeholder:text-slate-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold"
+            className="w-full min-h-tactil min-w-tactil rounded-xl border border-linea-fuerte bg-fondo px-3 py-2 text-body text-tinta placeholder:text-tinta-tenue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte"
           />
         </label>
 
         <label className="flex flex-col gap-1">
-          <span className="text-body font-semibold text-slate-200">
+          <span className="text-body font-semibold text-tinta">
             Pista cultural (opcional)
           </span>
           <input
@@ -205,17 +205,17 @@ export function FormularioReto({
             value={pistaCultural}
             onChange={(evento) => setPistaCultural(evento.target.value)}
             placeholder="Ej.: Dicho popular de aliento en los Andes."
-            className="w-full min-h-tactil min-w-tactil rounded-xl border border-andina-night-border bg-andina-night px-3 py-2 text-body text-slate-100 placeholder:text-slate-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold"
+            className="w-full min-h-tactil min-w-tactil rounded-xl border border-linea-fuerte bg-fondo px-3 py-2 text-body text-tinta placeholder:text-tinta-tenue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte"
           />
         </label>
 
         <label className="flex flex-col gap-1">
-          <span className="text-body font-semibold text-slate-200">Nivel sugerido</span>
+          <span className="text-body font-semibold text-tinta">Nivel sugerido</span>
           <select
             name="nivelSugerido"
             value={nivelSugerido}
             onChange={(evento) => setNivelSugerido(evento.target.value)}
-            className="w-full min-h-tactil min-w-tactil rounded-xl border border-andina-night-border bg-andina-night px-3 py-2 text-body text-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold"
+            className="w-full min-h-tactil min-w-tactil rounded-xl border border-linea bg-fondo px-3 py-2 text-body text-tinta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte"
           >
             {NIVELES_SUGERIDOS.map((nivel) => (
               <option key={nivel} value={String(nivel)}>
@@ -233,7 +233,7 @@ export function FormularioReto({
 
         {/* La confirmación es cortés: no interrumpe lo que el estudiante esté leyendo. */}
         {exito !== null && (
-          <p role="status" aria-live="polite" className="text-body font-semibold text-emerald-300">
+          <p role="status" aria-live="polite" className="text-body font-semibold text-exito">
             {exito}
           </p>
         )}

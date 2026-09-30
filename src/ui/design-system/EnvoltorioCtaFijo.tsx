@@ -19,7 +19,7 @@ export function EnvoltorioCtaFijo({ children, className }: PropsEnvoltorioCtaFij
   return (
     <div
       className={cn(
-        'sticky bottom-0 z-30 w-full border-t border-andina-night-border bg-andina-night',
+        'sticky bottom-0 z-30 w-full border-t border-linea bg-fondo',
         'px-4 pt-3 pb-[calc(0.75rem_+_env(safe-area-inset-bottom))] sm:w-auto',
         className
       )}

@@ -29,3 +29,8 @@ export { CambiarRolUseCase } from './CambiarRolUseCase';
 
 // Mapeos de dominio a DTO compartidos por los casos de uso y los tests.
 export { aPalabraDto, aNivelDto, aEvaluacionResumenDto } from './mappers';
+
+// RF-001: autenticación por tokens (acceso + refresco).
+export { IniciarSesionUseCase, type CredencialesInicio } from './IniciarSesionUseCase';
+export { ValidarSesionUseCase, MARGEN_RENOVACION_MS, type OpcionesValidacion } from './ValidarSesionUseCase';
+export { CerrarSesionUseCase } from './CerrarSesionUseCase';

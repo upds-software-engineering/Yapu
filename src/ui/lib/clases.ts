@@ -10,7 +10,7 @@ import { extendTailwindMerge, validators } from 'tailwind-merge';
  *     ambos en el mismo grupo y borraría uno de los dos. Con el grupo restringido a números y
  *     medidas arbitrarias, `focus-visible:outline` y `focus-visible:outline-2` conviven.
  *  2. `extend` con los tokens del proyecto: sin registrar `text-body` como tamaño, `tailwind-merge`
- *     lo clasificaría como color de texto y eliminaría `text-white`/`text-slate-*`.
+ *     lo clasificaría como color de texto y eliminaría los colores de texto como `text-tinta`.
  */
 const unirClases = extendTailwindMerge({
   override: {
@@ -32,7 +32,7 @@ const unirClases = extendTailwindMerge({
 /**
  * Une clases condicionales y resuelve los conflictos de Tailwind (gana la última).
  *
- * Uso: `cn('p-4', activo && 'bg-andina-night-card', className)`
+ * Uso: `cn('p-4', activo && 'bg-superficie', className)`
  *
  * Existe para que los componentes del design system acepten un `className` externo sin duplicar
  * utilidades contradictorias.

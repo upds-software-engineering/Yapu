@@ -6,9 +6,9 @@
  *
  * Contrato de selectores que consumen los E2E: `data-nav="escritorio|movil"`,
  * `data-nav-enlace="niveles|progreso|comunidad|docente"`, `aria-current="page"` en el destino
- * activo, `data-selector-rol` con `data-rol` y `data-banner="conexion"` fuera de línea.
+ * activo, `data-sesion` (estado de la sesión autenticada, RF-001) y `data-banner="conexion"` fuera de línea.
  */
 export { Navegacion, type PropsNavegacion } from './Navegacion';
-export { SelectorRol, type PropsSelectorRol, type RolSesion } from './SelectorRol';
 export { BannerConexion } from './BannerConexion';
 export { LeccionConFiltro, type PropsLeccionConFiltro } from './LeccionConFiltro';
+export { SelectorRol, type PropsSelectorRol } from './SelectorRol';

@@ -60,17 +60,17 @@ function ContenidoMapa({ mapa }: { mapa: MapaNivelesDto }) {
 
   return (
     <div className="flex flex-col gap-8">
-      <header className="rounded-2xl border border-andina-night-border bg-andina-night-card p-4 sm:p-5">
-        <p className="text-caption font-semibold uppercase tracking-[0.2em] text-andina-gold">
+      <header className="rounded-2xl border border-linea bg-superficie p-4 sm:p-5">
+        <p className="text-caption font-semibold uppercase tracking-[0.2em] text-acento">
           Camino de aprendizaje A1
         </p>
 
         <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="text-title font-semibold text-white">
+            <h2 className="text-title font-semibold text-tinta">
               {`Nivel ${mapa.nivelActual} de ${TOTAL_NIVELES}`}
             </h2>
-            <p className="text-body text-slate-400">
+            <p className="text-body text-tinta-tenue">
               {`${mapa.nivelesAprobados} de ${TOTAL_NIVELES} niveles aprobados`}
             </p>
           </div>
@@ -78,8 +78,8 @@ function ContenidoMapa({ mapa }: { mapa: MapaNivelesDto }) {
           {/* RN-03: el número sale del DTO (`porcentajeGlobal`), nunca se recalcula en la UI. */}
           <div className="min-w-[12rem] flex-1 sm:max-w-xs">
             <div className="flex items-baseline justify-between gap-2">
-              <span className="text-caption text-slate-400">Progreso global del curso</span>
-              <span className="text-title font-bold text-andina-gold">{`${mapa.porcentajeGlobal}%`}</span>
+              <span className="text-caption text-tinta-tenue">Progreso global del curso</span>
+              <span className="text-title font-bold text-acento">{`${mapa.porcentajeGlobal}%`}</span>
             </div>
             <BarraProgreso
               valor={mapa.porcentajeGlobal}
@@ -91,7 +91,7 @@ function ContenidoMapa({ mapa }: { mapa: MapaNivelesDto }) {
 
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <Insignia tono="marca">{`${mapa.xp} XP`}</Insignia>
-          <Insignia tono="neutro">{`${mapa.rachaDias} días de racha`}</Insignia>
+          <Insignia tono="neutro">{`${mapa.rachaDias} ${mapa.rachaDias === 1 ? 'día' : 'días'} de racha`}</Insignia>
           {mapa.cursoCompletado && <Insignia tono="exito">¡Curso completado!</Insignia>}
         </div>
 
@@ -104,9 +104,9 @@ function ContenidoMapa({ mapa }: { mapa: MapaNivelesDto }) {
             className={cn(
               'mt-4 inline-flex min-h-tactil min-w-tactil items-center justify-center gap-2 rounded-xl px-4 py-2 text-body font-semibold',
               'md:min-h-tactil-escritorio md:min-w-tactil-escritorio',
-              'bg-andina-terracotta text-white shadow-lg shadow-andina-terracotta/25',
-              'transition-colors duration-200 hover:bg-andina-terracotta-hover active:bg-andina-terracotta-dark',
-              'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold'
+              'bg-primario text-white shadow-lg shadow-primario/25',
+              'transition-colors duration-200 hover:bg-primario-hover active:bg-primario-activo',
+              'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte'
             )}
           >
             {`Repasar el nivel ${nivelCta}`}
@@ -154,14 +154,14 @@ function TramoNiveles({
       aria-labelledby={`tramo-${id}`}
       className="flex flex-col gap-4"
     >
-      <div className="border-l-2 border-andina-terracotta/60 pl-3">
+      <div className="border-l-2 border-primario/60 pl-3">
         <div className="flex flex-wrap items-center gap-2">
-          <h2 id={`tramo-${id}`} className="text-title font-semibold text-white">
+          <h2 id={`tramo-${id}`} className="text-title font-semibold text-tinta">
             {nombre}
           </h2>
           <Insignia tono="neutro">{rango}</Insignia>
         </div>
-        <p className="text-body text-slate-400">{descripcion}</p>
+        <p className="text-body text-tinta-tenue">{descripcion}</p>
       </div>
 
       <ol className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

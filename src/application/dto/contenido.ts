@@ -48,6 +48,17 @@ export interface SesionDto {
   esDocente: boolean;
 }
 
+/**
+ * RF-001 — sesión AUTENTICADA: la identidad sale de un token de acceso cuya firma y caducidad ya
+ * se verificaron. Los tiempos van en milisegundos desde epoch para que la UI calcule la cuenta atrás.
+ */
+export interface SesionAutenticadaDto extends SesionDto {
+  expiraAccesoEn: number;
+  expiraRefrescoEn: number;
+  /** `true` cuando esta validación tuvo que renovar el token de acceso con el de refresco. */
+  refrescado: boolean;
+}
+
 export interface PermisoRetoDto {
   puedeProponer: boolean;
   nivelActual: number;

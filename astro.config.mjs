@@ -17,6 +17,9 @@ export default defineConfig({
     })
   ],
   output: 'static',
+  devToolbar: {
+    enabled: false
+  },
   server: {
     port: 9500,
     host: true

@@ -38,9 +38,9 @@ export function EnlaceCtaPrimario({
       data-cta="primario"
       className={cn(
         'inline-flex min-h-tactil min-w-tactil w-full items-center justify-center gap-2 rounded-2xl px-4 py-2',
-        'bg-andina-terracotta text-body font-semibold text-white shadow-lg shadow-andina-terracotta/25',
-        'transition-colors hover:bg-andina-terracotta-hover active:bg-andina-terracotta-dark',
-        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold'
+        'bg-primario text-body font-semibold text-white shadow-lg shadow-primario/25',
+        'transition-colors hover:bg-primario-hover active:bg-primario-activo',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte'
       )}
     >
       {children}
@@ -60,15 +60,15 @@ export function PantallaNivelBloqueado({ nivelId, nivelActual }: PropsPantallaNi
           Nivel bloqueado
         </Insignia>
 
-        <h1 className="text-title font-semibold text-slate-100">
+        <h1 className="text-title font-semibold text-tinta">
           {`El nivel ${nivelId} todavía no está desbloqueado`}
         </h1>
 
-        <p className="text-body text-slate-300">
+        <p className="text-body text-tinta-suave">
           {`Para rendir esta evaluación primero debes aprobar el nivel ${nivelActual}. En YAPU los niveles se abren en orden: cada aprobación desbloquea el siguiente.`}
         </p>
 
-        <p className="text-caption text-slate-400">
+        <p className="text-caption text-tinta-tenue">
           {`Tu nivel actual es el ${nivelActual}.`}
         </p>
       </Tarjeta>

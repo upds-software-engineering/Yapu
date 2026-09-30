@@ -26,21 +26,21 @@ const CLASES_RAIZ = 'mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6';
 const CLASES_TACTIL = 'min-h-tactil min-w-tactil md:min-h-tactil-escritorio md:min-w-tactil-escritorio';
 
 const CLASES_FOCO =
-  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold';
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte';
 
 const CLASES_CTA_PRIMARIO = cn(
-  'inline-flex items-center justify-center gap-2 rounded-xl bg-andina-terracotta px-4 py-2 text-body font-semibold text-white shadow-lg shadow-andina-terracotta/25 transition-colors duration-200 hover:bg-andina-terracotta-hover active:bg-andina-terracotta-dark',
+  'inline-flex items-center justify-center gap-2 rounded-xl bg-primario px-4 py-2 text-body font-semibold text-white shadow-lg shadow-primario/25 transition-colors duration-200 hover:bg-primario-hover active:bg-primario-activo',
   CLASES_FOCO,
   CLASES_TACTIL
 );
 
 const CLASES_ENLACE_SECUNDARIO = cn(
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-andina-night-border bg-andina-night-card px-4 py-2 text-body font-semibold text-slate-100 transition-colors duration-200 hover:bg-andina-night-muted/40',
+  'inline-flex items-center justify-center gap-2 rounded-xl border border-linea bg-superficie px-4 py-2 text-body font-semibold text-tinta transition-colors duration-200 hover:bg-superficie-alta',
   CLASES_FOCO,
   CLASES_TACTIL
 );
 
-const CLASES_SUPERFICIE = 'rounded-2xl border border-slate-800 bg-andina-night-card p-4 sm:p-5';
+const CLASES_SUPERFICIE = 'rounded-2xl border border-linea bg-superficie p-4 sm:p-5';
 
 interface GrupoHistorial {
   nivelId: number;
@@ -96,13 +96,13 @@ function FilaEvaluacion({ evaluacion }: { evaluacion: EvaluacionResumenDto }) {
   return (
     <li
       data-evaluacion={evaluacion.id}
-      className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800 bg-andina-night px-3 py-2"
+      className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-linea bg-fondo px-3 py-2"
     >
       <div className="flex flex-col gap-0.5">
-        <span className="text-body font-semibold text-sand">
+        <span className="text-body font-semibold text-tinta">
           Nivel {evaluacion.nivelId}: {evaluacion.puntuacion} %
         </span>
-        <span className="text-caption text-slate-400">
+        <span className="text-caption text-tinta-tenue">
           {evaluacion.aciertos} de {evaluacion.totalPreguntas} aciertos · {fechaLegible(evaluacion.fecha)}
         </span>
       </div>
@@ -191,10 +191,10 @@ export function Tablero({ nombreEstudiante = 'Estudiante', className }: PropsTab
     <Contenedor className={className}>
       <header className="flex flex-col gap-1">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h1 className="font-display text-title font-bold text-sand">{nombreEstudiante}</h1>
+          <h1 className="font-display text-title font-bold text-tinta">{nombreEstudiante}</h1>
           {datos.cursoCompletado && <Insignia tono="exito">¡Curso completado!</Insignia>}
         </div>
-        <p className="text-caption text-slate-400">Nivel {datos.nivelActual} de 10</p>
+        <p className="text-caption text-tinta-tenue">Nivel {datos.nivelActual} de 10</p>
       </header>
 
       <section aria-label="Estadísticas del estudiante" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -207,7 +207,7 @@ export function Tablero({ nombreEstudiante = 'Estudiante', className }: PropsTab
           <BarraProgreso valor={datos.porcentajeGlobal} etiqueta="Progreso global del curso" />
         </TarjetaEstadistica>
         <TarjetaEstadistica tipo="xp" etiqueta="Experiencia" valor={`${datos.xp} XP`} />
-        <TarjetaEstadistica tipo="racha" etiqueta="Racha" valor={`${datos.rachaDias} días`} />
+        <TarjetaEstadistica tipo="racha" etiqueta="Racha" valor={`${datos.rachaDias} ${datos.rachaDias === 1 ? 'día' : 'días'}`} />
         <TarjetaEstadistica
           tipo="palabras"
           etiqueta="Palabras aprendidas"
@@ -216,7 +216,7 @@ export function Tablero({ nombreEstudiante = 'Estudiante', className }: PropsTab
       </section>
 
       <section aria-label="Palabras para repasar" className="flex flex-col gap-3">
-        <h2 className="font-display text-title font-semibold text-sand">Palabras para repasar</h2>
+        <h2 className="font-display text-title font-semibold text-tinta">Palabras para repasar</h2>
 
         {hayPalabrasPendientes ? (
           <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -226,13 +226,13 @@ export function Tablero({ nombreEstudiante = 'Estudiante', className }: PropsTab
                   data-palabra-repasar={palabra.id}
                   href={rutaLeccion(palabra.nivelId, [palabra.id])}
                   className={cn(
-                    'flex min-h-tactil min-w-tactil flex-col justify-center gap-0.5 rounded-2xl border border-amber-700/50 bg-andina-night-card p-3 transition-colors duration-200 hover:border-andina-gold/70 md:min-h-tactil-escritorio md:min-w-tactil-escritorio',
+                    'flex min-h-tactil min-w-tactil flex-col justify-center gap-0.5 rounded-2xl border border-alerta/40 bg-superficie p-3 transition-colors duration-200 hover:border-acento/70 md:min-h-tactil-escritorio md:min-w-tactil-escritorio',
                     CLASES_FOCO
                   )}
                 >
-                  <span className="text-body font-semibold text-andina-gold">{palabra.termino}</span>
-                  <span className="text-caption text-slate-300">{palabra.traduccion}</span>
-                  <span className="text-caption text-slate-400">{palabra.etiquetaCategoria}</span>
+                  <span className="text-body font-semibold text-acento">{palabra.termino}</span>
+                  <span className="text-caption text-tinta-suave">{palabra.traduccion}</span>
+                  <span className="text-caption text-tinta-tenue">{palabra.etiquetaCategoria}</span>
                 </a>
               </li>
             ))}
@@ -247,7 +247,7 @@ export function Tablero({ nombreEstudiante = 'Estudiante', className }: PropsTab
 
       <section aria-label="Historial de evaluaciones" className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="font-display text-title font-semibold text-sand">Historial de evaluaciones</h2>
+          <h2 className="font-display text-title font-semibold text-tinta">Historial de evaluaciones</h2>
           <span data-sincronizacion-pendientes={String(sincronizacion.pendientes)}>
             <Insignia tono={sincronizacion.pendientes > 0 ? 'alerta' : 'exito'}>{textoPendientes}</Insignia>
           </span>
@@ -278,10 +278,10 @@ export function Tablero({ nombreEstudiante = 'Estudiante', className }: PropsTab
                   className={cn(CLASES_SUPERFICIE, 'flex flex-col gap-3')}
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h3 id={idTitulo} className="text-body font-semibold text-sand">
+                    <h3 id={idTitulo} className="text-body font-semibold text-tinta">
                       Nivel {grupo.nivelId}
                     </h3>
-                    <span className="text-caption text-slate-400">
+                    <span className="text-caption text-tinta-tenue">
                       {grupo.evaluaciones.length === 1
                         ? '1 evaluación'
                         : `${grupo.evaluaciones.length} evaluaciones`}

@@ -1,6 +1,7 @@
 import { BarChart3, Compass, GraduationCap, Sparkles, Users, type LucideIcon } from 'lucide-react';
 import type { SesionDto } from '@application/dto';
-import { useCasoDeUso, useServicios } from '@ui/hooks';
+import { EstadoSesion } from '@ui/components/auth';
+import { useCasoDeUso, useServicios, useSesionAutenticada } from '@ui/hooks';
 import { cn } from '@ui/lib/clases';
 import { ruta, rutaActiva } from '@ui/lib/ruta';
 import { SelectorRol } from './SelectorRol';
@@ -54,21 +55,21 @@ const ETIQUETA_MOVIL = 'Navegación principal móvil';
  */
 export function Navegacion({ rutaActual }: PropsNavegacion) {
   const { obtenerSesion } = useServicios();
+  const { datos: sesionLocal, ejecutar: recargarSesionLocal } = useCasoDeUso<SesionDto, []>(
+    () => obtenerSesion.ejecutar(),
+    { ejecutarAlMontar: [] }
+  );
+  const { sesion: sesionAutenticada } = useSesionAutenticada();
 
-  // RF-002: la sesión decide si la pestaña de docente existe. Se consulta al montar y cada vez que
-  // `SelectorRol` avisa de un cambio de rol.
-  const { datos: sesion, ejecutar } = useCasoDeUso<SesionDto, []>(() => obtenerSesion.ejecutar(), {
-    ejecutarAlMontar: []
-  });
-
-  const esDocente = sesion?.esDocente === true;
+  const esDocente =
+    sesionAutenticada?.esDocente === true || sesionLocal?.esDocente === true;
   const destinos = DESTINOS.filter((destino) => destino.soloDocente !== true || esDocente);
 
   return (
     <>
       <header
         data-nav="escritorio"
-        className="sticky top-0 z-40 hidden border-b border-andina-night-border bg-andina-night/90 backdrop-blur-md md:block"
+        className="sticky top-0 z-40 hidden border-b border-linea bg-fondo/90 backdrop-blur-md md:block"
       >
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-2">
           <Marca />
@@ -77,14 +78,26 @@ export function Navegacion({ rutaActual }: PropsNavegacion) {
             <EnlacesNav destinos={destinos} rutaActual={rutaActual} vertical={false} />
           </nav>
 
-          <SelectorRol alCambiarRol={() => void ejecutar()} />
+          <div className="flex items-center gap-3">
+            <EstadoSesion />
+            <SelectorRol alCambiarRol={() => void recargarSesionLocal()} />
+          </div>
         </div>
       </header>
+
+      {/* Móvil: marca y sesión arriba; los destinos, abajo al alcance del pulgar (Jakob/Fitts). */}
+      <div
+        data-nav="movil-cabecera"
+        className="flex items-center justify-between gap-2 border-b border-linea bg-fondo/95 px-4 py-2 md:hidden"
+      >
+        <Marca />
+        <EstadoSesion />
+      </div>
 
       <nav
         data-nav="movil"
         aria-label={ETIQUETA_MOVIL}
-        className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around gap-2 border-t border-andina-night-border bg-andina-night/95 px-2 pt-1 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg md:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around gap-2 border-t border-linea bg-fondo/95 px-2 pt-1 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg md:hidden"
       >
         <EnlacesNav destinos={destinos} rutaActual={rutaActual} vertical />
       </nav>
@@ -98,11 +111,11 @@ function Marca() {
     <div data-nav-marca="yapu" className="flex items-center gap-2">
       <span
         aria-hidden="true"
-        className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-andina-terracotta to-andina-gold"
+        className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primario to-acento"
       >
-        <Sparkles aria-hidden="true" className="h-5 w-5 text-andina-night" />
+        <Sparkles aria-hidden="true" className="h-5 w-5 text-fondo" />
       </span>
-      <span className="font-display text-title font-bold tracking-tight text-sand">YAPU</span>
+      <span className="font-display text-title font-bold tracking-tight text-tinta">YAPU</span>
     </div>
   );
 }
@@ -132,9 +145,9 @@ function EnlacesNav({ destinos, rutaActual, vertical }: PropsEnlacesNav) {
               'text-caption font-semibold transition-colors duration-200',
               vertical ? 'flex-col' : 'flex-row',
               activo
-                ? 'border border-andina-terracotta/40 bg-andina-terracotta/20 text-andina-gold'
-                : 'border border-transparent text-slate-400 hover:bg-andina-night-muted/40 hover:text-sand',
-              'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold'
+                ? 'border border-primario/40 bg-primario/20 text-acento'
+                : 'border border-transparent text-tinta-tenue hover:bg-superficie-alta hover:text-tinta',
+              'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte'
             )}
           >
             <Icono aria-hidden="true" className="h-5 w-5" />

@@ -169,7 +169,12 @@ self.addEventListener('fetch', (evento) => {
 
   const aceptaHtml = (peticion.headers.get('accept') || '').includes('text/html');
   const esDocumento = peticion.mode === 'navigate' || aceptaHtml;
-  evento.respondWith(esDocumento ? redPrimero(peticion) : cachePrimero(peticion));
+  // Cache-first SÓLO para lo que es inmutable: los assets con hash de \`_astro/\` y las rutas del
+  // precache. Cualquier otra URL (por ejemplo \`@vite/client\` o \`/src/**\` si un servidor de
+  // desarrollo llega a compartir este origen) va por red primero y nunca queda congelada en caché.
+  const esInmutable =
+    url.pathname.startsWith(\`\${BASE}/_astro/\`) || PRECACHE_URLS.includes(url.pathname);
+  evento.respondWith(esDocumento || !esInmutable ? redPrimero(peticion) : cachePrimero(peticion));
 });
 
 self.addEventListener('message', (evento) => {

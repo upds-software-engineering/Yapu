@@ -9,3 +9,9 @@ export { useCasoDeUso, type EstadoCasoDeUso, type OpcionesCasoDeUso, type Retorn
 export { usePreferenciaReducida } from './usePreferenciaReducida';
 export { useSincronizacion, type EstadoSincronizacion } from './useSincronizacion';
 export { useServicios, crearServicios, type Servicios } from './useServicios';
+export {
+  useSesionAutenticada,
+  anunciarCambioDeSesion,
+  EVENTO_SESION,
+  type EstadoSesionAutenticada
+} from './useSesionAutenticada';

@@ -19,6 +19,7 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+.claude/
 
 # Testing reports and artifacts (efímeros: se regeneran con npm run test:coverage / test:e2e)
 reports/

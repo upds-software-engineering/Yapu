@@ -24,19 +24,19 @@ export function Portada({ className }: PropsPortada) {
     <section
       aria-label="YAPU, curso de quechua"
       className={cn(
-        'bg-gradient-to-b from-andina-night via-andina-night-card to-andina-night px-4 pt-6 pb-8 text-center',
+        'bg-gradient-to-b from-fondo via-superficie to-fondo px-4 pt-6 pb-8 text-center',
         className
       )}
     >
-      <p className="text-caption font-bold uppercase tracking-[0.35em] text-andina-gold">
+      <p className="text-caption font-bold uppercase tracking-[0.35em] text-acento">
         RUNASIMI YACHAY
       </p>
 
       <TituloParticulas className="my-2" />
 
-      <p className="mx-auto max-w-prose text-body leading-relaxed text-slate-300">{DESCRIPCION}</p>
+      <p className="mx-auto max-w-prose text-body leading-relaxed text-tinta-suave">{DESCRIPCION}</p>
 
-      <p className="mt-2 text-caption text-slate-500">
+      <p className="mt-2 text-caption text-tinta-tenue">
         Nivel A1 certificable · Universidad Privada Domingo Savio
       </p>
     </section>

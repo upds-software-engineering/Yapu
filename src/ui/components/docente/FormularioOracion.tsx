@@ -37,12 +37,12 @@ export interface PropsFormularioOracion {
   alLimpiarError: () => void;
 }
 
-const CLASES_ETIQUETA = 'text-body font-semibold text-slate-200';
+const CLASES_ETIQUETA = 'text-body font-semibold text-tinta';
 
 const CLASES_CAMPO = [
-  'w-full min-h-tactil min-w-tactil rounded-xl border border-andina-night-border',
-  'bg-andina-night px-3 py-2 text-body text-slate-100 placeholder:text-slate-600',
-  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-andina-gold'
+  'w-full min-h-tactil min-w-tactil rounded-xl border border-linea-fuerte',
+  'bg-fondo px-3 py-2 text-body text-tinta placeholder:text-tinta-tenue',
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento-fuerte'
 ].join(' ');
 
 /** Hick: dos pasos con nombre propio; el indicador los anuncia sin depender del color. */
@@ -174,10 +174,10 @@ export function FormularioOracion({
       data-formulario="oracion"
       noValidate
       onSubmit={(evento) => void (paso === 1 ? continuar(evento) : guardar(evento))}
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-4 rounded-2xl border border-linea bg-superficie p-4 sm:p-6"
     >
       <div className="flex flex-col gap-2">
-        <p data-indicador-paso className="text-caption font-semibold text-andina-gold">
+        <p data-indicador-paso className="text-caption font-semibold text-acento">
           Paso {paso} de 2 · {PASOS[paso - 1]}
         </p>
         <ol className="flex flex-wrap items-center gap-2" aria-hidden="true">
@@ -190,8 +190,8 @@ export function FormularioOracion({
                 className={cn(
                   'rounded-full border px-2 py-0.5 text-caption font-semibold',
                   activo
-                    ? 'border-andina-terracotta/40 bg-andina-terracotta/20 text-andina-gold'
-                    : 'border-slate-700 bg-slate-800/60 text-slate-400'
+                    ? 'border-primario/40 bg-primario/20 text-acento'
+                    : 'border-linea-fuerte bg-superficie-alta text-tinta-tenue'
                 )}
               >
                 {numero}. {nombre}
@@ -255,7 +255,7 @@ export function FormularioOracion({
 
       {paso === 2 && (
         <div data-paso="2" className="flex flex-col gap-4">
-          <p className="text-body text-slate-400">
+          <p className="text-body text-tinta-tenue">
             Nivel {nivelElegido}. La palabra clave es obligatoria: la oración debe contenerla
             (RN-11) y tiene que pertenecer a este mismo nivel (RN-12).
           </p>
@@ -283,7 +283,7 @@ export function FormularioOracion({
             <EstadoCarga mensaje={`Cargando las palabras del nivel ${nivelElegido}…`} />
           )}
           {!cargandoPalabras && palabras.length === 0 && (
-            <p className="text-body text-amber-200">
+            <p className="text-body text-alerta">
               Este nivel todavía no tiene palabras publicadas, así que no puedes elegir palabra
               clave.
             </p>
@@ -307,7 +307,7 @@ export function FormularioOracion({
       {mensajeError !== null && <MensajeError key={mensajeError} mensaje={mensajeError} />}
 
       {avisoExito !== null && (
-        <p role="status" aria-live="polite" className="text-body font-semibold text-emerald-300">
+        <p role="status" aria-live="polite" className="text-body font-semibold text-exito">
           {avisoExito}
         </p>
       )}

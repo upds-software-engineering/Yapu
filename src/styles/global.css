@@ -5,11 +5,11 @@
 @layer base {
   /*
    * Foco visible global (WCAG 2.4.7 / 2.4.11): el contorno nunca se elimina y siempre usa el
-   * dorado andino sobre el fondo oscuro. Los componentes pueden afinarlo con utilidades
+   * acento dorado sobre el fondo oscuro. Los componentes pueden afinarlo con utilidades
    * `focus-visible:*`, que ganan por vivir en la capa de utilidades.
    */
   :focus-visible {
-    outline: 2px solid theme(colors.andina.gold.DEFAULT);
+    outline: 2px solid theme(colors.acento.fuerte);
     outline-offset: 2px;
   }
 
@@ -56,18 +56,21 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Scrollbar personalizada con temática andina */
+/* Scrollbar con los tokens del tema (Firefox usa `scrollbar-color`, el resto los pseudo-elementos). */
+html {
+  scrollbar-color: theme(colors.linea.fuerte) theme(colors.fondo);
+}
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b0f19;
+  background: theme(colors.fondo);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: theme(colors.linea.fuerte);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b94700;
+  background: theme(colors.primario.DEFAULT);
 }

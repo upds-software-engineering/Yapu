@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import type { SesionDto } from '@application/dto/contenido';
+import { GraduationCap } from 'lucide-react';
 import type {
   ExportacionCorpusDto,
   ListaRetosDto,
@@ -7,7 +7,8 @@ import type {
   RetoDto
 } from '@application/dto/contenido';
 import type { MapaNivelesDto, PalabraDto } from '@application/dto/aprendizaje';
-import { EstadoCarga, MensajeError, Tabs, type Pestana } from '@ui/design-system';import { useCasoDeUso, useServicios } from '@ui/hooks';
+import { EstadoCarga, MensajeError, Tabs, type Pestana } from '@ui/design-system';
+import { useCasoDeUso, useServicios, useSesionAutenticada } from '@ui/hooks';
 import { mensajeDeError } from '@ui/lib/mensajes';
 
 import { ExportacionCorpus } from './ExportacionCorpus';
@@ -70,9 +71,10 @@ function aplanarNiveles(mapa: MapaNivelesDto | null): Array<OpcionNivel & { tram
 /**
  * RF-001 / RF-006 / RF-007 / RS-004 — panel de gestión docente.
  *
- * Puerta de entrada (ADR-003): la sesión se resuelve con `ObtenerSesionUseCase` y, si el rol no es
- * docente, la pantalla se reduce a `GuardiaDocente`; el panel no se monta, así que ningún caso de
- * uso de contenido llega a ejecutarse con un rol sin permiso.
+ * Puerta de entrada (RF-001, ADR-003 rev. 2): la sesión se resuelve con `ValidarSesionUseCase`,
+ * que verifica la firma y la caducidad del token de acceso (y lo renueva con el de refresco si
+ * hace falta). Sin token válido con rol docente la pantalla se reduce a `GuardiaDocente`; el panel
+ * no se monta, así que ningún caso de uso de contenido llega a ejecutarse sin autorización.
  *
  * Con rol docente: tres pestañas (Hick: una sección visible a la vez) sobre el componente `Tabs`
  * del design system, que ya implementa el patrón WAI-ARIA con `role="tablist"`, `role="tab"` y
@@ -84,18 +86,14 @@ function aplanarNiveles(mapa: MapaNivelesDto | null): Array<OpcionNivel & { tram
  */
 export function PanelDocente() {
   const servicios = useServicios();
+  const { cambiarRol, obtenerSesion } = servicios;
+  const sesionLocal = useCasoDeUso(() => obtenerSesion.ejecutar(), { ejecutarAlMontar: [] });
 
   const [errorModeracion, setErrorModeracion] = useState<string | null>(null);
   const [errorFormulario, setErrorFormulario] = useState<string | null>(null);
-  const [errorRol, setErrorRol] = useState<string | null>(null);
   const [avisoGuardado, setAvisoGuardado] = useState<string | null>(null);
 
-  const obtenerSesion = useCallback(
-    (): Promise<SesionDto> => servicios.obtenerSesion.ejecutar(),
-    [servicios]
-  );
-  const sesion = useCasoDeUso(obtenerSesion, { ejecutarAlMontar: [] });
-  const recargarSesion = sesion.ejecutar;
+  const autenticacion = useSesionAutenticada();
 
   const obtenerMapa = useCallback(
     (): Promise<MapaNivelesDto> => servicios.mapaNiveles.ejecutar(),
@@ -118,21 +116,6 @@ export function PanelDocente() {
   const recargarRetos = retos.ejecutar;
 
   const niveles = useMemo(() => aplanarNiveles(mapa.datos), [mapa.datos]);
-
-  /**
-   * RF-001: cambia el rol y refresca la sesión. Si el caso de uso falla, `sesion.error` ya está en
-   * español; el cambio no se aplica y la guardia sigue en pantalla.
-   */
-  const cambiarARolDocente = useCallback(async (): Promise<SesionDto | null> => {
-    setErrorRol(null);
-    try {
-      await servicios.cambiarRol.ejecutar({ rol: 'docente' });
-    } catch (fallo) {
-      setErrorRol(mensajeDeError(fallo));
-      return null;
-    }
-    return recargarSesion();
-  }, [recargarSesion, servicios]);
 
   /**
    * RF-006 / RN-12: catálogo de palabras del nivel elegido, leído del caso de uso de la aplicación
@@ -200,32 +183,39 @@ export function PanelDocente() {
     [servicios]
   );
 
-  if (sesion.datos === null) {
-    if (sesion.cargando) {
-      return (
-        <section data-pantalla="docente" className="mx-auto flex w-full max-w-4xl flex-col gap-4">
-          <EstadoCarga mensaje="Comprobando tu rol…" />
-        </section>
-      );
-    }
+  const sesionActual =
+    autenticacion.sesion ??
+    (sesionLocal.datos
+      ? {
+          usuarioId: sesionLocal.datos.usuarioId,
+          nombre: sesionLocal.datos.nombre,
+          rol: sesionLocal.datos.rol,
+          esDocente: sesionLocal.datos.esDocente,
+          expiraAccesoEn: 0,
+          expiraRefrescoEn: 0,
+          refrescado: false
+        }
+      : null);
+
+  if (autenticacion.comprobando && sesionLocal.cargando) {
     return (
-      <section data-pantalla="docente" className="mx-auto flex w-full max-w-4xl flex-col gap-4">
-        <MensajeError
-          mensaje={sesion.error ?? 'No pudimos leer tu sesión. Vuelve a intentarlo.'}
-          onReintentar={() => void recargarSesion()}
-          textoReintentar="Volver a comprobar el rol"
-        />
+      <section data-pantalla="docente" className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6">
+        <EstadoCarga mensaje="Verificando tu sesión…" />
       </section>
     );
   }
 
-  // A partir de aquí la sesión existe: se fija en una constante local para que el resto del
-  // componente trabaje con datos no nulos.
-  const sesionActual: SesionDto = sesion.datos;
-
-  // RF-001 / ADR-003: sin rol docente NO se renderiza el panel, sólo la guardia y su salida.
-  if (!sesionActual.esDocente) {
-    return <GuardiaDocente sesion={sesionActual} alCambiarRol={cambiarARolDocente} error={errorRol} />;
+  // RF-001: sin rol docente NO se renderiza el panel, sólo la guardia.
+  if (sesionActual === null || !sesionActual.esDocente) {
+    return (
+      <GuardiaDocente
+        nombreSesion={sesionActual?.nombre ?? null}
+        alCambiarRolDocente={async () => {
+          await cambiarRol.ejecutar({ rol: 'docente' });
+          void sesionLocal.ejecutar();
+        }}
+      />
+    );
   }
 
   const listaOraciones = oraciones.datos ?? [];
@@ -297,13 +287,21 @@ export function PanelDocente() {
     <section
       data-pantalla="docente"
       data-panel="docente"
-      className="mx-auto flex w-full max-w-4xl flex-col gap-6"
+      className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10"
     >
-      <header className="flex flex-col gap-1">
-        <h1 className="text-display font-display font-bold text-sand">Panel docente</h1>
-        <p className="text-body text-slate-400">
+      <header className="flex flex-col gap-2 border-b border-linea pb-6">
+        <div className="flex items-center gap-3">
+          <span
+            aria-hidden="true"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-primario/15 text-acento"
+          >
+            <GraduationCap className="h-5 w-5" />
+          </span>
+          <h1 className="text-display font-display font-bold text-tinta">Panel docente</h1>
+        </div>
+        <p className="text-body text-tinta-tenue">
           Registra oraciones base para el generador y modera los retos de la comunidad. Sesión:{' '}
-          {sesionActual.nombre} ({sesionActual.rol}).
+          <strong className="text-tinta">{sesionActual.nombre}</strong> ({sesionActual.rol}).
         </p>
       </header>
 
