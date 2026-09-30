@@ -12,3 +12,4 @@ export { Navegacion, type PropsNavegacion } from './Navegacion';
 export { BannerConexion } from './BannerConexion';
 export { LeccionConFiltro, type PropsLeccionConFiltro } from './LeccionConFiltro';
 export { SelectorRol, type PropsSelectorRol } from './SelectorRol';
+export { PantallaNoEncontrada } from './PantallaNoEncontrada';
