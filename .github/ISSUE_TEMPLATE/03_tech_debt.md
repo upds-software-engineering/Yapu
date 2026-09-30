@@ -1,8 +1,8 @@
 ---
-name: "Deuda Tecnica o Refactorizacion"
+name: "Deuda técnica o refactorización"
 about: "Mejora interna, optimizacion de rendimiento o actualizacion de dependencias"
-title: "refactor: "
-labels: ["tech-debt"]
+title: "Deuda técnica: "
+labels: ["deuda técnica"]
 assignees: ""
 ---
 

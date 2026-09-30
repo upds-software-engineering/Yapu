@@ -1,8 +1,8 @@
 ---
-name: "Historia de Usuario (User Story)"
+name: "Historia de usuario"
 about: "Especificacion formal de requerimiento funcional con criterios Gherkin"
-title: "[HU-XX]: "
-labels: ["enhancement", "user-story"]
+title: "[HU-XX] "
+labels: ["historia de usuario", "mejora"]
 assignees: ""
 ---
 

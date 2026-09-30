@@ -1,8 +1,8 @@
 ---
-name: "Reporte de Defecto (Bug Report)"
+name: "Reporte de error"
 about: "Reportar un fallo, comportamiento anomalo o regresion detectada"
-title: "fix: "
-labels: ["bug"]
+title: "Error: "
+labels: ["error"]
 assignees: ""
 ---
 
